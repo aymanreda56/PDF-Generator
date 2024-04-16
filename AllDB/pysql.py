@@ -66,17 +66,28 @@ sample_data = [
 ]
 
 
-
-for dat in sample_data:
-    insertion_query = ', '.join([f'"{field}"' if type(field) == str else f'{field}' for field in dat])
+def AddNewSoldier(soldier_data):
+    connection = sqlite3.connect('Soldiers.db')
+    cursor = connection.cursor()
+    print('\n\n\n\n')
+    print(soldier_data)
+    print('\n\n\n\n')
+    insertion_query = ', '.join([f'"{field}"' if type(field) == str else f'{field}' for field in soldier_data])
     insertion_query = '(' + insertion_query + ')'
-    sql_query_entry = f'''INSERT INTO Force VALUES {insertion_query}'''
+    sql_query_entry = f'''INSERT INTO "Force" VALUES {insertion_query}'''
     print(sql_query_entry)
     
     try:
         result = cursor.execute(sql_query_entry)
     except sqlite3.Error as e:
         print(e)
+
+    finally:
+        connection.commit()
+        cursor.close()
+
+for dat in sample_data:
+    AddNewSoldier(dat)
 
 
 # Verifying arabic text:
@@ -89,6 +100,7 @@ try:
 except sqlite3.Error as e:
     print(e)
 
-cursor.close()
+finally:
+    cursor.close()
 
 
