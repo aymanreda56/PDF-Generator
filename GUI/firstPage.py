@@ -38,7 +38,7 @@ class FirstPage():
         self.first_window_root.destroy()
         
         # mm = MainMenu(firstTime=True)
-        # ep = EntryPage()
+        ep = EntryPage().renderEntryPage()
         # self.render_Main_Menu()
         # print('\n\n\nHEREERERE\n\n\n')
         # print(ep)

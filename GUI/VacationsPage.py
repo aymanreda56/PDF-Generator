@@ -10,7 +10,7 @@ import helpers
 
 
 
-class EntryPage():
+class VacationsPage():
     def validate_date(self, year, month, day):
         try:
             year = int(year)
@@ -110,20 +110,6 @@ class EntryPage():
 
 
 
-    def reverse_arabic_text(self, arabicText):
-        '''
-            this function just takes an arabic sentence, splits it by spaces, then reverses each word.
-            this is because tkinter does not support RTL rendering of arabic text.
-        '''
-        tokens = re.split(r' ',arabicText)
-        tokens.reverse()
-        # print(tokens)
-        return ' '.join(tokens)
-
-
-
-
-
 
     def Soldiers_Preview_show(self):
         #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() else False
@@ -212,16 +198,12 @@ class EntryPage():
         
         self.root = None
         self.errors_Lbl = None
-        #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() else False
         self.number_Of_Soldiers = len(helpers.fetchSoldiers()) if (helpers.fetchSoldiers()) else 0
         self.preview_frame = None
         self.destroyed = False
         self.big_Entire_Frame = None
         self.array_of_entry_frames = []
-        
-
-                
-        
+    
 
     def BackToMainMenu(self):
         self.destroyed = True
@@ -260,23 +242,23 @@ class EntryPage():
 
 
         label = ctk.CTkLabel(mainframe, text="الإسم", font=('Arial', 20, 'bold'))
-        label.grid(row= 1, column=3, pady=10)
+        label.grid(row= 1, column=4, pady=10)
 
 
         label = ctk.CTkLabel(mainframe, text="الرقم العسكري", font=('Arial', 20, 'bold'))
-        label.grid(row= 1, column=2, pady=10)
+        label.grid(row= 1, column=3, pady=10)
 
         label = ctk.CTkLabel(mainframe, text="الرتبة", font=('Arial', 20, 'bold'))
+        label.grid(row= 1, column=2, pady=10)
+
+        label = ctk.CTkLabel(mainframe, text="من", font=('Arial', 20, 'bold'))
         label.grid(row= 1, column=1, pady=10)
 
-
-        label = ctk.CTkLabel(mainframe, text="تاريخ التسليم", font=('Arial', 20, 'bold'))
+        label = ctk.CTkLabel(mainframe, text="إلى", font=('Arial', 20, 'bold'))
         label.grid(row= 1, column=0, pady=10)
 
-
-        Name_textbox = ctk.CTkEntry(mainframe, font=("Arial", 20), width=200, justify='right')
-        Name_textbox.grid(row=2, column=3, pady=10, padx=20)
-
+        Name_ComboBox = ctk.CTkComboBox(mainframe, font=("Arial", 20), width=200, justify='right')
+        Name_ComboBox.grid(row=2, column=3, pady=10, padx=20)
 
         Soldier_ID_textbox = ctk.CTkEntry(mainframe, font=("Arial", 20), width=200, justify='right')
         Soldier_ID_textbox.grid(row=2, column=2, pady=10, padx=20)
@@ -320,3 +302,25 @@ class EntryPage():
         self.root.mainloop()
 
     
+
+
+
+
+
+
+
+
+def ShowVacationHistory():
+    pass
+
+
+def AddVacation():
+    pass
+
+def RemoveVacation():
+    pass
+
+
+
+def RefreshVacations_And_PushToHistory():
+    pass

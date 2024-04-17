@@ -5,22 +5,24 @@ from EntryPage import EntryPage
 from firstPage import FirstPage
 import os
 from multiprocessing import Pool
+from VacationsPage import VacationsPage
 
 
 class MainMenu():
     def render_First_Page(self):
         fp = FirstPage()
-        self.first_window_root.mainloop()
         return
 
     
     def render_Entry_Page(self):
         # self.first_window_root.destroy()
         ep = EntryPage().renderEntryPage()
-        self.first_window_root.mainloop()
         return
-    #     self.firstTime=False
-    #     self.first_window_root.deiconify()
+    
+    def render_Vacations_Page(self):
+        vp = VacationsPage()
+        return
+    
 
 
     def __init__(self):
@@ -59,12 +61,13 @@ class MainMenu():
         # else:
         #     self.render_Entry_Page()
 
+        # FirstPage()
         
         # FirstPage()
             # th = threading.Thread(target=lambda:FirstPage(), daemon=True)
             # th.start()
-
-        
+        if(not os.path.isfile('../db/Soldiers.db')):
+            self.first_window_root.after(50, self.render_First_Page)
         self.first_window_root.mainloop()
 
         
