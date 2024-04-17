@@ -1,12 +1,31 @@
 import customtkinter as ctk
 import re
 from datetime import date
-#from EntryPage import EntryPage
-
+from EntryPage import EntryPage
+from firstPage import FirstPage
+import os
+from multiprocessing import Pool
 
 
 class MainMenu():
+    def render_First_Page(self):
+        fp = FirstPage()
+        self.first_window_root.mainloop()
+        return
+
+    
+    def render_Entry_Page(self):
+        # self.first_window_root.destroy()
+        ep = EntryPage().renderEntryPage()
+        self.first_window_root.mainloop()
+        return
+    #     self.firstTime=False
+    #     self.first_window_root.deiconify()
+
+
     def __init__(self):
+        
+        self.initial_visit = False
         self.first_window_root = ctk.CTk()
         self.first_window_root.title("Secretary Assistant")
         self.first_window_root.geometry("1000x600")  # Set window size
@@ -34,10 +53,35 @@ class MainMenu():
         Vacations_print_Button = ctk.CTkButton(dummy_frame, text='إدخال/تعديل البيانات', command=self.render_Entry_Page, font=('Arial', 17, 'bold'))
         Vacations_print_Button.grid(row=5, pady=30)
 
+        # if(not self.firstTime):
+        #     self.first_window_root.mainloop()
+        #     pass
+        # else:
+        #     self.render_Entry_Page()
 
-        self.first_window_root.mainloop()
-    
-    def render_Entry_Page(self):
-        self.first_window_root.withdraw()
-        #ep = EntryPage()
         
+        # FirstPage()
+            # th = threading.Thread(target=lambda:FirstPage(), daemon=True)
+            # th.start()
+
+        
+        self.first_window_root.mainloop()
+
+        
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+mm = MainMenu()

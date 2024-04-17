@@ -19,7 +19,7 @@ class EntryErrorCode(Enum):
     SOLDIER_NAME_ERR = "يوجد خطأ في الإسم"
     SOLDIER_NAME_MISSING = "من فضلك أدخل الإسم"
     SOLDIER_NAME_NOT_ARABIC = "الإسم يجب ان يكون باللغة العربية تماماً"
-    SOLDIER_NAME_SHORT_ERR = "الإسم قصير للغاية, برجاء ادخال الإسم بالكامل"
+    SOLDIER_NAME_TOO_SHORT_ERR = "الإسم قصير للغاية, برجاء ادخال الإسم بالكامل"
     SOLDIER_NAME_TOO_LONG_ERR = 'الإسم طويل للغاية, برجاء إدخال الإسم بشكل صحيح'
 
     RETIRING_DATE_DAY_ERR = "خطأ في تاريخ التسليم, برجاء إدخال رقم من 1 إلى 30"
