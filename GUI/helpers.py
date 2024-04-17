@@ -1,6 +1,5 @@
 import sqlite3
-from enums import EntryError, EntryErrorCode
-
+from enums import EntryError, EntryErrorCode, ArmyLevels
 
 
 def AddNewSoldier(soldier_data):
@@ -137,8 +136,28 @@ def RemoveVacation(Soldier_ID):
 def RefreshVacations():
     pass
 
+def getSoldierIDFromName(Name_ComboBox)->str:
+    allSoldiers = fetchSoldiers()
+    for soldier in allSoldiers:
+        if soldier['Name'] == Name_ComboBox:
+            return soldier['Soldier_ID']
+    return False
 
 
+def getSoldierLevelFromID(Soldier_ID)->str:
+    allSoldiers = fetchSoldiers()
+    for soldier in allSoldiers:
+        if soldier['Soldier_ID'] == Soldier_ID:
+            return ArmyLevels[soldier['Level']-1]
+    return False
+
+
+def getNamesFromDB() -> list:
+    allSoldiers = fetchSoldiers()
+    SoldierNames = []
+    for soldier in allSoldiers:
+        SoldierNames.append(soldier['Name'])
+    return SoldierNames
 
 
 def CreateDB():

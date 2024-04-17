@@ -8,8 +8,6 @@ import helpers
 
 
 
-
-
 class VacationsPage():
     def validate_date(self, year, month, day):
         try:
@@ -203,6 +201,7 @@ class VacationsPage():
         self.destroyed = False
         self.big_Entire_Frame = None
         self.array_of_entry_frames = []
+        self.renderEntryPage()
     
 
     def BackToMainMenu(self):
@@ -219,6 +218,11 @@ class VacationsPage():
         # mm = MainMenu()
 
 
+    def ChangePlaceHoldersWithComboBox(self, event):
+        self.Level_textbox.configure(text=helpers.getSoldierLevelFromID(helpers.getSoldierIDFromName(self.Name_ComboBox.get())))
+        self.Soldier_ID_textbox.configure(text=helpers.getSoldierIDFromName(self.Name_ComboBox.get()))
+
+
 
     def renderEntryPage(self):
         
@@ -226,7 +230,7 @@ class VacationsPage():
 
         #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() and len(helpers.fetchSoldiers()) > 0 else False
         self.root.title("Secretary PDF-Generator")
-        self.root.geometry("1200x600")  # Set window size
+        self.root.geometry("1800x600")  # Set window size
 
         label = ctk.CTkLabel(self.root, text="أدخل بيانات العساكر", font=('Arial', 26))
         label.pack()
@@ -257,34 +261,44 @@ class VacationsPage():
         label = ctk.CTkLabel(mainframe, text="إلى", font=('Arial', 20, 'bold'))
         label.grid(row= 1, column=0, pady=10)
 
-        Name_ComboBox = ctk.CTkComboBox(mainframe, font=("Arial", 20), width=200, justify='right')
-        Name_ComboBox.grid(row=2, column=3, pady=10, padx=20)
-
-        Soldier_ID_textbox = ctk.CTkEntry(mainframe, font=("Arial", 20), width=200, justify='right')
-        Soldier_ID_textbox.grid(row=2, column=2, pady=10, padx=20)
 
 ############################################################################# WE MUST DISABLE EDITING THE COMBOBOX
-        Level_DropDown = ctk.CTkComboBox(mainframe, font=("Arial", 20), width=200, values=['عسكري', 'رقيب', 'رقيب أول', 'مساعد', 'مساعد أول', 'ملازم', 'ملازم أول', 'نقيب', 'رائد', 'مقدم', 'عقيد', 'عميد', 'لواء', 'فريق', 'فريق أول', 'مشير'], justify='right')
+        self.Name_ComboBox = ctk.CTkComboBox(mainframe, font=("Arial", 20), width=200, justify='right', values=helpers.getNamesFromDB(), command=self.ChangePlaceHoldersWithComboBox)
+        self.Name_ComboBox.grid(row=2, column=4, pady=10, padx=20)
+
 ##################################################################################################################
-        Level_DropDown.set("عسكري")
-        Level_DropDown.grid(row=2, column=1)
+        
+        self.Soldier_ID_textbox = ctk.CTkLabel(mainframe, font=("Arial", 20), width=200, justify='right', text=helpers.getSoldierIDFromName(Name_ComboBox=self.Name_ComboBox.get()))
+        self.Soldier_ID_textbox.grid(row=2, column=3, pady=10, padx=20)
+
+        self.Level_textbox = ctk.CTkLabel(mainframe, font=("Arial", 20), width=200, justify='right', text=helpers.getSoldierLevelFromID(Soldier_ID=self.Soldier_ID_textbox.cget('text')))
+        self.Level_textbox.grid(row=2, column=2, pady=10, padx=20)
 
 
-        retiring_date_frame = ctk.CTkFrame(mainframe, width=300, height=100)
-        retiring_date_frame.grid(row=2, column=0, padx=10, pady=20)
+        From_date_frame = ctk.CTkFrame(mainframe, width=300, height=100)
+        From_date_frame.grid(row=2, column=1, padx=10, pady=20)
 
-        Retiring_Date_day = ctk.CTkEntry(retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='اليوم', justify='right')
-        Retiring_Date_day.grid(row=0, column=2, padx=5)
+        From_Date_day = ctk.CTkEntry(From_date_frame, font=("Arial", 15), width=40, placeholder_text='اليوم', justify='right')
+        From_Date_day.grid(row=0, column=2, padx=5)
 
-        Retiring_Date_month = ctk.CTkEntry(retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='الشهر', justify='right')
-        Retiring_Date_month.grid(row=0, column=1, padx=5)
+        From_Date_month = ctk.CTkEntry(From_date_frame, font=("Arial", 15), width=40, placeholder_text='الشهر', justify='right')
+        From_Date_month.grid(row=0, column=1, padx=5)
 
-        Retiring_Date_year = ctk.CTkEntry(retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='السنة', justify='right')
-        Retiring_Date_year.grid(row=0, column=0, padx=5)
+        From_Date_year = ctk.CTkEntry(From_date_frame, font=("Arial", 15), width=70, placeholder_text='السنة', justify='right')
+        From_Date_year.grid(row=0, column=0, padx=5)
 
-        submit_button = ctk.CTkButton(mainframe, text="إدخال", font=('Arial', 15, 'bold'), command=lambda: self.submit_text(Name_textbox, Soldier_ID_textbox, Level_DropDown, Retiring_Date_year, Retiring_Date_month, Retiring_Date_day))
-        submit_button.grid(row=3, column=1, pady=20)
+        To_date_frame = ctk.CTkFrame(mainframe, width=300, height=100)
+        To_date_frame.grid(row=2, column=0, padx=10, pady=20)
 
+
+        to_Date_day = ctk.CTkEntry(To_date_frame, font=("Arial", 15), width=40, placeholder_text='اليوم', justify='right')
+        to_Date_day.grid(row=0, column=2, padx=5)
+
+        to_Date_month = ctk.CTkEntry(To_date_frame, font=("Arial", 15), width=40, placeholder_text='الشهر', justify='right')
+        to_Date_month.grid(row=0, column=1, padx=5)
+
+        to_Date_year = ctk.CTkEntry(To_date_frame, font=("Arial", 15), width=70, placeholder_text='السنة', justify='right')
+        to_Date_year.grid(row=0, column=0, padx=5)
 
         Back_to_mm_button = ctk.CTkButton(self.root, text="الرجوع إلى القائمة", font=('Arial', 15, 'bold'), command=lambda: self.BackToMainMenu())
         Back_to_mm_button.place(relx = 0.1, rely=0.9)
@@ -310,6 +324,7 @@ class VacationsPage():
 
 
 
+
 def ShowVacationHistory():
     pass
 
@@ -324,3 +339,6 @@ def RemoveVacation():
 
 def RefreshVacations_And_PushToHistory():
     pass
+
+
+VacationsPage()
