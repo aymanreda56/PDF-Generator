@@ -281,9 +281,7 @@ class EntryPage():
         Soldier_ID_textbox = ctk.CTkEntry(mainframe, font=("Arial", 20), width=200, justify='right')
         Soldier_ID_textbox.grid(row=2, column=2, pady=10, padx=20)
 
-############################################################################# WE MUST DISABLE EDITING THE COMBOBOX
-        Level_DropDown = ctk.CTkComboBox(mainframe, font=("Arial", 20), width=200, values=['عسكري', 'رقيب', 'رقيب أول', 'مساعد', 'مساعد أول', 'ملازم', 'ملازم أول', 'نقيب', 'رائد', 'مقدم', 'عقيد', 'عميد', 'لواء', 'فريق', 'فريق أول', 'مشير'], justify='right')
-##################################################################################################################
+        Level_DropDown = ctk.CTkComboBox(mainframe, font=("Arial", 20), width=200, values=['عسكري', 'رقيب', 'رقيب أول', 'مساعد', 'مساعد أول', 'ملازم', 'ملازم أول', 'نقيب', 'رائد', 'مقدم', 'عقيد', 'عميد', 'لواء', 'فريق', 'فريق أول', 'مشير'], justify='right', state='readonly')
         Level_DropDown.set("عسكري")
         Level_DropDown.grid(row=2, column=1)
 

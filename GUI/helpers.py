@@ -96,6 +96,38 @@ def fetchSoldiers():
 
 
 
+
+def RefreshVacations():
+    pass
+
+
+
+
+def getActiveVacations():
+    try:
+        connection = sqlite3.connect('../db/Soldiers.db')
+        cursor = connection.cursor()
+        Checking_query = f'SELECT * FROM Vacations WHERE State = 1'
+        result = cursor.execute(Checking_query).fetchall()
+        print('\n\n\n\n')
+        print(result)
+
+        if(result == []):
+            return False
+        else:
+            print(result)
+            print('\n\n\n\n')
+
+            return result
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+
+
+
+
 def AddVacation(Soldier_ID, FromDate, ToDate):
     try:
         connection = sqlite3.connect('../db/Soldiers.db')
@@ -133,8 +165,6 @@ def RemoveVacation(Soldier_ID):
         return False
     
 
-def RefreshVacations():
-    pass
 
 def getSoldierIDFromName(Name_ComboBox)->str:
     allSoldiers = fetchSoldiers()

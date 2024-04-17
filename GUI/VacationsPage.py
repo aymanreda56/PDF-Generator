@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from tkinter import ttk
 import re
 from datetime import date
 from enums import EntryError, EntryErrorCode, ArmyLevels
@@ -61,7 +62,7 @@ class VacationsPage():
 
 
 
-    def submit_text(self, Namebox, IDbox, Level_comboBox, Yearbox, Monthbox, Daybox):
+    def submit_text(self, Namebox, IDbox, Level_comboBox, FromYearbox, FromMonthbox, FromDaybox, ToYearbox, ToMonthbox, ToDaybox):
         #making a date object from the date textboxes
         try:
             name = self.validate_name(Namebox.get())
@@ -77,31 +78,40 @@ class VacationsPage():
             return
 
 
-        (year, month, day) = Yearbox.get(), Monthbox.get(), Daybox.get()
+        (from_year, from_month, from_day) = FromYearbox.get(), FromMonthbox.get(), FromDaybox.get()
         try:
-            self.validate_date(year=year, month=month, day=day)
+            self.validate_date(year=from_year, month=from_month, day=from_day)
         except EntryError as e:
             self.displayError(e)
             return
-        retiring_date_string = date(year=int(year), month=int(month), day= int(day)).isoformat()
+        From_date_string = date(year=int(from_year), month=int(from_month), day= int(from_day)).isoformat()
+
+
+        (to_year, to_month, to_day) = ToYearbox.get(), ToMonthbox.get(), ToDaybox.get()
+        try:
+            self.validate_date(year=to_year, month=to_month, day=to_day)
+        except EntryError as e:
+            self.displayError(e)
+            return
+        to_date_string = date(year=int(to_year), month=int(to_month), day= int(to_day)).isoformat()
        
         
         
         
-        soldierdata = {'Name':name, 'Soldier_ID': Soldier_ID_string, 'Level': str(ArmyLevels.index(Level_comboBox.get())+1),'Retiring_Date': retiring_date_string}            
-        # self.Add_Soldier_To_Preview(soldier_data= soldierdata, preview_frame= self.preview_frame, num_entries=self.number_Of_Soldiers)
+        soldierdata = {'Name':name, 'Soldier_ID': Soldier_ID_string, 'Level': str(ArmyLevels.index(Level_comboBox.get())+1),'From_Date': From_date_string, 'To_Date': to_date_string}            
+        # self.Add_Soldier_To_Preview(soldier_data= soldierdata, preview_frame= self.preview_frame, num_entries=self.number_Of_Vacations)
         try:
-            helpers.AddNewSoldier(soldier_data=soldierdata)
+            helpers.AddVacation(Soldier_ID=Soldier_ID_string, FromDate=From_date_string, ToDate=to_date_string)
         except EntryError as e:
             self.displayError(e)
             return
         # if(not self.Soldiers_previewed_flag):
         #     self.preview_frame = self.Soldiers_Preview_show()
         # else:
-        self.Add_Soldier_To_Preview(soldier_data=soldierdata, entries_frame=self.entries_frame, num_entries=self.number_Of_Soldiers)
+        self.Add_Soldier_To_Preview(soldier_data=soldierdata, entries_frame=self.entries_frame, num_entries=self.number_Of_Vacations)
         
 
-        self.number_Of_Soldiers += 1
+        self.number_Of_Vacations += 1
 
         self.errors_Lbl.configure(text='')
 
@@ -119,15 +129,19 @@ class VacationsPage():
         # if(self.Soldiers_previewed_flag):
         another_frame.pack()
         headerLbl = ctk.CTkLabel(another_frame, text="الإسم", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=3, sticky='e', padx=1120/12)
+        headerLbl.grid(row=0, column=4, sticky='e', padx=1120/12)
 
         headerLbl = ctk.CTkLabel(another_frame, text="الرقم العسكري", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=2, padx=1120/12)
+        headerLbl.grid(row=0, column=3, padx=1120/12)
 
         headerLbl = ctk.CTkLabel(another_frame, text='الرتبة', font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=1, padx=1120/12)
+        headerLbl.grid(row=0, column=2, padx=1120/12)
 
-        headerLbl = ctk.CTkLabel(another_frame, text="تاريخ التسليم", font=('Arial', 16, 'bold'))
+        headerLbl = ctk.CTkLabel(another_frame, text="من", font=('Arial', 16, 'bold'))
+        headerLbl.grid(row=0, column=1, sticky='w', padx=1120/12)
+
+
+        headerLbl = ctk.CTkLabel(another_frame, text="إلى", font=('Arial', 16, 'bold'))
         headerLbl.grid(row=0, column=0, sticky='w', padx=1120/12)
 
 
@@ -135,7 +149,7 @@ class VacationsPage():
         # if(self.Soldiers_previewed_flag):
         self.entries_frame.pack()
 
-        allSoldiers = helpers.fetchSoldiers()
+        allSoldiers = helpers.getActiveVacations()
         if(allSoldiers):#) and self.Soldiers_previewed_flag):
             for i, soldier in enumerate(allSoldiers):
                 self.Add_Soldier_To_Preview(soldier_data=soldier, entries_frame=self.entries_frame, num_entries=i)
@@ -161,15 +175,18 @@ class VacationsPage():
         new_entry_frame.pack()
 
         newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Name'], font=('Arial', 14), width=30)
-        newEntryLabel.grid(row=num_entries, column=4, sticky='e', padx=1120/12)
+        newEntryLabel.grid(row=num_entries, column=5, sticky='e', padx=1120/12)
 
         newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Soldier_ID'], font=('Arial', 14), width=30)
-        newEntryLabel.grid(row=num_entries, column=3, padx=1120/12, sticky='e')
+        newEntryLabel.grid(row=num_entries, column=4, padx=1120/12, sticky='e')
 
         newEntryLabel = ctk.CTkLabel(new_entry_frame, text=ArmyLevels[int(soldier_data["Level"])-1], font=('Arial', 14), width=30)
-        newEntryLabel.grid(row=num_entries, column=2, padx=1120/12, sticky='e')
+        newEntryLabel.grid(row=num_entries, column=3, padx=1120/12, sticky='e')
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Retiring_Date'], font=('Arial', 14), width=30)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['From_Date'], font=('Arial', 14), width=30)
+        newEntryLabel.grid(row=num_entries, column=2, sticky='e', padx=1120/12)
+
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['To_Date'], font=('Arial', 14), width=30)
         newEntryLabel.grid(row=num_entries, column=1, sticky='e', padx=1120/12)
 
         dumFrame = ctk.CTkFrame(new_entry_frame, width=50, height=20)
@@ -196,12 +213,12 @@ class VacationsPage():
         
         self.root = None
         self.errors_Lbl = None
-        self.number_Of_Soldiers = len(helpers.fetchSoldiers()) if (helpers.fetchSoldiers()) else 0
+        self.number_Of_Vacations = len(helpers.getActiveVacations()) if (helpers.getActiveVacations()) else 0
         self.preview_frame = None
         self.destroyed = False
         self.big_Entire_Frame = None
         self.array_of_entry_frames = []
-        self.renderEntryPage()
+        self.renderVacationsPage()
     
 
     def BackToMainMenu(self):
@@ -224,7 +241,7 @@ class VacationsPage():
 
 
 
-    def renderEntryPage(self):
+    def renderVacationsPage(self):
         
         self.root = ctk.CTk()
 
@@ -262,11 +279,12 @@ class VacationsPage():
         label.grid(row= 1, column=0, pady=10)
 
 
-############################################################################# WE MUST DISABLE EDITING THE COMBOBOX
-        self.Name_ComboBox = ctk.CTkComboBox(mainframe, font=("Arial", 20), width=200, justify='right', values=helpers.getNamesFromDB(), command=self.ChangePlaceHoldersWithComboBox)
+        self.Name_ComboBox = ctk.CTkComboBox(mainframe, font=("Arial", 50), width=200, justify='right', values=helpers.getNamesFromDB(), command=self.ChangePlaceHoldersWithComboBox, state='readonly')
         self.Name_ComboBox.grid(row=2, column=4, pady=10, padx=20)
 
-##################################################################################################################
+        # combobox_field = self.Name_ComboBox.nametowidget(self.Name_ComboBox.cget("field"))
+        # combobox_field.configure(font=("Arial", 12))  # Change font here
+
         
         self.Soldier_ID_textbox = ctk.CTkLabel(mainframe, font=("Arial", 20), width=200, justify='right', text=helpers.getSoldierIDFromName(Name_ComboBox=self.Name_ComboBox.get()))
         self.Soldier_ID_textbox.grid(row=2, column=3, pady=10, padx=20)
