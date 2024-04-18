@@ -96,6 +96,110 @@ def fetchSoldiers():
 
 
 
+def getSoldiers():
+    try:
+        connection = sqlite3.connect('../db/Soldiers.db')
+        cursor = connection.cursor()
+        Checking_query = f'SELECT * FROM Force WHERE Level = 1'
+        result = cursor.execute(Checking_query).fetchall()
+
+        if(result == []):
+            return False
+        else:
+            return result[0]
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+
+def getNumSoldiers():
+    try:
+        connection = sqlite3.connect('../db/Soldiers.db')
+        cursor = connection.cursor()
+        Checking_query = f'SELECT (*) FROM Force WHERE Level > 1 AND Level < 5'
+        result = cursor.execute(Checking_query).fetchall()
+
+        if(result == []):
+            return False
+        else:
+            return result[0]
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+
+
+def getOfficers():
+    try:
+        connection = sqlite3.connect('../db/Soldiers.db')
+        cursor = connection.cursor()
+        Checking_query = f'SELECT * FROM Force WHERE Level > 5'
+        result = cursor.execute(Checking_query).fetchall()
+
+        if(result == []):
+            return False
+        else:
+            return result[0]
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+
+def getNumOfficers():
+    try:
+        connection = sqlite3.connect('../db/Soldiers.db')
+        cursor = connection.cursor()
+        Checking_query = f'SELECT (*) FROM Force WHERE Level > 1 AND Level < 5'
+        result = cursor.execute(Checking_query).fetchall()
+
+        if(result == []):
+            return False
+        else:
+            return result[0]
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+
+def getCaps():
+    try:
+        connection = sqlite3.connect('../db/Soldiers.db')
+        cursor = connection.cursor()
+        Checking_query = f'SELECT * FROM Force WHERE Level > 1 AND Level < 5'
+        result = cursor.execute(Checking_query).fetchall()
+
+        if(result == []):
+            return False
+        else:
+            return result[0]
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+
+
+def getNumCaps():
+    try:
+        connection = sqlite3.connect('../db/Soldiers.db')
+        cursor = connection.cursor()
+        Checking_query = f'SELECT (*) FROM Force WHERE Level > 1 AND Level < 5'
+        result = cursor.execute(Checking_query).fetchall()
+
+        if(result == []):
+            return False
+        else:
+            return result[0]
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+
 
 def RefreshVacations():
     pass
