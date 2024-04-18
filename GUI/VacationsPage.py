@@ -56,7 +56,7 @@ class VacationsPage():
                 raise EntryError(EntryErrorCode.SOLDIER_NAME_NOT_ARABIC)
             ################################################################################################
         
-        print(text)
+        #print(text)
         text = re.sub(r'\s+', ' ', text)
         return text
 
@@ -72,7 +72,7 @@ class VacationsPage():
         
 
         try:
-            Soldier_ID_string = self.validate_ID(IDbox.get())
+            Soldier_ID_string = self.validate_ID(IDbox.cget('text'))
         except EntryError as e:
             self.displayError(e)
             return
@@ -95,19 +95,21 @@ class VacationsPage():
             return
         to_date_string = date(year=int(to_year), month=int(to_month), day= int(to_day)).isoformat()
        
-        
-        
-        
-        soldierdata = {'Name':name, 'Soldier_ID': Soldier_ID_string, 'Level': str(ArmyLevels.index(Level_comboBox.get())+1),'From_Date': From_date_string, 'To_Date': to_date_string}            
-        # self.Add_Soldier_To_Preview(soldier_data= soldierdata, preview_frame= self.preview_frame, num_entries=self.number_Of_Vacations)
         try:
-            helpers.AddVacation(Soldier_ID=Soldier_ID_string, FromDate=From_date_string, ToDate=to_date_string)
+            if(date.fromisoformat(From_date_string) > date.fromisoformat(to_date_string)):
+                raise EntryError(EntryErrorCode.VACATIONS_DATES_ARE_NEGATIVE)
         except EntryError as e:
             self.displayError(e)
             return
-        # if(not self.Soldiers_previewed_flag):
-        #     self.preview_frame = self.Soldiers_Preview_show()
-        # else:
+        
+        soldierdata = {'Name':name, 'Soldier_ID': Soldier_ID_string, 'Level': str(ArmyLevels.index(Level_comboBox.cget('text'))+1),'From_Date': From_date_string, 'To_Date': to_date_string}            
+        try:
+            helpers.AddVacation(Soldier_ID=Soldier_ID_string, FromDate=From_date_string, ToDate=to_date_string, State=1, Summoned=0)
+        except EntryError as e:
+            self.displayError(e)
+            return
+        
+
         self.Add_Soldier_To_Preview(soldier_data=soldierdata, entries_frame=self.entries_frame, num_entries=self.number_Of_Vacations)
         
 
@@ -121,38 +123,39 @@ class VacationsPage():
 
     def Soldiers_Preview_show(self):
         #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() else False
-        entire_preview_frame = ctk.CTkScrollableFrame(self.root, label_text="Preview", width=1120)
+        entire_preview_frame = ctk.CTkScrollableFrame(self.root, label_text="Preview", width=1300)
         self.big_Entire_Frame = entire_preview_frame
         # if(self.Soldiers_previewed_flag):
         self.big_Entire_Frame.pack()
-        another_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1120)
+        another_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1270)
         # if(self.Soldiers_previewed_flag):
         another_frame.pack()
         headerLbl = ctk.CTkLabel(another_frame, text="الإسم", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=4, sticky='e', padx=1120/12)
+        headerLbl.grid(row=0, column=4, sticky='e', padx=1270/12)
 
         headerLbl = ctk.CTkLabel(another_frame, text="الرقم العسكري", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=3, padx=1120/12)
+        headerLbl.grid(row=0, column=3, padx=1270/12)
 
         headerLbl = ctk.CTkLabel(another_frame, text='الرتبة', font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=2, padx=1120/12)
+        headerLbl.grid(row=0, column=2, padx=1270/12)
 
         headerLbl = ctk.CTkLabel(another_frame, text="من", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=1, sticky='w', padx=1120/12)
+        headerLbl.grid(row=0, column=1, sticky='w', padx=1270/12)
 
 
         headerLbl = ctk.CTkLabel(another_frame, text="إلى", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=0, sticky='w', padx=1120/12)
+        headerLbl.grid(row=0, column=0, sticky='w', padx=1270/12)
 
 
-        self.entries_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1120)
+        self.entries_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1270)
         # if(self.Soldiers_previewed_flag):
         self.entries_frame.pack()
 
         allSoldiers = helpers.getActiveVacations()
         if(allSoldiers):#) and self.Soldiers_previewed_flag):
             for i, soldier in enumerate(allSoldiers):
-                self.Add_Soldier_To_Preview(soldier_data=soldier, entries_frame=self.entries_frame, num_entries=i)
+                soldier_dict = {'Soldier_ID': soldier[0], 'Name': soldier[1], 'Level': helpers.getLevelFromID(soldier[0])[0],'From_Date': soldier[2], 'To_Date': soldier[3], 'State': soldier[4], 'Summoned': soldier[5]}
+                self.Add_Soldier_To_Preview(soldier_data=soldier_dict, entries_frame=self.entries_frame, num_entries=i)
 
 
         # self.Soldiers_previewed_flag
@@ -169,7 +172,7 @@ class VacationsPage():
 
 
     def Add_Soldier_To_Preview(self, soldier_data, entries_frame, num_entries: int):
-        print(soldier_data)
+        #print(soldier_data)
 
         new_entry_frame = ctk.CTkFrame(entries_frame, width = 1120, height=30)
         new_entry_frame.pack()
@@ -202,7 +205,7 @@ class VacationsPage():
 
 
     def Remove_Soldier_From_Preview(self, Soldier_ID, frame_to_be_destroyed):
-        helpers.DeleteSoldier(Soldier_ID=Soldier_ID)
+        helpers.RemoveVacation(Soldier_ID=Soldier_ID)
         frame_to_be_destroyed.destroy()
         return
 
@@ -279,7 +282,7 @@ class VacationsPage():
         label.grid(row= 1, column=0, pady=10)
 
 
-        self.Name_ComboBox = ctk.CTkComboBox(mainframe, font=("Arial", 50), width=200, justify='right', values=helpers.getNamesFromDB(), command=self.ChangePlaceHoldersWithComboBox, state='readonly')
+        self.Name_ComboBox = ctk.CTkComboBox(mainframe, font=("Arial", 20), width=200, justify='right', values=helpers.getNamesFromDB(), command=self.ChangePlaceHoldersWithComboBox, state='readonly')
         self.Name_ComboBox.grid(row=2, column=4, pady=10, padx=20)
 
         # combobox_field = self.Name_ComboBox.nametowidget(self.Name_ComboBox.cget("field"))
@@ -317,6 +320,9 @@ class VacationsPage():
 
         to_Date_year = ctk.CTkEntry(To_date_frame, font=("Arial", 15), width=70, placeholder_text='السنة', justify='right')
         to_Date_year.grid(row=0, column=0, padx=5)
+
+        submit_button = ctk.CTkButton(mainframe, text="إدخال", font=('Arial', 15, 'bold'), command=lambda: self.submit_text(self.Name_ComboBox, self.Soldier_ID_textbox, self.Level_textbox, From_Date_year, From_Date_month, From_Date_day, to_Date_year, to_Date_month, to_Date_day))
+        submit_button.grid(row=3, column=2, pady=20)
 
         Back_to_mm_button = ctk.CTkButton(self.root, text="الرجوع إلى القائمة", font=('Arial', 15, 'bold'), command=lambda: self.BackToMainMenu())
         Back_to_mm_button.place(relx = 0.1, rely=0.9)
@@ -359,4 +365,4 @@ def RefreshVacations_And_PushToHistory():
     pass
 
 
-VacationsPage()
+# VacationsPage()

@@ -44,7 +44,7 @@ class MainMenu():
         Tammam_Button.grid(row=2, pady=30)
 
         #Vacations Entry Button
-        Vacations_Entry_Button = ctk.CTkButton(dummy_frame, text='تسجيل أجازات', command=self.render_Entry_Page, font=('Arial', 17, 'bold'))
+        Vacations_Entry_Button = ctk.CTkButton(dummy_frame, text='تسجيل أجازات', command=self.render_Vacations_Page, font=('Arial', 17, 'bold'))
         Vacations_Entry_Button.grid(row=3, pady=30)
 
         #Vacations pass printing button

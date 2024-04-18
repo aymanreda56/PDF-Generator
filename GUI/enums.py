@@ -29,6 +29,9 @@ class EntryErrorCode(Enum):
     RETIRING_DATE_INTEGER_ERR = "برجاء إدخال ارقام إنجليزية في خانة التاريخ و ليس كلمات"
     RETIRING_DATE_GENERAL_ERR = "خطأ في تاريخ التسليم, برجاء مراجعة البيانات و ادخال الأرقام بالإنجليزية"
 
+    VACATIONS_DATES_ARE_NEGATIVE = "خطأ في التواريخ, يجب ان يكون تاريخ النزول قبل تاريخ العودة و ليس العكس"
+
+
     SOLDIER_ALREADY_EXISTING_ERR = "الشخص بالفعل مسجل, برجاء تعديل البيانات او مسح الشخص المسجل و إدخاله مرة أخرى"
 
 

@@ -33,7 +33,7 @@ def DeleteSoldier(Soldier_ID):
         connection = sqlite3.connect('../db/Soldiers.db')
         cursor = connection.cursor()
         Deleting_query = f'DELETE FROM Force WHERE Soldier_ID = ?'
-        result = cursor.execute(Deleting_query, (Soldier_ID))
+        result = cursor.execute(Deleting_query, (Soldier_ID,))
         connection.commit()
     except sqlite3.Error as e:
         print(e)
@@ -101,6 +101,23 @@ def RefreshVacations():
     pass
 
 
+def getLevelFromID(ID):
+    try:
+        connection = sqlite3.connect('../db/Soldiers.db')
+        cursor = connection.cursor()
+        Checking_query = f'SELECT Level FROM Force WHERE Soldier_ID = ?'
+        result = cursor.execute(Checking_query, (ID,)).fetchall()[0]
+        
+        if(result == []):
+            return False
+        else:
+            return result
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+
 
 
 def getActiveVacations():
@@ -128,14 +145,15 @@ def getActiveVacations():
 
 
 
-def AddVacation(Soldier_ID, FromDate, ToDate):
+def AddVacation(Soldier_ID, FromDate, ToDate, State, Summoned):
     try:
         connection = sqlite3.connect('../db/Soldiers.db')
         cursor = connection.cursor()
 
         search_query = "SELECT Name FROM Force WHERE Soldier_ID = ?"
-        result = cursor.execute(search_query, (Soldier_ID)).fetchall()
-        Soldier_Name = result[0]
+        result = cursor.execute(search_query, [Soldier_ID]).fetchall()
+        Soldier_Name = result[0][0]
+        
     except sqlite3.Error as e:
         print(e)
         return False
@@ -143,8 +161,8 @@ def AddVacation(Soldier_ID, FromDate, ToDate):
         connection = sqlite3.connect('../db/Soldiers.db')
         cursor = connection.cursor()
 
-        insertion_query = "INSERT INTO Vacations VALUES (?, ?, ?, ?)"
-        cursor.execute(insertion_query, (Soldier_ID, Soldier_Name, FromDate, ToDate))
+        insertion_query = '''INSERT INTO Vacations VALUES (?, ?, ?, ?, ?, ?)'''
+        cursor.execute(insertion_query, (Soldier_ID, Soldier_Name, FromDate, ToDate, State, Summoned))
         connection.commit()
 
     except sqlite3.Error as e:

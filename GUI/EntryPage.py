@@ -106,6 +106,10 @@ class EntryPage():
         self.number_Of_Soldiers += 1
 
         self.errors_Lbl.configure(text='')
+        self.return_button_state = True if (helpers.fetchSoldiers()) else False
+        self.Back_to_mm_button.configure(state='normal' if self.return_button_state else "disabled", fg_color='#8576FF' if self.return_button_state else '#074173')
+
+        
 
 
 
@@ -203,6 +207,8 @@ class EntryPage():
     def Remove_Soldier_From_Preview(self, Soldier_ID, frame_to_be_destroyed):
         helpers.DeleteSoldier(Soldier_ID=Soldier_ID)
         frame_to_be_destroyed.destroy()
+        self.return_button_state = True if (helpers.fetchSoldiers()) else False
+        self.Back_to_mm_button.configure(state='normal' if self.return_button_state else "disabled", fg_color='#8576FF' if self.return_button_state else '#074173')
         return
 
 
@@ -218,6 +224,7 @@ class EntryPage():
         self.destroyed = False
         self.big_Entire_Frame = None
         self.array_of_entry_frames = []
+        self.return_button_state = True if (helpers.fetchSoldiers()) else False
         
 
                 
@@ -302,8 +309,8 @@ class EntryPage():
         submit_button.grid(row=3, column=1, pady=20)
 
 
-        Back_to_mm_button = ctk.CTkButton(self.root, text="الرجوع إلى القائمة", font=('Arial', 15, 'bold'), command=lambda: self.BackToMainMenu())
-        Back_to_mm_button.place(relx = 0.1, rely=0.9)
+        self.Back_to_mm_button = ctk.CTkButton(self.root, text="الرجوع إلى القائمة", font=('Arial', 15, 'bold'), command=lambda: self.BackToMainMenu(), state='normal' if self.return_button_state else 'disabled', fg_color='#8576FF' if self.return_button_state else '#074173')
+        self.Back_to_mm_button.place(relx = 0.1, rely=0.9)
         
 
 
