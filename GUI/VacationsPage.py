@@ -29,6 +29,8 @@ class VacationsPage():
             raise EntryError(EntryErrorCode.RETIRING_DATE_GENERAL_ERR)
 
 
+
+
     def validate_ID(self, ID_string):
         if ((not ID_string) or ID_string == '' or re.sub('\s+','', ID_string) == '' ):
             raise EntryError(EntryErrorCode.SOLDIER_ID_MISSING)
@@ -43,6 +45,9 @@ class VacationsPage():
 
         return ID_string
     
+
+
+
     def validate_name(self, text):
         if ((not text) or text == '' or re.sub('\s+','', text) == '' ):
             raise EntryError(EntryErrorCode.SOLDIER_NAME_MISSING)
@@ -123,28 +128,28 @@ class VacationsPage():
 
     def Soldiers_Preview_show(self):
         #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() else False
-        entire_preview_frame = ctk.CTkScrollableFrame(self.root, label_text="Preview", width=1300)
+        entire_preview_frame = ctk.CTkScrollableFrame(self.root, label_text="Preview", width=1205)
         self.big_Entire_Frame = entire_preview_frame
         # if(self.Soldiers_previewed_flag):
         self.big_Entire_Frame.pack()
-        another_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1270)
+        another_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1205, height=20)
         # if(self.Soldiers_previewed_flag):
-        another_frame.pack()
-        headerLbl = ctk.CTkLabel(another_frame, text="الإسم", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=4, sticky='e', padx=1270/12)
+        another_frame.pack(pady=5)
+        headerLbl = ctk.CTkLabel(another_frame, text="الإسم", font=('Arial', 18, 'bold'))
+        headerLbl.place(relx=0.93, rely=0.5, anchor=ctk.CENTER)
 
-        headerLbl = ctk.CTkLabel(another_frame, text="الرقم العسكري", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=3, padx=1270/12)
+        headerLbl = ctk.CTkLabel(another_frame, text="الرقم العسكري", font=('Arial', 18, 'bold'))
+        headerLbl.place(relx=0.7, rely=0.5, anchor=ctk.CENTER)
 
-        headerLbl = ctk.CTkLabel(another_frame, text='الرتبة', font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=2, padx=1270/12)
+        headerLbl = ctk.CTkLabel(another_frame, text='الرتبة', font=('Arial', 18, 'bold'))
+        headerLbl.place(relx=0.47, rely=0.5, anchor=ctk.CENTER)
 
-        headerLbl = ctk.CTkLabel(another_frame, text="من", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=1, sticky='w', padx=1270/12)
+        headerLbl = ctk.CTkLabel(another_frame, text="من", font=('Arial', 18, 'bold'))
+        headerLbl.place(relx=0.26, rely=0.5, anchor=ctk.CENTER)
 
 
-        headerLbl = ctk.CTkLabel(another_frame, text="إلى", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=0, sticky='w', padx=1270/12)
+        headerLbl = ctk.CTkLabel(another_frame, text="إلى", font=('Arial', 18, 'bold'))
+        headerLbl.place(relx=0.1, rely=0.5, anchor=ctk.CENTER)
 
 
         self.entries_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1270)
@@ -154,7 +159,7 @@ class VacationsPage():
         allSoldiers = helpers.getActiveVacations()
         if(allSoldiers):#) and self.Soldiers_previewed_flag):
             for i, soldier in enumerate(allSoldiers):
-                soldier_dict = {'Soldier_ID': soldier[0], 'Name': soldier[1], 'Level': helpers.getLevelFromID(soldier[0])[0],'From_Date': soldier[2], 'To_Date': soldier[3], 'State': soldier[4], 'Summoned': soldier[5]}
+                soldier_dict = {'Soldier_ID': soldier[0], 'Name': soldier[1], 'Level': helpers.getLevelFromID(soldier[0]),'From_Date': soldier[2], 'To_Date': soldier[3], 'State': soldier[4], 'Summoned': soldier[5]}
                 self.Add_Soldier_To_Preview(soldier_data=soldier_dict, entries_frame=self.entries_frame, num_entries=i)
 
 
@@ -163,39 +168,30 @@ class VacationsPage():
         return self.entries_frame, entire_preview_frame
     
 
-    # def UpdatePreview(self):
-    #     allSoldiers = helpers.fetchSoldiers()
-    #     if(allSoldiers and self.Soldiers_previewed_flag):
-    #         for i, soldier in enumerate(allSoldiers):
-    #             self.Add_Soldier_To_Preview(soldier_data=soldier, entries_frame=entries_frame, num_entries=i)
-
-
 
     def Add_Soldier_To_Preview(self, soldier_data, entries_frame, num_entries: int):
         #print(soldier_data)
 
-        new_entry_frame = ctk.CTkFrame(entries_frame, width = 1120, height=30)
+        new_entry_frame = ctk.CTkFrame(entries_frame, width = 1200, height=30)
         new_entry_frame.pack()
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Name'], font=('Arial', 14), width=30)
-        newEntryLabel.grid(row=num_entries, column=5, sticky='e', padx=1120/12)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Name'], font=('Arial', 16), width=30)
+        newEntryLabel.place(relx=0.93, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Soldier_ID'], font=('Arial', 14), width=30)
-        newEntryLabel.grid(row=num_entries, column=4, padx=1120/12, sticky='e')
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Soldier_ID'], font=('Arial', 16), width=30)
+        newEntryLabel.place(relx=0.7, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=ArmyLevels[int(soldier_data["Level"])-1], font=('Arial', 14), width=30)
-        newEntryLabel.grid(row=num_entries, column=3, padx=1120/12, sticky='e')
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=ArmyLevels[int(soldier_data["Level"])-1], font=('Arial', 16), width=30)
+        newEntryLabel.place(relx=0.47, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['From_Date'], font=('Arial', 14), width=30)
-        newEntryLabel.grid(row=num_entries, column=2, sticky='e', padx=1120/12)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['From_Date'], font=('Arial', 16), width=30)
+        newEntryLabel.place(relx=0.26, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['To_Date'], font=('Arial', 14), width=30)
-        newEntryLabel.grid(row=num_entries, column=1, sticky='e', padx=1120/12)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['To_Date'], font=('Arial', 16), width=30)
+        newEntryLabel.place(relx=0.1, rely=0.5, anchor=ctk.CENTER)
 
-        dumFrame = ctk.CTkFrame(new_entry_frame, width=50, height=20)
-        dumFrame.grid(row=num_entries, column=0, sticky='w', padx=0)
-        DelButton = ctk.CTkButton(dumFrame, text='إزالة', font=('Arial', 14), width=30, fg_color='red', command=lambda frame=new_entry_frame: self.Remove_Soldier_From_Preview(soldier_data['Soldier_ID'], frame))
-        DelButton.place(relx=0.5, rely=0.5, anchor='center')
+        DelButton = ctk.CTkButton(new_entry_frame, text='إزالة', font=('Arial', 16), width=30, fg_color='red', command=lambda frame=new_entry_frame: self.Remove_Soldier_From_Preview(soldier_data['Soldier_ID'], frame))
+        DelButton.place(relx=0.02, rely=0.5, anchor='center')
         self.array_of_entry_frames.append(new_entry_frame)
 
 
@@ -229,13 +225,6 @@ class VacationsPage():
         if(self.destroyed):
             self.root.destroy()
             return
-        
-        
-        # print('\n\n\nHEREERERE\n\n\n')
-        
-        # print(self)
-        # print('\n\n\n\n\n\n')
-        # mm = MainMenu()
 
 
     def ChangePlaceHoldersWithComboBox(self, event):
@@ -247,8 +236,6 @@ class VacationsPage():
     def renderVacationsPage(self):
         
         self.root = ctk.CTk()
-
-        #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() and len(helpers.fetchSoldiers()) > 0 else False
         self.root.title("Secretary PDF-Generator")
         self.root.geometry("1800x600")  # Set window size
 
@@ -258,12 +245,7 @@ class VacationsPage():
 
         mainframe = ctk.CTkFrame(self.root, width=800, height=400)
         mainframe.pack(anchor='center', pady=20)
-        # mainframe.grid_propagate(False)
-
-        # some labels
-
-        # label.grid_rowconfigure(1, weight=2)
-
+        
 
         label = ctk.CTkLabel(mainframe, text="الإسم", font=('Arial', 20, 'bold'))
         label.grid(row= 1, column=4, pady=10)
@@ -284,9 +266,6 @@ class VacationsPage():
 
         self.Name_ComboBox = ctk.CTkComboBox(mainframe, font=("Arial", 20), width=200, justify='right', values=helpers.getNamesFromDB(), command=self.ChangePlaceHoldersWithComboBox, state='readonly')
         self.Name_ComboBox.grid(row=2, column=4, pady=10, padx=20)
-
-        # combobox_field = self.Name_ComboBox.nametowidget(self.Name_ComboBox.cget("field"))
-        # combobox_field.configure(font=("Arial", 12))  # Change font here
 
         
         self.Soldier_ID_textbox = ctk.CTkLabel(mainframe, font=("Arial", 20), width=200, justify='right', text=helpers.getSoldierIDFromName(Name_ComboBox=self.Name_ComboBox.get()))
@@ -333,6 +312,14 @@ class VacationsPage():
         self.errors_Lbl = ctk.CTkLabel(self.root, font=('Arial', 20, 'bold'), text_color='red', text='')
         self.errors_Lbl.place(relx=0.5, rely=0.9, anchor=ctk.CENTER)
 
+
+        
+        self.root.bind("<Control-q>", lambda x: self.quit())
+        self.root.bind("<Configure>", lambda x: self.resizeAll())
+
+        self.root.bind("<Control-Enter>", lambda x: self.submit_text(self.Name_ComboBox, self.Soldier_ID_textbox, self.Level_textbox, From_Date_year, From_Date_month, From_Date_day, to_Date_year, to_Date_month, to_Date_day))
+
+
         # self.root.bind('enter', command=lambda: self.submit_text(Name_textbox, Soldier_ID_textbox, Level_DropDown, Retiring_Date_year, Retiring_Date_month, Retiring_Date_day))
 
         self.Soldiers_Preview_show()
@@ -344,6 +331,11 @@ class VacationsPage():
 
 
 
+    def resizeAll(self):
+        self.big_Entire_Frame.configure(height=self.root.winfo_height()/2)
+    
+    def quit(self):
+        self.root.destroy()
 
 
 

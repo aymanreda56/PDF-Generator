@@ -1,5 +1,40 @@
 import sqlite3
 from enums import EntryError, EntryErrorCode, ArmyLevels
+from datetime import date
+
+
+
+
+def getAbsenceSQL(Level_Index):
+    try:
+        connection = sqlite3.connect('../db/Soldiers.db')
+        cursor = connection.cursor()
+        Checking_query = f'SELECT * FROM Force INNER JOIN Vacations ON Force.Soldier_ID = Vacations.Soldier_ID AND Force.Level {Level_Index};'
+        result = cursor.execute(Checking_query).fetchall()
+        return result
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+
+
+def getAbsentOfficers():
+    result = getAbsenceSQL('> 5')
+    return result
+
+
+def getAbsentSoldiers():
+    result = getAbsenceSQL('= 1')
+    return result
+
+def getAbsentCaps():
+    result = getAbsenceSQL('> 1 and Force.Level < 6')
+    return result
+
+
+
+
 
 
 def AddNewSoldier(soldier_data):
@@ -117,13 +152,13 @@ def getNumSoldiers():
     try:
         connection = sqlite3.connect('../db/Soldiers.db')
         cursor = connection.cursor()
-        Checking_query = f'SELECT (*) FROM Force WHERE Level > 1 AND Level < 5'
+        Checking_query = f'SELECT COUNT (*) FROM Force WHERE Level = 1'
         result = cursor.execute(Checking_query).fetchall()
 
         if(result == []):
-            return False
+            return 0
         else:
-            return result[0]
+            return result[0][0]
 
     except sqlite3.Error as e:
         print(e)
@@ -152,13 +187,13 @@ def getNumOfficers():
     try:
         connection = sqlite3.connect('../db/Soldiers.db')
         cursor = connection.cursor()
-        Checking_query = f'SELECT (*) FROM Force WHERE Level > 1 AND Level < 5'
+        Checking_query = f'SELECT COUNT (*) FROM Force WHERE Level > 5'
         result = cursor.execute(Checking_query).fetchall()
 
         if(result == []):
-            return False
+            return 0
         else:
-            return result[0]
+            return result[0][0]
 
     except sqlite3.Error as e:
         print(e)
@@ -187,13 +222,27 @@ def getNumCaps():
     try:
         connection = sqlite3.connect('../db/Soldiers.db')
         cursor = connection.cursor()
-        Checking_query = f'SELECT (*) FROM Force WHERE Level > 1 AND Level < 5'
+        Checking_query = f'SELECT COUNT (*) FROM Force WHERE Level > 1 AND Level < 5'
         result = cursor.execute(Checking_query).fetchall()
 
         if(result == []):
-            return False
+            return 0
         else:
-            return result[0]
+            return result[0][0]
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+
+
+
+def ArchiveVacation(Soldier_ID, Soldier_Name, From_Date, To_Date):
+    try:
+        connection = sqlite3.connect('../db/Soldiers.db')
+        cursor = connection.cursor()
+        Checking_query = f'INSERT INTO Vacations_History (Soldier_ID, Name, From_Date, To_Date, State, Summoned) VALUES (?, ?, ?, ?, ?, ?)'
+        result = cursor.execute(Checking_query, (Soldier_ID, Soldier_Name, From_Date, To_Date, '0', '0'))
 
     except sqlite3.Error as e:
         print(e)
@@ -202,7 +251,24 @@ def getNumCaps():
 
 
 def RefreshVacations():
-    pass
+    try:
+        connection = sqlite3.connect('../db/Soldiers.db')
+        cursor = connection.cursor()
+        Checking_query = f'SELECT Soldier_ID, Soldier_Name, From_Date, To_Date FROM Vacations WHERE State = 1'
+        result = cursor.execute(Checking_query).fetchall()[0]
+
+        for tup in result:
+            if date.today() > date.fromisoformat(tup[3]):
+                ArchiveVacation(Soldier_ID=tup[0], Soldier_Name=tup[1], From_Date=tup[2], To_Date=tup[3])
+                RemoveVacation(Soldier_ID=tup[0])
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+    
+
+
 
 
 def getLevelFromID(ID):
@@ -215,7 +281,7 @@ def getLevelFromID(ID):
         if(result == []):
             return False
         else:
-            return result
+            return result[0]
 
     except sqlite3.Error as e:
         print(e)
@@ -236,9 +302,6 @@ def getActiveVacations():
         if(result == []):
             return False
         else:
-            print(result)
-            print('\n\n\n\n')
-
             return result
 
     except sqlite3.Error as e:
@@ -345,6 +408,18 @@ def CreateDB():
         "Place"	TEXT,
         FOREIGN KEY("Soldier_ID") REFERENCES Force ("Soldier_ID")
         )''')
+
+
+        result = cursor.execute('''CREATE TABLE "Vacations_History" (
+            "ID"	INTEGER,
+            "Soldier_ID"	TEXT,
+            "Name"	TEXT,
+            "From_Date"	TEXT,
+            "To_Date"	TEXT,
+            "State"	INTEGER,
+            "Summoned"	INTEGER,
+            PRIMARY KEY("ID" AUTOINCREMENT)
+        );''')
 
 
         connection.commit()

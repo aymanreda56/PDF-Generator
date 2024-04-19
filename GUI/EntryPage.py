@@ -47,7 +47,7 @@ class EntryPage():
     def validate_name(self, text):
         if ((not text) or text == '' or re.sub('\s+','', text) == '' ):
             raise EntryError(EntryErrorCode.SOLDIER_NAME_MISSING)
-        if(len(re.split(' ',text)) < 3):
+        if(len(re.split(' ',text)) < 2):
             raise EntryError(EntryErrorCode.SOLDIER_NAME_TOO_SHORT_ERR)
         if(len(text) > 40):
             raise EntryError(EntryErrorCode.SOLDIER_NAME_TOO_LONG_ERR)
@@ -131,24 +131,24 @@ class EntryPage():
 
     def Soldiers_Preview_show(self):
         #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() else False
-        entire_preview_frame = ctk.CTkScrollableFrame(self.root, label_text="Preview", width=1120)
+        entire_preview_frame = ctk.CTkScrollableFrame(self.root, label_text="Preview", width=1120, height=self.root.winfo_height()/2)
         self.big_Entire_Frame = entire_preview_frame
         # if(self.Soldiers_previewed_flag):
         self.big_Entire_Frame.pack()
-        another_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1120)
+        another_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1000, height=20)
         # if(self.Soldiers_previewed_flag):
-        another_frame.pack()
+        another_frame.pack(pady=5)
         headerLbl = ctk.CTkLabel(another_frame, text="الإسم", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=3, sticky='e', padx=1120/12)
+        headerLbl.place(relx=0.83, rely=0.5, anchor=ctk.CENTER)
 
         headerLbl = ctk.CTkLabel(another_frame, text="الرقم العسكري", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=2, padx=1120/12)
+        headerLbl.place(relx=0.62, rely=0.5, anchor=ctk.CENTER)
 
         headerLbl = ctk.CTkLabel(another_frame, text='الرتبة', font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=1, padx=1120/12)
+        headerLbl.place(relx=0.4, rely=0.5, anchor=ctk.CENTER)
 
         headerLbl = ctk.CTkLabel(another_frame, text="تاريخ التسليم", font=('Arial', 16, 'bold'))
-        headerLbl.grid(row=0, column=0, sticky='w', padx=1120/12)
+        headerLbl.place(relx=0.2, rely=0.5, anchor=ctk.CENTER)
 
 
         self.entries_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1120)
@@ -177,25 +177,25 @@ class EntryPage():
     def Add_Soldier_To_Preview(self, soldier_data, entries_frame, num_entries: int):
         print(soldier_data)
 
-        new_entry_frame = ctk.CTkFrame(entries_frame, width = 1120, height=30)
-        new_entry_frame.pack()
+        new_entry_frame = ctk.CTkFrame(entries_frame, width = 1000, height=30)
+        new_entry_frame.pack(pady=2)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Name'], font=('Arial', 14), width=30)
-        newEntryLabel.grid(row=num_entries, column=4, sticky='e', padx=1120/12)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Name'], font=('Arial', 16), width=30)
+        newEntryLabel.place(relx=0.83, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Soldier_ID'], font=('Arial', 14), width=30)
-        newEntryLabel.grid(row=num_entries, column=3, padx=1120/12, sticky='e')
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Soldier_ID'], font=('Arial', 16), width=30)
+        newEntryLabel.place(relx=0.62, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=ArmyLevels[int(soldier_data["Level"])-1], font=('Arial', 14), width=30)
-        newEntryLabel.grid(row=num_entries, column=2, padx=1120/12, sticky='e')
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=ArmyLevels[int(soldier_data["Level"])-1], font=('Arial', 16), width=30)
+        newEntryLabel.place(relx=0.4, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Retiring_Date'], font=('Arial', 14), width=30)
-        newEntryLabel.grid(row=num_entries, column=1, sticky='e', padx=1120/12)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Retiring_Date'], font=('Arial', 16), width=30)
+        newEntryLabel.place(relx=0.2, rely=0.5, anchor=ctk.CENTER)
 
-        dumFrame = ctk.CTkFrame(new_entry_frame, width=50, height=20)
-        dumFrame.grid(row=num_entries, column=0, sticky='w', padx=0)
-        DelButton = ctk.CTkButton(dumFrame, text='إزالة', font=('Arial', 14), width=30, fg_color='red', command=lambda frame=new_entry_frame: self.Remove_Soldier_From_Preview(soldier_data['Soldier_ID'], frame))
-        DelButton.place(relx=0.5, rely=0.5, anchor='center')
+        #dumFrame = ctk.CTkFrame(new_entry_frame, width=50, height=20)
+        #dumFrame.grid(row=num_entries, column=0, sticky='w', padx=0)
+        DelButton = ctk.CTkButton(new_entry_frame, text='إزالة', font=('Arial', 16), width=30, fg_color='red', command=lambda frame=new_entry_frame: self.Remove_Soldier_From_Preview(soldier_data['Soldier_ID'], frame))
+        DelButton.place(relx=0.1, rely=0.5, anchor=ctk.CENTER)
         self.array_of_entry_frames.append(new_entry_frame)
 
 
@@ -322,6 +322,16 @@ class EntryPage():
 
         self.Soldiers_Preview_show()
 
+        self.root.bind("<Control-q>", lambda x: self.quit())
+        self.root.bind("<Configure>", lambda x: self.resizeAll())
+
+        self.root.bind("<Control-Enter>", lambda x: self.submit_text(Name_textbox, Soldier_ID_textbox, Level_DropDown, Retiring_Date_year, Retiring_Date_month, Retiring_Date_day))
+
         self.root.mainloop()
 
+    def resizeAll(self):
+        self.big_Entire_Frame.configure(height=self.root.winfo_height()/2)
     
+    def quit(self):
+        self.root.destroy()
+
