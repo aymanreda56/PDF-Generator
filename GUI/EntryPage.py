@@ -4,7 +4,7 @@ from datetime import date
 from enums import EntryError, EntryErrorCode, ArmyLevels
 # from MainMenu import MainMenu
 import helpers
-
+from style import *
 
 
 
@@ -131,7 +131,7 @@ class EntryPage():
 
     def Soldiers_Preview_show(self):
         #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() else False
-        entire_preview_frame = ctk.CTkScrollableFrame(self.root, label_text="Preview", width=1120, height=self.root.winfo_height()/2)
+        entire_preview_frame = ctk.CTkScrollableFrame(self.root, label_text="Preview", width=1120, height=self.root.winfo_height()/3)
         self.big_Entire_Frame = entire_preview_frame
         # if(self.Soldiers_previewed_flag):
         self.big_Entire_Frame.pack()
@@ -177,19 +177,19 @@ class EntryPage():
     def Add_Soldier_To_Preview(self, soldier_data, entries_frame, num_entries: int):
         print(soldier_data)
 
-        new_entry_frame = ctk.CTkFrame(entries_frame, width = 1000, height=30)
+        new_entry_frame = ctk.CTkFrame(entries_frame, width = 1000, height=30, fg_color=ENTRY_FG_COLOR)
         new_entry_frame.pack(pady=2)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Name'], font=('Arial', 16), width=30)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Name'], font=('Arial', 16), width=30 , fg_color=FG_COLOR, text_color=TEXT_COLOR)
         newEntryLabel.place(relx=0.83, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Soldier_ID'], font=('Arial', 16), width=30)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Soldier_ID'], font=('Arial', 16), width=30, fg_color=FG_COLOR, text_color=TEXT_COLOR)
         newEntryLabel.place(relx=0.62, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=ArmyLevels[int(soldier_data["Level"])-1], font=('Arial', 16), width=30)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=ArmyLevels[int(soldier_data["Level"])-1], font=('Arial', 16), width=30, fg_color=FG_COLOR, text_color=TEXT_COLOR)
         newEntryLabel.place(relx=0.4, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Retiring_Date'], font=('Arial', 16), width=30)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Retiring_Date'], font=('Arial', 16), width=30, fg_color=FG_COLOR, text_color=TEXT_COLOR)
         newEntryLabel.place(relx=0.2, rely=0.5, anchor=ctk.CENTER)
 
         #dumFrame = ctk.CTkFrame(new_entry_frame, width=50, height=20)
@@ -247,17 +247,17 @@ class EntryPage():
 
     def renderEntryPage(self):
         
-        self.root = ctk.CTk()
+        self.root = ctk.CTk(fg_color=BG_COLOR)
 
         #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() and len(helpers.fetchSoldiers()) > 0 else False
         self.root.title("Secretary PDF-Generator")
         self.root.geometry("1200x600")  # Set window size
 
-        label = ctk.CTkLabel(self.root, text="أدخل بيانات العساكر", font=('Arial', 26))
+        label = ctk.CTkLabel(self.root, text="أدخل بيانات العساكر", font=('Arial', 26), fg_color=FG_COLOR, text_color=TEXT_COLOR)
         label.pack()
 
 
-        mainframe = ctk.CTkFrame(self.root, width=800, height=400)
+        mainframe = ctk.CTkFrame(self.root, width=800, height=400, fg_color= FG_COLOR)
         mainframe.pack(anchor='center', pady=20)
         # mainframe.grid_propagate(False)
 
@@ -266,26 +266,26 @@ class EntryPage():
         # label.grid_rowconfigure(1, weight=2)
 
 
-        label = ctk.CTkLabel(mainframe, text="الإسم", font=('Arial', 20, 'bold'))
+        label = ctk.CTkLabel(mainframe, text="الإسم", font=('Arial', 20, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
         label.grid(row= 1, column=3, pady=10)
 
 
-        label = ctk.CTkLabel(mainframe, text="الرقم العسكري", font=('Arial', 20, 'bold'))
+        label = ctk.CTkLabel(mainframe, text="الرقم العسكري", font=('Arial', 20, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
         label.grid(row= 1, column=2, pady=10)
 
-        label = ctk.CTkLabel(mainframe, text="الرتبة", font=('Arial', 20, 'bold'))
+        label = ctk.CTkLabel(mainframe, text="الرتبة", font=('Arial', 20, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
         label.grid(row= 1, column=1, pady=10)
 
 
-        label = ctk.CTkLabel(mainframe, text="تاريخ التسليم", font=('Arial', 20, 'bold'))
+        label = ctk.CTkLabel(mainframe, text="تاريخ التسليم", font=('Arial', 20, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
         label.grid(row= 1, column=0, pady=10)
 
 
-        Name_textbox = ctk.CTkEntry(mainframe, font=("Arial", 20), width=200, justify='right')
+        Name_textbox = ctk.CTkEntry(mainframe, font=("Arial", 20), width=200, justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
         Name_textbox.grid(row=2, column=3, pady=10, padx=20)
 
 
-        Soldier_ID_textbox = ctk.CTkEntry(mainframe, font=("Arial", 20), width=200, justify='right')
+        Soldier_ID_textbox = ctk.CTkEntry(mainframe, font=("Arial", 20), width=200, justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
         Soldier_ID_textbox.grid(row=2, column=2, pady=10, padx=20)
 
         Level_DropDown = ctk.CTkComboBox(mainframe, font=("Arial", 20), width=200, values=['عسكري', 'رقيب', 'رقيب أول', 'مساعد', 'مساعد أول', 'ملازم', 'ملازم أول', 'نقيب', 'رائد', 'مقدم', 'عقيد', 'عميد', 'لواء', 'فريق', 'فريق أول', 'مشير'], justify='right', state='readonly')
@@ -293,23 +293,23 @@ class EntryPage():
         Level_DropDown.grid(row=2, column=1)
 
 
-        retiring_date_frame = ctk.CTkFrame(mainframe, width=300, height=100)
+        retiring_date_frame = ctk.CTkFrame(mainframe, width=300, height=100, fg_color=FG_COLOR)
         retiring_date_frame.grid(row=2, column=0, padx=10, pady=20)
 
-        Retiring_Date_day = ctk.CTkEntry(retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='اليوم', justify='right')
+        Retiring_Date_day = ctk.CTkEntry(retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='اليوم', justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
         Retiring_Date_day.grid(row=0, column=2, padx=5)
 
-        Retiring_Date_month = ctk.CTkEntry(retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='الشهر', justify='right')
+        Retiring_Date_month = ctk.CTkEntry(retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='الشهر', justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
         Retiring_Date_month.grid(row=0, column=1, padx=5)
 
-        Retiring_Date_year = ctk.CTkEntry(retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='السنة', justify='right')
+        Retiring_Date_year = ctk.CTkEntry(retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='السنة', justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
         Retiring_Date_year.grid(row=0, column=0, padx=5)
 
-        submit_button = ctk.CTkButton(mainframe, text="إدخال", font=('Arial', 15, 'bold'), command=lambda: self.submit_text(Name_textbox, Soldier_ID_textbox, Level_DropDown, Retiring_Date_year, Retiring_Date_month, Retiring_Date_day))
+        submit_button = ctk.CTkButton(mainframe, text="إدخال", font=('Arial', 15, 'bold'), command=lambda: self.submit_text(Name_textbox, Soldier_ID_textbox, Level_DropDown, Retiring_Date_year, Retiring_Date_month, Retiring_Date_day), fg_color=BUTTON_COLOR)
         submit_button.grid(row=3, column=1, pady=20)
 
 
-        self.Back_to_mm_button = ctk.CTkButton(self.root, text="الرجوع إلى القائمة", font=('Arial', 15, 'bold'), command=lambda: self.BackToMainMenu(), state='normal' if self.return_button_state else 'disabled', fg_color='#8576FF' if self.return_button_state else '#074173')
+        self.Back_to_mm_button = ctk.CTkButton(self.root, text="الرجوع إلى القائمة", font=('Arial', 15, 'bold'), command=lambda: self.BackToMainMenu(), state='normal' if self.return_button_state else 'disabled', fg_color=BUTTON_COLOR if self.return_button_state else '#074173')
         self.Back_to_mm_button.place(relx = 0.1, rely=0.9)
         
 
@@ -330,7 +330,7 @@ class EntryPage():
         self.root.mainloop()
 
     def resizeAll(self):
-        self.big_Entire_Frame.configure(height=self.root.winfo_height()/2)
+        self.big_Entire_Frame.configure(height=self.root.winfo_height()/3)
     
     def quit(self):
         self.root.destroy()

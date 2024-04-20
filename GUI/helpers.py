@@ -9,9 +9,18 @@ def getAbsenceSQL(Level_Index):
     try:
         connection = sqlite3.connect('../db/Soldiers.db')
         cursor = connection.cursor()
-        Checking_query = f'SELECT * FROM Force INNER JOIN Vacations ON Force.Soldier_ID = Vacations.Soldier_ID AND Force.Level {Level_Index};'
+        Checking_query = f'SELECT Vacations.Soldier_ID, Vacations.Name, Vacations.From_Date, Vacations.To_Date, Vacations.State, Vacations.Summoned FROM Force INNER JOIN Vacations ON Force.Soldier_ID = Vacations.Soldier_ID AND Force.Level {Level_Index};'
         result = cursor.execute(Checking_query).fetchall()
-        return result
+        
+        returnedResult = []
+        print('WEWEWEWEWEWE')
+        print(result)
+        for tup in result:
+            print(tup)
+            if date.fromisoformat(tup[2]) < date.today():
+                returnedResult.append(tup)
+
+        return returnedResult
 
     except sqlite3.Error as e:
         print(e)
@@ -243,6 +252,7 @@ def ArchiveVacation(Soldier_ID, Soldier_Name, From_Date, To_Date):
         cursor = connection.cursor()
         Checking_query = f'INSERT INTO Vacations_History (Soldier_ID, Name, From_Date, To_Date, State, Summoned) VALUES (?, ?, ?, ?, ?, ?)'
         result = cursor.execute(Checking_query, (Soldier_ID, Soldier_Name, From_Date, To_Date, '0', '0'))
+        connection.commit()
 
     except sqlite3.Error as e:
         print(e)
@@ -252,12 +262,14 @@ def ArchiveVacation(Soldier_ID, Soldier_Name, From_Date, To_Date):
 
 def RefreshVacations():
     try:
+        print('refreshed')
         connection = sqlite3.connect('../db/Soldiers.db')
         cursor = connection.cursor()
-        Checking_query = f'SELECT Soldier_ID, Soldier_Name, From_Date, To_Date FROM Vacations WHERE State = 1'
-        result = cursor.execute(Checking_query).fetchall()[0]
+        Checking_query = f'SELECT Soldier_ID, Name, From_Date, To_Date FROM Vacations WHERE State = 1'
+        result = cursor.execute(Checking_query).fetchall()
 
         for tup in result:
+            print(tup)
             if date.today() > date.fromisoformat(tup[3]):
                 ArchiveVacation(Soldier_ID=tup[0], Soldier_Name=tup[1], From_Date=tup[2], To_Date=tup[3])
                 RemoveVacation(Soldier_ID=tup[0])
@@ -300,7 +312,7 @@ def getActiveVacations():
         print(result)
 
         if(result == []):
-            return False
+            return []
         else:
             return result
 
@@ -343,7 +355,7 @@ def RemoveVacation(Soldier_ID):
         cursor = connection.cursor()
 
         search_query = "DELETE FROM Vacations WHERE Soldier_ID = ?"
-        result = cursor.execute(search_query, (Soldier_ID))
+        result = cursor.execute(search_query, (Soldier_ID,))
         connection.commit()
     except sqlite3.Error as e:
         print(e)

@@ -16,6 +16,7 @@ from docx.oxml import parse_xml
 import helpers
 import enums
 import docx2pdf
+import os
 
 
 
@@ -93,7 +94,7 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
                             Vacations_Table = table
                             break
     
-    if(Vacations_Table):
+    if(Vacations_Table and len(Iterable_Fields)):
         num_Vacations = len(Iterable_Fields)
         for i in range(num_Vacations-1):
             Vacations_Table.add_row()
@@ -110,11 +111,20 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
             row.cells[3].paragraphs[0].text = "أجازة ميدانية"
             row.cells[1].paragraphs[0].text = Iterable_Fields[j]['Level']
             row.cells[2].paragraphs[0].text = Iterable_Fields[j]['Name']
-            row.cells[0].paragraphs[0].text = str(Iterable_Fields[j]['Num'])
+            row.cells[0].paragraphs[0].text = translate_all_numbers_to_arabic(str(Iterable_Fields[j]['Num'] + 1))
 
+        for row in Vacations_Table.rows:
             for cell in row.cells:
-                cell.style = doc.styles['Strong Par']
-                cell.alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+                cell.paragraphs[0].style = doc.styles['Strong Par']
+                cell.paragraphs[0].alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+                cell.paragraphs[0].style.font.bold = True
+    else:
+        allnewtables = []
+        for table in doc.tables:
+            if table == Vacations_Table:
+                doc.remove(table)
+
+        
 
 
 
@@ -140,7 +150,7 @@ def Replace_Placeholders_Inside_Vac_Passes(doc, fields_to_replace:list, Iterable
 
 
 
-def Export_Vacation_Passes_PDF():
+def Export_Vacation_Passes_PDF(filepath):
     AllVacations = helpers.getActiveVacations()
 
     IterableFieldsDict = []
@@ -160,12 +170,12 @@ def Export_Vacation_Passes_PDF():
 
     doccc = docx.Document('../pdf/templates/vacation_passes.docx')
     Replace_Placeholders_Inside_Vac_Passes(doccc, fields_to_replace=fields_to_replace, Iterable_Fields = IterableFieldsDict)
-    ConvertAndSave(document=doccc, name="vacation_passes")
+    ConvertAndSave(document=doccc, filePath=filepath)
 
 
 
 
-def Export_Tamam_PDF():
+def Export_Tamam_PDF(filePath):
 
     number_officers = int(helpers.getNumOfficers())
     absent_officers = len(helpers.getAbsentOfficers())
@@ -216,9 +226,9 @@ def Export_Tamam_PDF():
 
     doccc = docx.Document('../pdf/templates/tamam.docx')
     Replace_Placeholders_Inside_Document(doccc, fields_to_replace=fields_to_replace, Iterable_Fields = IterableFieldsDict)
-    ConvertAndSave(document=doccc, name="Tamam")
+    ConvertAndSave(document=doccc, filePath=filePath)
 
-def ConvertAndSave(document, name):
-    document.save(f'{name}.docx')
-    docx2pdf.convert(f'{name}.docx', f"{name}.pdf")
-    doc.save(f"{name}.pdf")
+def ConvertAndSave(document, filePath):
+    filePath, extension = os.path.splitext(filePath)
+    document.save(filePath+'.docx')
+    docx2pdf.convert(filePath+'.docx', filePath+'.pdf')

@@ -332,7 +332,7 @@ class VacationsPage():
 
 
     def resizeAll(self):
-        self.big_Entire_Frame.configure(height=self.root.winfo_height()/2)
+        self.big_Entire_Frame.configure(height=self.root.winfo_height()/3)
     
     def quit(self):
         self.root.destroy()
