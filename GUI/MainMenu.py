@@ -77,13 +77,16 @@ class MainMenu():
         ls = LoginScreen()
 
         self.logged_in_flag = ls.logged_in_flag
+        self.user_level = ls.level
+        self.user_name = ls.name
+        self.is_admin = ls.is_admin
 
         if(self.logged_in_flag):
             self.initial_visit = False
             self.first_window_root = ctk.CTk(fg_color=BG_COLOR)
             
-            self.first_window_root.title("تنظيم وأفراد مكتب السيد مدير الجهاز")
-            self.first_window_root.geometry("1500x600")  # Set window size
+            self.first_window_root.title("تنظيم و افراد مكتب السيد/ مدير الجهاز")
+            self.first_window_root.geometry("1500x800")  # Set window size
             self.first_window_root.iconbitmap("../data/icolog.ico")
             img= ctk.CTkImage(light_image=Image.open('../data/logo_dark.png'), dark_image=Image.open('../data/logo_dark.png'), size=(250,250))
             ImageLBL = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=img, text='')
@@ -97,7 +100,7 @@ class MainMenu():
             dummy_frame.place(relx=0.5, rely=0.1, anchor=ctk.N)
 
             # The titel label
-            Big_Label = ctk.CTkLabel(dummy_frame, text="تنظيم وأفراد مكتب السيد مدير الجهاز", font=('Arial', 50, 'bold'), text_color=BUTTON_COLOR)
+            Big_Label = ctk.CTkLabel(dummy_frame, text="تنظيم و افراد مكتب السيد/ مدير الجهاز", font=('Arial', 50, 'bold'), text_color=BUTTON_COLOR)
             Big_Label.grid(row=1, pady=30, padx=20)
 
             #Tammam printing Button
@@ -107,6 +110,8 @@ class MainMenu():
             #Vacations Entry Button
             Vacations_Entry_Button = ctk.CTkButton(dummy_frame, text='تسجيل أجازات', command=self.render_Vacations_Page, font=('Arial', 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
             Vacations_Entry_Button.grid(row=3, pady=30)
+            if(self.is_admin != 1):
+                Vacations_Entry_Button.grid_forget()
 
             #Movement printing button
             Movement_print_Button = ctk.CTkButton(dummy_frame, text='طباعة يومية تحركات', command=self.Print_Movements, font=('Arial', 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
@@ -117,9 +122,13 @@ class MainMenu():
             Vacations_print_Button.grid(row=5, pady=30)
 
             #Vacations pass printing button
-            Vacations_print_Button = ctk.CTkButton(dummy_frame, text='إدخال/تعديل البيانات', command=self.render_Entry_Page, font=('Arial', 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            Vacations_print_Button.grid(row=6, pady=30)
+            Entry_Button = ctk.CTkButton(dummy_frame, text='إدخال/تعديل البيانات', command=self.render_Entry_Page, font=('Arial', 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            print(f'HERERERERE      {self.is_admin}')
+            Entry_Button.grid(row=6, pady=30)
 
+            if(self.is_admin != 1):
+                print('IAMMM')
+                Entry_Button.grid_forget()
 
 
 

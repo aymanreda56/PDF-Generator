@@ -39,7 +39,7 @@ def translate_all_numbers_to_arabic(English_text):
     return ''.join(arabicText)
 
 
-Department_Name = "سكرتارية قائد الجهاز"
+Department_Name = "مكتب السيد/ مدير الجهاز"
 Vacation_Begin_Hour = '900'
 Vacation_End_Hour = '1000'
 Date_Arabic =translate_all_numbers_to_arabic(date.today().isoformat())
@@ -206,19 +206,43 @@ def Replace_Placeholders_Inside_Movements(doc, fields_to_replace:dict, Iterable_
 def Replace_Placeholders_Inside_Vac_Passes(doc, fields_to_replace:list, Iterable_Fields:list):
     # Iterate over tables    
     counter = 0
+    truncate_rest = False
     for table in doc.tables:
         for row in table.rows:
-            for i, cell in enumerate(row.cells):
-                for paragraph in cell.paragraphs:
-                    for run in paragraph.runs:
-                        for field in fields_to_replace:
-                            if counter < len(Iterable_Fields):
-                                run.text = run.text.replace(field, Iterable_Fields[counter][field])
-                                print(Iterable_Fields[counter][field])
-                            else:
-                                run.text = ''
-                                
-                counter += 1
+            for i, tb_cell in enumerate(row.cells):
+                if(counter < len(Iterable_Fields)):
+                    for tb in tb_cell.tables:
+                        for tb_row in tb.rows:
+                            for cell in tb_row.cells:
+                                for paragraph in cell.paragraphs:
+                                    for run in paragraph.runs:
+                                        for field in fields_to_replace:
+                                                run.text = run.text.replace(field, Iterable_Fields[counter][field])
+                                                print(Iterable_Fields[counter][field])
+                                                
+
+
+                    for paragraph in tb_cell.paragraphs:
+                                    for run in paragraph.runs:
+                                        for field in fields_to_replace:
+            
+                                                run.text = run.text.replace(field, Iterable_Fields[counter][field])
+                                                print(Iterable_Fields[counter][field])
+                                                
+                                            
+                    counter += 1
+                else:
+                    for tbb in tb_cell.tables:
+                        for r in tbb.rows:
+                            for tbcell in r.cells:
+                                for paragraph in tbcell.paragraphs:
+                                    for run in paragraph.runs:
+                                        run.text = ''
+                    for paragraph in tb_cell.paragraphs:
+                                    for run in paragraph.runs:
+                                        run.text = ''
+                                        
+                
 
 
 
@@ -344,3 +368,6 @@ def ConvertAndSave(document, typeDoc:str):
 
     document.save(f'{filepath}.docx')
     docx2pdf.convert(f'{filepath}.docx', f'{filepath}.pdf')
+
+
+
