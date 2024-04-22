@@ -268,7 +268,7 @@ def RefreshVacations():
 
         for tup in result:
             print(tup)
-            if date.today() > date.fromisoformat(tup[3]):
+            if date.today() >= date.fromisoformat(tup[3]):
                 ArchiveVacation(Soldier_ID=tup[0], Soldier_Name=tup[1], From_Date=tup[2], To_Date=tup[3])
                 RemoveVacation(Soldier_ID=tup[0])
 

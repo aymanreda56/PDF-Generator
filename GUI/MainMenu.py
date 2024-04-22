@@ -12,26 +12,22 @@ import GenHelpers
 import helpers
 from PIL import ImageTk, Image
 from style import *
-
-
-
-
-class LoadingWindow():
-    def __init__(self):
-        self.loadingRoot = ctk.CTk('600x600')
-
-
-        img= ctk.CTkImage(light_image=Image.open('../data/LoadingScreen.png'), dark_image=Image.open('../data/LoadingScreen.png'), size=(250,250))
-        ImageLBL = ctk.CTkLabel(self.loadingRoot, width=self.loadingRoot.winfo_width(), height=self.loadingRoot.winfo_height(), image=img, text='')
-        ImageLBL.place(relx=0.88, rely=0.15, anchor=ctk.CENTER)
-        ImageLBL.pack()
-        self.loadingRoot.mainloop()
-
+import time
 
 
 
 
 class MainMenu():
+
+    def LoadingWindow(self):
+        print('here')
+
+        print('here')
+    
+    def removeLoadingWindow(self):
+        self.ImageLBL.place_forget()
+        
+
     def render_First_Page(self):
         fp = FirstPage()
         # self.first_window_root.focus_force()
@@ -40,10 +36,15 @@ class MainMenu():
 
     
     def render_Entry_Page(self):
+        
         # self.first_window_root.destroy()
         # self.first_window_root.iconify()
+        
         ep = EntryPage()
         ep.renderEntryPage()
+        # ep = EntryPage()
+        # ep.renderEntryPage()
+        
         # while(ep.root): pass
         # self.first_window_root.deiconify()
         return
@@ -58,6 +59,9 @@ class MainMenu():
 
     def Print_Tamam(self):
         GenHelpers.Export_Tamam_PDF()
+
+        # self.Var.set(new_value)
+
         
 
     
@@ -78,6 +82,7 @@ class MainMenu():
 
         ls = LoginScreen()
 
+
         self.logged_in_flag = ls.logged_in_flag
         self.user_level = ls.level
         self.user_name = ls.name
@@ -86,6 +91,9 @@ class MainMenu():
         if(self.logged_in_flag):
             self.initial_visit = False
             self.first_window_root = ctk.CTk(fg_color=BG_COLOR)
+            # self.Var = ctk.StringVar()
+            # self.Var.trace_add('write', lambda x,y ,z: self.removeLoadingWindow())
+
             
             self.first_window_root.title("تنظيم و افراد مكتب السيد/ مدير الجهاز")
             self.first_window_root.geometry("1500x800")  # Set window size
@@ -160,6 +168,8 @@ class MainMenu():
             self.first_window_root.bind("<Configure>", lambda x: self.resizeAll())
             
             self.first_window_root.bind('<Control-q>', lambda x: self.quit())
+            
+
 
             self.first_window_root.after(20000, self.RefreshVacations)
 

@@ -354,6 +354,7 @@ def Export_Tamam_PDF():
     doccc = docx.Document('../pdf/templates/tamam.docx')
     Replace_Placeholders_Inside_Document(doccc, fields_to_replace=fields_to_replace, Iterable_Fields = IterableFieldsDict)
     ConvertAndSave(document=doccc, typeDoc='تمامات')
+    return True
 
 def ConvertAndSave(document, typeDoc:str):
     # filePath, extension = os.path.splitext(filePath)
