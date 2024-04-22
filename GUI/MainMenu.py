@@ -5,11 +5,28 @@ from EntryPage import EntryPage
 from firstPage import FirstPage
 import os
 from multiprocessing import Pool
+import threading
 from VacationsPage import VacationsPage
+from LoginScreen import LoginScreen
 import GenHelpers
 import helpers
 from PIL import ImageTk, Image
 from style import *
+
+
+
+
+class LoadingWindow():
+    def __init__(self):
+        self.loadingRoot = ctk.CTk('600x600')
+
+
+        img= ctk.CTkImage(light_image=Image.open('../data/LoadingScreen.png'), dark_image=Image.open('../data/LoadingScreen.png'), size=(250,250))
+        ImageLBL = ctk.CTkLabel(self.loadingRoot, width=self.loadingRoot.winfo_width(), height=self.loadingRoot.winfo_height(), image=img, text='')
+        ImageLBL.place(relx=0.88, rely=0.15, anchor=ctk.CENTER)
+        ImageLBL.pack()
+        self.loadingRoot.mainloop()
+
 
 
 
@@ -36,83 +53,101 @@ class MainMenu():
         return
     
 
+
     def Print_Tamam(self):
-        filepath = ctk.filedialog.asksaveasfilename(initialdir = os.path.curdir,
-                                          title = "Name the output PDF",
-                                          filetypes = (('Pdf Files', '*.pdf*'),))
-        GenHelpers.Export_Tamam_PDF(filepath)
+        GenHelpers.Export_Tamam_PDF()
+        
+
+    
+    def Print_Movements(self):
+        GenHelpers.Export_Movements_PDF()
+
 
 
     def Print_Vac_Passes(self):
-        filepath = ctk.filedialog.asksaveasfilename(initialdir = os.path.curdir,
-                                         title = "Name the output PDF",
-                                          filetypes = (('Pdf Files', '*.pdf*'),))
-        GenHelpers.Export_Vacation_Passes_PDF(filepath)
+        GenHelpers.Export_Vacation_Passes_PDF()
     
 
 
     def __init__(self):
+        self.logged_in_flag = False
         
-        self.initial_visit = False
-        self.first_window_root = ctk.CTk(fg_color=BG_COLOR)
-        
-        self.first_window_root.title("Secretary Assistant")
-        self.first_window_root.geometry("1000x600")  # Set window size
-        self.first_window_root.iconbitmap("../data/icolog.ico")
-        img= ctk.CTkImage(light_image=Image.open('../data/logo_dark.png'), dark_image=Image.open('../data/logo_dark.png'), size=(250,250))
-        ImageLBL = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=img, text='')
-        ImageLBL.place(relx=0.88, rely=0.15, anchor=ctk.CENTER)
 
-        self.bg_img= ctk.CTkImage(light_image=Image.open('../data/BG_logo.png'), dark_image=Image.open('../data/BG_logo.png'), size=(500,500))
-        bg_img_lbl = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=self.bg_img, text='')
-        bg_img_lbl.place(relx=0, rely=0.52, anchor=ctk.CENTER)
 
-        dummy_frame = ctk.CTkFrame(self.first_window_root, width=400, fg_color=BG_COLOR, corner_radius=30)
-        dummy_frame.place(relx=0.5, rely=0.1, anchor=ctk.N)
+        ls = LoginScreen()
 
-        # The titel label
-        Big_Label = ctk.CTkLabel(dummy_frame, text="Secretary Assistant", font=('Arial', 50, 'bold'), text_color=BUTTON_COLOR)
-        Big_Label.grid(row=1, pady=30, padx=20)
+        self.logged_in_flag = ls.logged_in_flag
 
-        #Tammam printing Button
-        Tammam_Button = ctk.CTkButton(dummy_frame, text='طباعة تمام اليوم', command=self.Print_Tamam, font=('Arial', 17, 'bold'), fg_color=BUTTON_COLOR)
-        Tammam_Button.grid(row=2, pady=30)
+        if(self.logged_in_flag):
+            self.initial_visit = False
+            self.first_window_root = ctk.CTk(fg_color=BG_COLOR)
+            
+            self.first_window_root.title("تنظيم وأفراد مكتب السيد مدير الجهاز")
+            self.first_window_root.geometry("1500x600")  # Set window size
+            self.first_window_root.iconbitmap("../data/icolog.ico")
+            img= ctk.CTkImage(light_image=Image.open('../data/logo_dark.png'), dark_image=Image.open('../data/logo_dark.png'), size=(250,250))
+            ImageLBL = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=img, text='')
+            ImageLBL.place(relx=0.88, rely=0.15, anchor=ctk.CENTER)
 
-        #Vacations Entry Button
-        Vacations_Entry_Button = ctk.CTkButton(dummy_frame, text='تسجيل أجازات', command=self.render_Vacations_Page, font=('Arial', 17, 'bold'), fg_color=BUTTON_COLOR)
-        Vacations_Entry_Button.grid(row=3, pady=30)
+            self.bg_img= ctk.CTkImage(light_image=Image.open('../data/BG_logo.png'), dark_image=Image.open('../data/BG_logo.png'), size=(500,500))
+            bg_img_lbl = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=self.bg_img, text='')
+            bg_img_lbl.place(relx=0, rely=0.52, anchor=ctk.CENTER)
 
-        #Vacations pass printing button
-        Vacations_print_Button = ctk.CTkButton(dummy_frame, text='طباعة اجازات', command=self.Print_Vac_Passes, font=('Arial', 17, 'bold'), fg_color=BUTTON_COLOR)
-        Vacations_print_Button.grid(row=4, pady=30)
+            dummy_frame = ctk.CTkFrame(self.first_window_root, width=400, fg_color=BG_COLOR, corner_radius=30)
+            dummy_frame.place(relx=0.5, rely=0.1, anchor=ctk.N)
 
-        #Vacations pass printing button
-        Vacations_print_Button = ctk.CTkButton(dummy_frame, text='إدخال/تعديل البيانات', command=self.render_Entry_Page, font=('Arial', 17, 'bold'), fg_color=BUTTON_COLOR)
-        Vacations_print_Button.grid(row=5, pady=30)
+            # The titel label
+            Big_Label = ctk.CTkLabel(dummy_frame, text="تنظيم وأفراد مكتب السيد مدير الجهاز", font=('Arial', 50, 'bold'), text_color=BUTTON_COLOR)
+            Big_Label.grid(row=1, pady=30, padx=20)
 
-        # if(not self.firstTime):
-        #     self.first_window_root.mainloop()
-        #     pass
-        # else:
-        #     self.render_Entry_Page()
+            #Tammam printing Button
+            Tammam_Button = ctk.CTkButton(dummy_frame, text='طباعة تمام اليوم', command=self.Print_Tamam, font=('Arial', 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            Tammam_Button.grid(row=2, pady=30)
 
-        # FirstPage()
-        
-        # FirstPage()
-            # th = threading.Thread(target=lambda:FirstPage(), daemon=True)
-            # th.start()
-        if(not os.path.isfile('../db/Soldiers.db') or (not helpers.fetchSoldiers())):
-            self.first_window_root.after(50, self.render_First_Page)
+            #Vacations Entry Button
+            Vacations_Entry_Button = ctk.CTkButton(dummy_frame, text='تسجيل أجازات', command=self.render_Vacations_Page, font=('Arial', 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            Vacations_Entry_Button.grid(row=3, pady=30)
+
+            #Movement printing button
+            Movement_print_Button = ctk.CTkButton(dummy_frame, text='طباعة يومية تحركات', command=self.Print_Movements, font=('Arial', 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            Movement_print_Button.grid(row=4, pady=30)
+
+            #Vacations pass printing button
+            Vacations_print_Button = ctk.CTkButton(dummy_frame, text='طباعة تصاريح الاجازات', command=self.Print_Vac_Passes, font=('Arial', 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            Vacations_print_Button.grid(row=5, pady=30)
+
+            #Vacations pass printing button
+            Vacations_print_Button = ctk.CTkButton(dummy_frame, text='إدخال/تعديل البيانات', command=self.render_Entry_Page, font=('Arial', 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            Vacations_print_Button.grid(row=6, pady=30)
 
 
 
-        self.first_window_root.bind("<Configure>", lambda x: self.resizeAll())
-        
-        self.first_window_root.bind('<Control-q>', lambda x: self.quit())
 
-        self.first_window_root.after(20000, self.RefreshVacations)
+            # if(not self.firstTime):
+            #     self.first_window_root.mainloop()
+            #     pass
+            # else:
+            #     self.render_Entry_Page()
 
-        self.first_window_root.mainloop()
+            # FirstPage()
+            
+
+
+            # FirstPage()
+                # th = threading.Thread(target=lambda:FirstPage(), daemon=True)
+                # th.start()
+            if(not os.path.isfile('../db/Soldiers.db') or (not helpers.fetchSoldiers())):
+                self.first_window_root.after(50, self.render_First_Page)
+
+
+
+            self.first_window_root.bind("<Configure>", lambda x: self.resizeAll())
+            
+            self.first_window_root.bind('<Control-q>', lambda x: self.quit())
+
+            self.first_window_root.after(20000, self.RefreshVacations)
+
+            self.first_window_root.mainloop()
 
     def RefreshVacations(self):
         helpers.RefreshVacations()

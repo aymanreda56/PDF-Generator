@@ -7,17 +7,15 @@ from datetime import date
 
 def getAbsenceSQL(Level_Index):
     try:
+        RefreshVacations()
         connection = sqlite3.connect('../db/Soldiers.db')
         cursor = connection.cursor()
         Checking_query = f'SELECT Vacations.Soldier_ID, Vacations.Name, Vacations.From_Date, Vacations.To_Date, Vacations.State, Vacations.Summoned FROM Force INNER JOIN Vacations ON Force.Soldier_ID = Vacations.Soldier_ID AND Force.Level {Level_Index};'
         result = cursor.execute(Checking_query).fetchall()
         
         returnedResult = []
-        print('WEWEWEWEWEWE')
-        print(result)
         for tup in result:
-            print(tup)
-            if date.fromisoformat(tup[2]) < date.today():
+            if date.fromisoformat(tup[2]) <= date.today() and date.fromisoformat(tup[3]) > date.today():
                 returnedResult.append(tup)
 
         return returnedResult
@@ -34,7 +32,7 @@ def getAbsentOfficers():
 
 
 def getAbsentSoldiers():
-    result = getAbsenceSQL('= 1')
+    result = getAbsenceSQL('= "1"')
     return result
 
 def getAbsentCaps():

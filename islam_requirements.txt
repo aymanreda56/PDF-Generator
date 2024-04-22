@@ -1,0 +1,20 @@
+ شيفتات
+loading screen
+history visualization screen
+missions
+تاريخ الرديف
+more details for each soldier
+يومية تحركات
+
+مكتب السيد مدير الجهاز
+تظبيط تصاريح الأجازة
+
+مساعد\ اسلام محمد عبدالرسول النني
+سكرتير السيد/ مدير الجهاز
+
+مكتب السيد مدير الجهاز
+
+بيانات العساكر تظهر فقط للأدمن
+اضافة login
+
+shared database

@@ -16,7 +16,7 @@ from docx.oxml import parse_xml
 import helpers
 import enums
 import docx2pdf
-import os
+import os, re
 
 
 
@@ -39,7 +39,7 @@ def translate_all_numbers_to_arabic(English_text):
     return ''.join(arabicText)
 
 
-Department_Name = "إدارة المتابعة"
+Department_Name = "سكرتارية قائد الجهاز"
 Vacation_Begin_Hour = '900'
 Vacation_End_Hour = '1000'
 Date_Arabic =translate_all_numbers_to_arabic(date.today().isoformat())
@@ -106,12 +106,85 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
                 continue
 
             j= i-2
-            row.cells[5].paragraphs[0].text = Iterable_Fields[j]['To_Date']
-            row.cells[4].paragraphs[0].text = Iterable_Fields[j]['From_Date']
+            row.cells[5].paragraphs[0].text = translate_all_numbers_to_arabic(Iterable_Fields[j]['To_Date'])
+            row.cells[4].paragraphs[0].text = translate_all_numbers_to_arabic(Iterable_Fields[j]['From_Date'])
             row.cells[3].paragraphs[0].text = "أجازة ميدانية"
             row.cells[1].paragraphs[0].text = Iterable_Fields[j]['Level']
             row.cells[2].paragraphs[0].text = Iterable_Fields[j]['Name']
             row.cells[0].paragraphs[0].text = translate_all_numbers_to_arabic(str(Iterable_Fields[j]['Num'] + 1))
+
+        for row in Vacations_Table.rows:
+            for cell in row.cells:
+                cell.paragraphs[0].style = doc.styles['Strong Par']
+                cell.paragraphs[0].alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+                cell.paragraphs[0].style.font.bold = True
+    else:
+        allnewtables = []
+        for table in doc.tables:
+            if table == Vacations_Table:
+                doc.remove(table)
+
+
+
+
+
+
+
+def Replace_Placeholders_Inside_Movements(doc, fields_to_replace:dict, Iterable_Fields):
+    # Iterate over paragraphs
+   
+    for section in doc.sections:
+        for p in section.header.paragraphs:
+            for run in p.runs:
+                run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+                
+                
+
+        for p in section.footer.paragraphs:
+            for run in p.runs:
+                run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+
+
+     
+    for paragraph in doc.paragraphs:
+        for run in paragraph.runs:
+            run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+            
+
+    # Iterate over tables
+    Vacations_Table = False
+    
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    for run in paragraph.runs:
+                        run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+                        if('$LOGO$' in run.text):
+                            run.text = ''
+                            run.add_picture('../data/logo.png', width=Inches(2.5))
+                            cell.alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+                        if('$NUM$' in run.text or Vacations_Table == table):
+                            Vacations_Table = table
+                            break
+    
+    if(Vacations_Table and len(Iterable_Fields)):
+        num_Vacations = len(Iterable_Fields)
+        for i in range(num_Vacations-1):
+            Vacations_Table.add_row()
+        
+        counter = 1
+        for i, row in enumerate(Vacations_Table.rows):
+            
+            if(i < 2):
+                continue
+
+            j= i-2
+            row.cells[4].paragraphs[0].text = translate_all_numbers_to_arabic(Iterable_Fields[j]['$TODATE$'])
+            row.cells[3].paragraphs[0].text = translate_all_numbers_to_arabic(Iterable_Fields[j]['$FROMDATE$'])
+            row.cells[1].paragraphs[0].text = Iterable_Fields[j]['$LEVEL$']
+            row.cells[2].paragraphs[0].text = Iterable_Fields[j]['$NAME$']
+            row.cells[0].paragraphs[0].text = translate_all_numbers_to_arabic(str(Iterable_Fields[j]['$NUM$'] + 1))
 
         for row in Vacations_Table.rows:
             for cell in row.cells:
@@ -146,11 +219,38 @@ def Replace_Placeholders_Inside_Vac_Passes(doc, fields_to_replace:list, Iterable
                                 run.text = ''
                                 
                 counter += 1
-                        
 
 
 
-def Export_Vacation_Passes_PDF(filepath):
+
+def Export_Movements_PDF():
+    Date_Arabic =translate_all_numbers_to_arabic(date.today().isoformat())
+    Weekday = days_map[date.today().weekday()]
+    AllVacations = helpers.getActiveVacations()
+    IterableFieldsDict = []
+    for i, tup in enumerate(AllVacations):
+        sampleDict = {}
+        sampleDict['Soldier_ID'] = tup[0]
+        sampleDict['$NAME$'] = tup[1]
+        sampleDict['$FROMDATE$'] = tup[2]
+        sampleDict['$TODATE$'] = tup[3]
+        sampleDict['$STATE$'] = tup[4]
+        sampleDict['$SUMMONED$'] = tup[5]
+        sampleDict['$LEVEL$'] = enums.ArmyLevels[int(helpers.getLevelFromID(tup[0]))-1]
+        sampleDict["$NUM$"] = i
+        sampleDict["$DEPT_NAME$"]= Department_Name
+        sampleDict["$WEEKDAY$"] = Weekday
+        sampleDict["$DATE_AR$"]=Date_Arabic
+        IterableFieldsDict.append(sampleDict)
+
+    fields_to_replace = {"$DEPT_NAME$":Department_Name, '$DATE_AR$':Date_Arabic, '$WEEKDAY$':Weekday}
+    doccc = docx.Document('../pdf/templates/movements.docx')
+    Replace_Placeholders_Inside_Movements(doccc, fields_to_replace, Iterable_Fields=IterableFieldsDict)
+    ConvertAndSave(document=doccc, typeDoc='يوميات_تحركات')
+
+
+
+def Export_Vacation_Passes_PDF():
     AllVacations = helpers.getActiveVacations()
 
     IterableFieldsDict = []
@@ -162,6 +262,7 @@ def Export_Vacation_Passes_PDF(filepath):
         sampleDict['$LEVEL$'] = "جندي" if (enums.ArmyLevels[int(helpers.getLevelFromID(tup[0]))-1] == 'عسكري') else enums.ArmyLevels[int(helpers.getLevelFromID(tup[0]))-1]
         sampleDict["$BH$"] = translate_all_numbers_to_arabic(Vacation_Begin_Hour)
         sampleDict["$EH$"] = translate_all_numbers_to_arabic(Vacation_End_Hour)
+        sampleDict['$NUM$'] = translate_all_numbers_to_arabic(str(i+1))
         IterableFieldsDict.append(sampleDict)
 
     fields_to_replace = ["$SOLDNAME$",
@@ -170,12 +271,12 @@ def Export_Vacation_Passes_PDF(filepath):
 
     doccc = docx.Document('../pdf/templates/vacation_passes.docx')
     Replace_Placeholders_Inside_Vac_Passes(doccc, fields_to_replace=fields_to_replace, Iterable_Fields = IterableFieldsDict)
-    ConvertAndSave(document=doccc, filePath=filepath)
+    ConvertAndSave(document=doccc, typeDoc='تصاريح')
 
 
 
 
-def Export_Tamam_PDF(filePath):
+def Export_Tamam_PDF():
 
     number_officers = int(helpers.getNumOfficers())
     absent_officers = len(helpers.getAbsentOfficers())
@@ -190,7 +291,9 @@ def Export_Tamam_PDF(filePath):
 
     number_soldiers = int(helpers.getNumSoldiers())
     absent_soldiers = len(helpers.getAbsentSoldiers())
+    print(helpers.getAbsentSoldiers())
     present_soldiers = number_soldiers - absent_soldiers
+    print(f'Num Soldiers = {number_soldiers}, absent soliers = {absent_soldiers}, present soldiers = {present_soldiers}')
 
 
     AllVacations = helpers.getActiveVacations()
@@ -226,9 +329,18 @@ def Export_Tamam_PDF(filePath):
 
     doccc = docx.Document('../pdf/templates/tamam.docx')
     Replace_Placeholders_Inside_Document(doccc, fields_to_replace=fields_to_replace, Iterable_Fields = IterableFieldsDict)
-    ConvertAndSave(document=doccc, filePath=filePath)
+    ConvertAndSave(document=doccc, typeDoc='تمامات')
 
-def ConvertAndSave(document, filePath):
-    filePath, extension = os.path.splitext(filePath)
-    document.save(filePath+'.docx')
-    docx2pdf.convert(filePath+'.docx', filePath+'.pdf')
+def ConvertAndSave(document, typeDoc:str):
+    # filePath, extension = os.path.splitext(filePath)
+    outputPath =  os.path.join(os.path.split(os.getcwd())[0],typeDoc)
+    if(not os.path.isdir(outputPath)):
+        os.mkdir(outputPath)
+    
+    filepath=os.path.join(outputPath, f'{typeDoc}_{date.today().isoformat()}')
+
+    filepath = re.sub(r'\\', '/', filepath)
+    
+
+    document.save(f'{filepath}.docx')
+    docx2pdf.convert(f'{filepath}.docx', f'{filepath}.pdf')
