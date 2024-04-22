@@ -1,0 +1,1 @@
+make window hide and show work properly

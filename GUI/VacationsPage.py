@@ -29,7 +29,7 @@ class VacationsPage():
             raise EntryError(EntryErrorCode.RETIRING_DATE_YEAR_ERR)
         if(month not in range(1,13)):
             raise EntryError(EntryErrorCode.RETIRING_DATE_MONTH_ERR)
-        if(day not in range(1,30)):
+        if(day not in range(1,31)):
             raise EntryError(EntryErrorCode.RETIRING_DATE_DAY_ERR)
         try:
             date(year=year, month=month, day= day)
