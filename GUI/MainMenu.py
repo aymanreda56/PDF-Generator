@@ -42,7 +42,9 @@ class MainMenu():
     def render_Entry_Page(self):
         # self.first_window_root.destroy()
         # self.first_window_root.iconify()
-        ep = EntryPage().renderEntryPage()
+        ep = EntryPage()
+        ep.renderEntryPage()
+        # while(ep.root): pass
         # self.first_window_root.deiconify()
         return
     
@@ -92,6 +94,11 @@ class MainMenu():
             ImageLBL = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=img, text='')
             ImageLBL.place(relx=0.88, rely=0.15, anchor=ctk.CENTER)
 
+
+            self.office_img= ctk.CTkImage(light_image=Image.open('../data/office_img.png'), dark_image=Image.open('../data/office_img.png'), size=(250,250))
+            OfficeImageLBL = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=self.office_img, text='')
+            OfficeImageLBL.place(relx=0.88, rely=0.8, anchor=ctk.CENTER)
+
             self.bg_img= ctk.CTkImage(light_image=Image.open('../data/BG_logo.png'), dark_image=Image.open('../data/BG_logo.png'), size=(500,500))
             bg_img_lbl = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=self.bg_img, text='')
             bg_img_lbl.place(relx=0, rely=0.52, anchor=ctk.CENTER)
@@ -110,7 +117,7 @@ class MainMenu():
             #Vacations Entry Button
             Vacations_Entry_Button = ctk.CTkButton(dummy_frame, text='تسجيل أجازات', command=self.render_Vacations_Page, font=('Arial', 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
             Vacations_Entry_Button.grid(row=3, pady=30)
-            if(self.is_admin != 1):
+            if(self.is_admin != '1'):
                 Vacations_Entry_Button.grid_forget()
 
             #Movement printing button
@@ -126,7 +133,7 @@ class MainMenu():
             print(f'HERERERERE      {self.is_admin}')
             Entry_Button.grid(row=6, pady=30)
 
-            if(self.is_admin != 1):
+            if(self.is_admin != '1'):
                 print('IAMMM')
                 Entry_Button.grid_forget()
 
@@ -167,6 +174,7 @@ class MainMenu():
         self.width = self.first_window_root.winfo_width()
         self.height = self.first_window_root.winfo_height()
         self.bg_img.configure(size=(self.width / 2, self.width / 2))
+        self.office_img.configure(size=(self.width / 5, self.width / 5))
 
         # self.big_Entire_Frame.configure(height=self.root.winfo_height()/3)
 

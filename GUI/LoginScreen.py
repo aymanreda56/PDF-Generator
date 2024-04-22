@@ -68,8 +68,7 @@ class LoginScreen():
             entrybox = self.password_Entry
         text = entrybox.get()
         if(text):
-            if(text[0] in list('0123456789abcdefghijklmnopqrstuvwxyxABCDEFGHIJKLMNOPQRSTUVWXYZ') ):
-                print('lol')
+            if(ord(text[0]) in range(65, 90) or ord(text[0]) in range(97, 122) or ord(text[0]) in range(48, 57)):
                 entrybox.configure(justify='left')
             else:
                 entrybox.configure(justify='right')

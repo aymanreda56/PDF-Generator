@@ -431,6 +431,14 @@ def CreateDB():
             PRIMARY KEY("ID" AUTOINCREMENT)
         );''')
 
+        result = cursor.execute('''CREATE TABLE "Accounts" (
+            "name"	TEXT NOT NULL,
+            "level"	TEXT NOT NULL,
+            "hash"	TEXT NOT NULL UNIQUE,
+            "is_admin"	TEXT NOT NULL,
+            PRIMARY KEY("hash")
+        );''')
+
 
         connection.commit()
 

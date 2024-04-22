@@ -180,7 +180,7 @@ class EntryPage():
     def Add_Soldier_To_Preview(self, soldier_data, entries_frame, num_entries: int):
         print(soldier_data)
 
-        new_entry_frame = ctk.CTkFrame(entries_frame, width = 1000, height=30, fg_color=ENTRY_FG_COLOR)
+        new_entry_frame = ctk.CTkFrame(entries_frame, width = 1000, height=35, fg_color=ENTRY_FG_COLOR)
         new_entry_frame.pack(pady=4)
 
         newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Name'], font=('Arial', 21,'bold'), width=30 , fg_color=FG_COLOR, text_color=TEXT_COLOR)

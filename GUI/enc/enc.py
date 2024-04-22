@@ -59,7 +59,7 @@ def CheckUser (O0O00OO00OO0OO0O0 ,O00O00O0000OOOOO0 ):#line:65
 
 # username = 'soldier'
 # password = 'soldier'
-# insert_new_user(0, username, password, 'Ayman', 'جندي')
+# insert_new_user('1', username, password, 'Ayman', 'جندي')
 
 
 

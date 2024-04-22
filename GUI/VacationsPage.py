@@ -142,11 +142,11 @@ class VacationsPage():
 
     def Soldiers_Preview_show(self):
         #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() else False
-        entire_preview_frame = ctk.CTkScrollableFrame(self.root, label_text="Preview", width=1205, fg_color=FRAME_DARK_COLOR, label_fg_color=FRAME_LIGHT_COLOR)
+        entire_preview_frame = ctk.CTkScrollableFrame(self.root, label_text="Preview", width=1400, fg_color=FRAME_DARK_COLOR, label_fg_color=FRAME_LIGHT_COLOR)
         self.big_Entire_Frame = entire_preview_frame
         # if(self.Soldiers_previewed_flag):
         self.big_Entire_Frame.pack()
-        another_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1205, height=20, fg_color=FRAME_DARK_COLOR)
+        another_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1350, height=20, fg_color=FRAME_DARK_COLOR)
         # if(self.Soldiers_previewed_flag):
         another_frame.pack(pady=5)
         headerLbl = ctk.CTkLabel(another_frame, text="الإسم", font=('Arial', 18, 'bold'))
@@ -166,7 +166,7 @@ class VacationsPage():
         headerLbl.place(relx=0.1, rely=0.5, anchor=ctk.CENTER)
 
 
-        self.entries_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1270)
+        self.entries_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1380)
         # if(self.Soldiers_previewed_flag):
         self.entries_frame.pack()
 
@@ -186,25 +186,25 @@ class VacationsPage():
     def Add_Soldier_To_Preview(self, soldier_data, entries_frame, num_entries: int):
         #print(soldier_data)
 
-        new_entry_frame = ctk.CTkFrame(entries_frame, width = 1200, height=30, fg_color=ENTRY_FG_COLOR)
-        new_entry_frame.pack()
+        new_entry_frame = ctk.CTkFrame(entries_frame, width = 1380, height=35, fg_color=ENTRY_FG_COLOR)
+        new_entry_frame.pack(pady=4)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Name'], font=('Arial', 16), width=30, text_color=TEXT_COLOR)
-        newEntryLabel.place(relx=0.93, rely=0.5, anchor=ctk.CENTER)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Name'], font=('Arial', 20, 'bold'), width=30, text_color=TEXT_COLOR)
+        newEntryLabel.place(relx=0.92, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Soldier_ID'], font=('Arial', 16), width=30, text_color=TEXT_COLOR)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Soldier_ID'], font=('Arial', 20, 'bold'), width=30, text_color=TEXT_COLOR)
         newEntryLabel.place(relx=0.7, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=ArmyLevels[int(soldier_data["Level"])-1], font=('Arial', 16), width=30, text_color=TEXT_COLOR)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=ArmyLevels[int(soldier_data["Level"])-1], font=('Arial', 20, 'bold'), width=30, text_color=TEXT_COLOR)
         newEntryLabel.place(relx=0.47, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['From_Date'], font=('Arial', 16), width=30, text_color=TEXT_COLOR)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['From_Date'], font=('Arial', 20, 'bold'), width=30, text_color=TEXT_COLOR)
         newEntryLabel.place(relx=0.26, rely=0.5, anchor=ctk.CENTER)
 
-        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['To_Date'], font=('Arial', 16), width=30, text_color=TEXT_COLOR)
+        newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['To_Date'], font=('Arial', 20, 'bold'), width=30, text_color=TEXT_COLOR)
         newEntryLabel.place(relx=0.1, rely=0.5, anchor=ctk.CENTER)
 
-        DelButton = ctk.CTkButton(new_entry_frame, text='إزالة', font=('Arial', 16), width=30, fg_color=REMOVE_BUTTON_COLOR, command=lambda frame=new_entry_frame: self.Remove_Soldier_From_Preview(soldier_data['Soldier_ID'], frame))
+        DelButton = ctk.CTkButton(new_entry_frame, text='إزالة', font=('Arial', 20, 'bold'), width=30, height=30,fg_color=REMOVE_BUTTON_COLOR, command=lambda frame=new_entry_frame: self.Remove_Soldier_From_Preview(soldier_data['Soldier_ID'], frame))
         DelButton.place(relx=0.02, rely=0.5, anchor='center')
         self.array_of_entry_frames.append(new_entry_frame)
 
