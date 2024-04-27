@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from tkinter import ttk
-import re
+import re, math
 from datetime import date
 from enums import EntryError, EntryErrorCode, ArmyLevels
 # from MainMenu import MainMenu
@@ -231,7 +231,8 @@ class VacationsPage():
         self.destroyed = False
         self.big_Entire_Frame = None
         self.array_of_entry_frames = []
-        self.renderVacationsPage()
+        
+        # self.renderVacationsPage()
     
 
     def BackToMainMenu(self):
@@ -329,8 +330,15 @@ class VacationsPage():
     def renderVacationsPage(self):
         
         self.root = ctk.CTkToplevel(fg_color=BG_COLOR)
-        self.root.title("Secretary PDF-Generator")
-        self.root.geometry("1600x800")  # Set window size
+
+        self.root.title("تنظيم وأفراد مكتب السيد/ مدير الجهاز")
+        
+
+        screen_width, screen_height = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
+        width, height = 1600, 800
+        self.root.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
+
+        self.root.iconbitmap("../data/icolog.ico")
 
         label = ctk.CTkLabel(self.root, text="أدخل بيانات العساكر",  font=('Arial', 35, 'bold'), text_color=TEXT_COLOR)
         label.pack(pady=20)
@@ -446,7 +454,6 @@ class VacationsPage():
     
     def quit(self):
         self.root.destroy()
-
 
 
 

@@ -329,6 +329,8 @@ def Export_Tamam_PDF():
         sampleDict['Soldier_ID'] = tup[0]
         sampleDict['Name'] = tup[1]
         sampleDict['From_Date'] = tup[2]
+        if(date.fromisoformat(sampleDict['From_Date']) > date.today()):
+            continue
         sampleDict['To_Date'] = tup[3]
         sampleDict['State'] = tup[4]
         sampleDict['Summoned'] = tup[5]
@@ -369,6 +371,7 @@ def ConvertAndSave(document, typeDoc:str):
 
     document.save(f'{filepath}.docx')
     docx2pdf.convert(f'{filepath}.docx', f'{filepath}.pdf')
+    os.startfile(f'{filepath}.pdf')
 
 
 

@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import re
+import math
 from datetime import date
 import sqlite3
 import os
@@ -17,7 +17,11 @@ class FirstPage():
 
         self.first_window_root = ctk.CTkToplevel(fg_color=BG_COLOR)
         self.first_window_root.title("Secretary Assistant")
-        self.first_window_root.geometry("1200x600")  # Set window size
+
+        screen_width, screen_height = self.first_window_root.winfo_screenwidth(), self.first_window_root.winfo_screenheight()
+        width, height = 1200, 600
+        self.first_window_root.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
+
 
         self.bg_img= ctk.CTkImage(light_image=Image.open('../data/BG_logo.png'), dark_image=Image.open('../data/BG_logo.png'), size=(400,400))
         ImageLBL = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=self.bg_img, text='')
@@ -36,6 +40,8 @@ class FirstPage():
 
         self.first_window_root.bind("<Configure>", lambda x: self.resizeAll())
 
+
+    def render(self):
         self.first_window_root.mainloop()
 
 

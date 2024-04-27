@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import re
+import re, math
 from datetime import date
 import os
 import GenHelpers
@@ -113,7 +113,13 @@ class LoginScreen():
         self.is_admin = '2'
         self.root = ctk.CTk(fg_color=BG_COLOR)
         self.root.title("تنظيم وأفراد مكتب السيد/ مدير الجهاز")
-        self.root.geometry("1500x600")  # Set window size
+
+
+        screen_width, screen_height = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
+        width, height = 1500, 600
+        self.root.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
+
+
         self.root.iconbitmap("../data/icolog.ico")
 
 
@@ -150,6 +156,7 @@ class LoginScreen():
         self.root.bind("<Configure>", lambda x: self.resizeAll())
 
         self.root.bind('<Control-q>', lambda: self.root.quit)
+        self.root.bind('<Control-e>', lambda x: self.Login(username_box=self.username_Entry, password_box=self.password_Entry))
 
 
         self.root.mainloop()

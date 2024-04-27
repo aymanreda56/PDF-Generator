@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import re
+import re, math
 from datetime import date
 from enums import EntryError, EntryErrorCode, ArmyLevels
 # from MainMenu import MainMenu
@@ -292,10 +292,19 @@ class EntryPage():
     def renderEntryPage(self):
         
         self.root = ctk.CTkToplevel(fg_color=BG_COLOR)
+        
+        self.root.title("تنظيم وأفراد مكتب السيد/ مدير الجهاز")
+        
 
-        #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() and len(helpers.fetchSoldiers()) > 0 else False
-        self.root.title("Secretary PDF-Generator")
-        self.root.geometry("1200x800")  # Set window size
+
+        screen_width, screen_height = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
+        width, height = 1200, 800
+        self.root.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
+
+
+        self.root.iconbitmap("../data/icolog.ico")
+
+
 
         label = ctk.CTkLabel(self.root, text="أدخل بيانات العساكر", font=('Arial', 35, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
         label.pack()
@@ -338,8 +347,8 @@ class EntryPage():
         Soldier_ID_textbox = ctk.CTkEntry(self.mainframe, font=("Arial", 20), width=200, justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR, placeholder_text='الرقم العسكري')
         Soldier_ID_textbox.grid(row=2, column=2, pady=10, padx=20)
 
-        Level_DropDown = ctk.CTkComboBox(self.mainframe, font=("Arial", 20), width=200, values=['عسكري', 'رقيب', 'رقيب أول', 'مساعد', 'مساعد أول', 'ملازم', 'ملازم أول', 'نقيب', 'رائد', 'مقدم', 'عقيد', 'عميد', 'لواء', 'فريق', 'فريق أول', 'مشير'], justify='right', state='readonly', dropdown_font=("Arial", 16, 'bold'), dropdown_fg_color=DROPDOWN_FG_COLOR, dropdown_text_color=DROPDOWN_TEXT_COLOR, fg_color=DROPDOWN_FG_COLOR, dropdown_hover_color=DROPDOWN_HOVER_COLOR)
-        Level_DropDown.set("عسكري")
+        Level_DropDown = ctk.CTkComboBox(self.mainframe, font=("Arial", 20), width=200, values=['جندي', 'رقيب', 'رقيب أول', 'مساعد', 'مساعد أول', 'ملازم', 'ملازم أول', 'نقيب', 'رائد', 'مقدم', 'عقيد', 'عميد', 'لواء', 'فريق', 'فريق أول', 'مشير'], justify='right', state='readonly', dropdown_font=("Arial", 16, 'bold'), dropdown_fg_color=DROPDOWN_FG_COLOR, dropdown_text_color=DROPDOWN_TEXT_COLOR, fg_color=DROPDOWN_FG_COLOR, dropdown_hover_color=DROPDOWN_HOVER_COLOR)
+        Level_DropDown.set("جندي")
         Level_DropDown.grid(row=2, column=1)
 
 

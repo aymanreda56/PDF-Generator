@@ -2,6 +2,13 @@ from enum import Enum
 
 
 
+
+
+
+
+
+
+
 class EntryError(Exception):
     def __init__(self, entry_err_code):
         message = entry_err_code.value
@@ -38,7 +45,7 @@ class EntryErrorCode(Enum):
 
 
 ArmyLevels=[
-    'عسكري',
+    'جندي',
     'رقيب',
     'رقيب أول',
     'مساعد',

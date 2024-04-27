@@ -3,12 +3,18 @@ from enums import EntryError, EntryErrorCode, ArmyLevels
 from datetime import date
 
 
+DB_PATH = '../db/Soldiers.db'
+
+
+
+
+
 
 
 def getAbsenceSQL(Level_Index):
     try:
         RefreshVacations()
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'SELECT Vacations.Soldier_ID, Vacations.Name, Vacations.From_Date, Vacations.To_Date, Vacations.State, Vacations.Summoned FROM Force INNER JOIN Vacations ON Force.Soldier_ID = Vacations.Soldier_ID AND Force.Level {Level_Index};'
         result = cursor.execute(Checking_query).fetchall()
@@ -50,7 +56,7 @@ def AddNewSoldier(soldier_data):
         except EntryError as e:
             raise EntryError(EntryErrorCode.SOLDIER_ALREADY_EXISTING_ERR)
         
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         # print('\n\n\n\n')
         # print(soldier_data.values())
@@ -72,7 +78,7 @@ def AddNewSoldier(soldier_data):
 
 def DeleteSoldier(Soldier_ID):
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Deleting_query = f'DELETE FROM Force WHERE Soldier_ID = ?'
         result = cursor.execute(Deleting_query, (Soldier_ID,))
@@ -85,7 +91,7 @@ def DeleteSoldier(Soldier_ID):
 
 def CheckIfSoldierExists(soldier_data, Table_Name):
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'SELECT * FROM {Table_Name} WHERE Soldier_ID = "{soldier_data["Soldier_ID"]}"'
         result = cursor.execute(Checking_query).fetchall()
@@ -110,7 +116,7 @@ def CheckIfSoldierExists(soldier_data, Table_Name):
 
 def fetchSoldiers():
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'SELECT * FROM Force'
         result = cursor.execute(Checking_query).fetchall()
@@ -140,7 +146,7 @@ def fetchSoldiers():
 
 def getSoldiers():
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'SELECT * FROM Force WHERE Level = 1'
         result = cursor.execute(Checking_query).fetchall()
@@ -157,7 +163,7 @@ def getSoldiers():
 
 def getNumSoldiers():
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'SELECT COUNT (*) FROM Force WHERE Level = 1'
         result = cursor.execute(Checking_query).fetchall()
@@ -175,7 +181,7 @@ def getNumSoldiers():
 
 def getOfficers():
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'SELECT * FROM Force WHERE Level > 5'
         result = cursor.execute(Checking_query).fetchall()
@@ -192,7 +198,7 @@ def getOfficers():
 
 def getNumOfficers():
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'SELECT COUNT (*) FROM Force WHERE Level > 5'
         result = cursor.execute(Checking_query).fetchall()
@@ -209,7 +215,7 @@ def getNumOfficers():
 
 def getCaps():
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'SELECT * FROM Force WHERE Level > 1 AND Level < 5'
         result = cursor.execute(Checking_query).fetchall()
@@ -227,7 +233,7 @@ def getCaps():
 
 def getNumCaps():
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'SELECT COUNT (*) FROM Force WHERE Level > 1 AND Level < 5'
         result = cursor.execute(Checking_query).fetchall()
@@ -246,7 +252,7 @@ def getNumCaps():
 
 def ArchiveVacation(Soldier_ID, Soldier_Name, From_Date, To_Date):
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'INSERT INTO Vacations_History (Soldier_ID, Name, From_Date, To_Date, State, Summoned) VALUES (?, ?, ?, ?, ?, ?)'
         result = cursor.execute(Checking_query, (Soldier_ID, Soldier_Name, From_Date, To_Date, '0', '0'))
@@ -261,7 +267,7 @@ def ArchiveVacation(Soldier_ID, Soldier_Name, From_Date, To_Date):
 def RefreshVacations():
     try:
         print('refreshed')
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'SELECT Soldier_ID, Name, From_Date, To_Date FROM Vacations WHERE State = 1'
         result = cursor.execute(Checking_query).fetchall()
@@ -283,7 +289,7 @@ def RefreshVacations():
 
 def getLevelFromID(ID):
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'SELECT Level FROM Force WHERE Soldier_ID = ?'
         result = cursor.execute(Checking_query, (ID,)).fetchall()[0]
@@ -302,7 +308,7 @@ def getLevelFromID(ID):
 
 def getActiveVacations():
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         Checking_query = f'SELECT * FROM Vacations WHERE State = 1'
         result = cursor.execute(Checking_query).fetchall()
@@ -324,7 +330,7 @@ def getActiveVacations():
 
 def AddVacation(Soldier_ID, FromDate, ToDate, State, Summoned):
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
 
         search_query = "SELECT Name FROM Force WHERE Soldier_ID = ?"
@@ -335,7 +341,7 @@ def AddVacation(Soldier_ID, FromDate, ToDate, State, Summoned):
         print(e)
         return False
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
 
         insertion_query = '''INSERT INTO Vacations VALUES (?, ?, ?, ?, ?, ?)'''
@@ -349,7 +355,7 @@ def AddVacation(Soldier_ID, FromDate, ToDate, State, Summoned):
 
 def RemoveVacation(Soldier_ID):
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
 
         search_query = "DELETE FROM Vacations WHERE Soldier_ID = ?"
@@ -388,7 +394,7 @@ def getNamesFromDB() -> list:
 def CreateDB():
     try:
         # create connection to database 
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
 
         cursor = connection.cursor()
 

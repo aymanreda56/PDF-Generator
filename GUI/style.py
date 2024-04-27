@@ -1,3 +1,17 @@
+
+
+FONTS = ['Arial', 'Dubai', 'Dubai Light',
+         'Dubai Medium', 'Tahoma', 'Times New Roman', 'Calibri', 'Calibri Light', 
+         'Courier', 'Courier New CE', 'Segoe UI', 'Segoe UI Semibold', 'Segoe UI Light', 'Segoe UI Semilight', 
+         'Arabic Transparent', 'Arabic Typesetting',
+         'Deco Type Naskh', 'Deco Type Extensions', 'Deco Type Special', 'Deco Type Swashes', 
+         'Deco Type Variants', 'Deco Type Thuluth' , 'Farsi Simple Bold', 'Microsoft Sans Serif', 
+         'Sakkal Majalla',
+         'Simplified Arabic', 'Aldhabi', 'Andalus']
+
+
+
+
 BUTTON_COLOR = '#03051E'
 BG_COLOR = '#EAE1E1'
 FM_COLOR = '#F0E3E3'
@@ -15,6 +29,10 @@ TEXT_COLOR = BUTTON_COLOR
 DROPDOWN_FG_COLOR = '#03506F'
 DROPDOWN_TEXT_COLOR = '#FFE3D8'
 DROPDOWN_HOVER_COLOR = '#0A043C'
+
+
+
+WHITE_TEXT_COLOR = '#FFFFFF'
 
 
 

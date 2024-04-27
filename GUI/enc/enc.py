@@ -1,5 +1,8 @@
 import hashlib #line:1
 import sqlite3 #line:2
+
+DB_PATH = '../db/Soldiers.db'
+
 # def encryptor (O000OO0OOO0000O00 ,OOOOO00OOO0OO00OO ):#line:5
 #     OO000000O0O0000O0 ='1a9b00c2478ab95f2184c8'#line:6
 #     OO00OO0O000O0O0O0 ='f2184c81d0f3f923a7511c'#line:7
@@ -57,15 +60,6 @@ import sqlite3 #line:2
 
 
 
-# username = 'soldier'
-# password = 'soldier'
-# insert_new_user('0', username, password, 'Ayman', 'جندي')
-
-# username = 'mostakbalmasr371'
-# password = 'mostakbal100$masr'
-# insert_new_user('1', username, password, 'Islam Neny', 'مساعد')
-
-
 
 
 # import hashlib
@@ -105,7 +99,7 @@ def insert_new_user(is_admin, username, password, name, Level):
 def fetchUsers():
     result = None
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         query = 'SELECT * FROM Accounts'
         result = cursor.execute(query).fetchall()
@@ -145,3 +139,16 @@ def CheckUser(username, password):
             return returned_dict
     
     return False
+
+
+
+
+
+# username = 'soldier'
+# password = 'soldier'
+# insert_new_user('0', username, password, 'Ayman', 'جندي')
+
+# username = 'user1'
+# password = 'user1'
+# insert_new_user('0', username, password, 'Dev', 'مطور')
+
