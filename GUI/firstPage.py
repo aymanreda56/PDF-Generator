@@ -1,8 +1,6 @@
 import customtkinter as ctk
 import math
-from datetime import date
-import sqlite3
-import os
+
 from helpers import CreateDB
 # from MainMenu import MainMenu
 from EntryPage import EntryPage

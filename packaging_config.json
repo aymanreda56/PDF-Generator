@@ -1,0 +1,537 @@
+{
+ "version": "auto-py-to-exe-configuration_v1",
+ "pyinstallerOptions": [
+  {
+   "optionDest": "noconfirm",
+   "value": true
+  },
+  {
+   "optionDest": "filenames",
+   "value": "D:/PDF_Generator/GUI/MainMenu.py"
+  },
+  {
+   "optionDest": "onefile",
+   "value": false
+  },
+  {
+   "optionDest": "console",
+   "value": false
+  },
+  {
+   "optionDest": "icon_file",
+   "value": "D:/PDF_Generator/output/data/icolog.ico"
+  },
+  {
+   "optionDest": "clean_build",
+   "value": false
+  },
+  {
+   "optionDest": "debug",
+   "value": "all"
+  },
+  {
+   "optionDest": "strip",
+   "value": false
+  },
+  {
+   "optionDest": "noupx",
+   "value": false
+  },
+  {
+   "optionDest": "disable_windowed_traceback",
+   "value": false
+  },
+  {
+   "optionDest": "embed_manifest",
+   "value": true
+  },
+  {
+   "optionDest": "uac_admin",
+   "value": false
+  },
+  {
+   "optionDest": "uac_uiaccess",
+   "value": false
+  },
+  {
+   "optionDest": "argv_emulation",
+   "value": false
+  },
+  {
+   "optionDest": "bootloader_ignore_signals",
+   "value": false
+  },
+  {
+   "optionDest": "win_private_assemblies",
+   "value": false
+  },
+  {
+   "optionDest": "win_no_prefer_redirects",
+   "value": false
+  },
+  {
+   "optionDest": "ascii",
+   "value": false
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/PDF_Generator/data;data/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/PDF_Generator/pdf;pdf/"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyi_rth__tkinter.py"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyi_rth_inspect.py"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyi_rth_mplconfig.py"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyi_rth_multiprocessing.py"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyi_rth_pkgres.py"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyi_rth_pkgutil.py"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyi_rth_pythoncom.py"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyi_rth_pywintypes.py"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyi_rth_setuptools.py"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyi_rth_traitlets.py"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyi_rth_win32comgenpy.py"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "_frozen_importlib_external"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "org"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pwd"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "grp"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "posix"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "resource"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'org.python'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'java.lang'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "multiprocessing.BufferTooShort"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "multiprocessing.AuthenticationError"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "_posixshmem"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "_posixsubprocess"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "multiprocessing.get_context"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "multiprocessing.TimeoutError"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "fcntl"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpy"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "multiprocessing"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "termios"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "usercustomize"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "sitecustomize"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "readline"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "docutils"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "asyncio.DefaultEventLoopPolicy"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "jinja2"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyparsing.Word"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "railroad"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'setuptools.extern.pyparsing'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "_manylinux"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'setuptools.extern.jaraco'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "setuptools.extern.importlib_resources"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "setuptools.extern.tomli"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pkg_resources.extern.packaging"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pkg_resources.extern.appdirs"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'pkg_resources.extern.jaraco'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "vms_lib"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "java"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'docutils.nodes'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'docutils.frontend'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'docutils.parsers'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "docutils"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'setuptools.extern.more_itertools'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'setuptools.extern.packaging.version'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "setuptools.extern.packaging"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "setuptools.extern.importlib_metadata"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "setuptools.extern.ordered_set"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'setuptools.extern.packaging.utils'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'setuptools.extern.packaging.tags'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "trove_classifiers"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'setuptools.extern.packaging.specifiers'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'setuptools.extern.packaging.requirements'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "importlib_metadata"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "setuptools.extern.tomli"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "setuptools.extern.importlib_resources"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'setuptools.extern.jaraco'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "PIL"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'PIL._imagingtk'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'PIL._tkinter_finder'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "PIL.PpmImagePlugin"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "PIL.JpegImagePlugin"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "PIL.ImageChops not found in PYZ"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "tqdm"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "multiprocessing.get_start_method"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "_winreg"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'docutils.nodes'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'docutils.frontend'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'docutils.parsers'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'pkg_resources.extern.pyparsing'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'pkg_resources.extern.importlib_resources'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pyimod02_importers"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "PIL._imagingagg"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "ctags"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "chardet"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pygments.lexers.PythonLexer"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "argcomplete"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpy.ndarray"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpydoc"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "trio"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "curio"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "docrepr"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pexpect"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "System"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "clr"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "_typeshed"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'yapf.yapflib'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "yapf"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "black"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "prompt_toolkit.filters.vi_mode"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'prompt_toolkit.key_binding.key_bindings.vi'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "'backports.functools_lru_cache'"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "prompt_toolkit.filters.is_done"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "prompt_toolkit.filters.has_completions"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "prompt_toolkit.filters.vi_insert_mode"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "prompt_toolkit.filters.emacs_insert_mode"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpy.eye"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpy.core.integer"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpy.core.conjugate"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpy.core.ufunc"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpy.core.ones"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpy.core.hstack"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpy.core.atleast_1d"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpy.core.atleast_3d"
+  }
+ ],
+ "nonPyinstallerOptions": {
+  "increaseRecursionLimit": true,
+  "manualArguments": ""
+ }
+}

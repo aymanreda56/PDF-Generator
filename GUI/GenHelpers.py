@@ -1,18 +1,17 @@
 import docx
 import docx.document
-import numpy as np
-from docx.enum.section import WD_SECTION, WD_ORIENT
-from docx.enum.style import WD_STYLE_TYPE
+# from docx.enum.section import WD_SECTION, WD_ORIENT
+# from docx.enum.style import WD_STYLE_TYPE
 from docx.shared import Inches
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import RGBColor, Pt
+# from docx.enum.text import WD_ALIGN_PARAGRAPH
+# from docx.shared import RGBColor, Pt
 from docx.enum.table import WD_TABLE_DIRECTION, WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
-from math import floor
+# from math import floor
 from datetime import date
-from docx.oxml import OxmlElement
-from docx.oxml.ns import qn
-from docx.oxml.ns import nsdecls
-from docx.oxml import parse_xml
+# from docx.oxml import OxmlElement
+# from docx.oxml.ns import qn
+# from docx.oxml.ns import nsdecls
+# from docx.oxml import parse_xml
 import helpers
 import enums
 import docx2pdf
@@ -86,9 +85,14 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
                 for paragraph in cell.paragraphs:
                     for run in paragraph.runs:
                         run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+                        print(f'\n\n\n\n\n\n\n\n\n\n\n\n\n\n{run.text}')
+                        if("$SIGN$" in run.text):
+                            run.text = re.sub(r'\(\$SIGN\$\)', '', run.text)
+                            run.add_picture('../data/signature.png', width=Inches(1))
+                            cell.alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
                         if('$LOGO$' in run.text):
                             run.text = ''
-                            run.add_picture('../data/logo.png', width=Inches(2.5))
+                            run.add_picture('../data/logo.png', width=Inches(1.5))
                             cell.alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
                         if('$NUM$' in run.text or Vacations_Table == table):
                             Vacations_Table = table
@@ -166,7 +170,7 @@ def Replace_Placeholders_Inside_Movements(doc, fields_to_replace:dict, Iterable_
                             cell.alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
                         if('$NUM$' in run.text or Vacations_Table == table):
                             Vacations_Table = table
-                            break
+
     
     if(Vacations_Table and len(Iterable_Fields)):
         num_Vacations = len(Iterable_Fields)
@@ -320,6 +324,14 @@ def Export_Tamam_PDF():
     print(f'Num Soldiers = {number_soldiers}, absent soliers = {absent_soldiers}, present soldiers = {present_soldiers}')
 
 
+    AllNumber = len(helpers.fetchSoldiers())
+    AllVac = len(helpers.getActiveVacations())
+    AllAbsent = AllVac
+    AllPresent = AllNumber - AllAbsent
+
+
+    Weekday = days_map[date.today().weekday()]
+
     AllVacations = helpers.getActiveVacations()
     print(AllVacations)
 
@@ -350,6 +362,10 @@ def Export_Tamam_PDF():
                         "$NUM_SOLD$":number_soldiers,
                         "$PRES_SOLD$":present_soldiers,
                         "$ABS_SOLD$":absent_soldiers,
+                        "$ALL$": AllNumber,
+                        "$ALL_P$": AllPresent,
+                        "$ALL_A$": AllAbsent,
+                        "$ALL_V$": AllVac
                         }
     
 

@@ -142,27 +142,29 @@ class VacationsPage():
 
     def Soldiers_Preview_show(self):
         #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() else False
-        entire_preview_frame = ctk.CTkScrollableFrame(self.root, label_text="Preview", width=1400, fg_color=FRAME_DARK_COLOR, label_fg_color=FRAME_LIGHT_COLOR)
+        self.frame_for_scrollable_frame = ctk.CTkFrame(self.root, width=1460, fg_color=FRAME_DARK_COLOR, border_color=BUTTON_COLOR, border_width=5, corner_radius=15)
+        self.frame_for_scrollable_frame.pack()
+        entire_preview_frame = ctk.CTkScrollableFrame(self.frame_for_scrollable_frame, label_text="", width=1440, fg_color=FRAME_DARK_COLOR, label_fg_color=FRAME_DARK_COLOR, scrollbar_button_color=BUTTON_COLOR)
         self.big_Entire_Frame = entire_preview_frame
         # if(self.Soldiers_previewed_flag):
-        self.big_Entire_Frame.pack()
+        self.big_Entire_Frame.pack(padx=10, pady=10)
         another_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1350, height=20, fg_color=FRAME_DARK_COLOR)
         # if(self.Soldiers_previewed_flag):
         another_frame.pack(pady=5)
-        headerLbl = ctk.CTkLabel(another_frame, text="الإسم", font=('Arial', 18, 'bold'))
+        headerLbl = ctk.CTkLabel(another_frame, text="الإسم", font=('Arial', 18, 'bold'), text_color=TEXT_COLOR)
         headerLbl.place(relx=0.93, rely=0.5, anchor=ctk.CENTER)
 
-        headerLbl = ctk.CTkLabel(another_frame, text="الرقم العسكري", font=('Arial', 18, 'bold'))
+        headerLbl = ctk.CTkLabel(another_frame, text="الرقم العسكري", font=('Arial', 18, 'bold'), text_color=TEXT_COLOR)
         headerLbl.place(relx=0.7, rely=0.5, anchor=ctk.CENTER)
 
-        headerLbl = ctk.CTkLabel(another_frame, text='الرتبة', font=('Arial', 18, 'bold'))
+        headerLbl = ctk.CTkLabel(another_frame, text='الرتبة', font=('Arial', 18, 'bold'), text_color=TEXT_COLOR)
         headerLbl.place(relx=0.47, rely=0.5, anchor=ctk.CENTER)
 
-        headerLbl = ctk.CTkLabel(another_frame, text="من", font=('Arial', 18, 'bold'))
+        headerLbl = ctk.CTkLabel(another_frame, text="من", font=('Arial', 18, 'bold'), text_color=TEXT_COLOR)
         headerLbl.place(relx=0.26, rely=0.5, anchor=ctk.CENTER)
 
 
-        headerLbl = ctk.CTkLabel(another_frame, text="إلى", font=('Arial', 18, 'bold'))
+        headerLbl = ctk.CTkLabel(another_frame, text="إلى", font=('Arial', 18, 'bold'), text_color=TEXT_COLOR)
         headerLbl.place(relx=0.1, rely=0.5, anchor=ctk.CENTER)
 
 
@@ -187,7 +189,7 @@ class VacationsPage():
         #print(soldier_data)
 
         new_entry_frame = ctk.CTkFrame(entries_frame, width = 1380, height=35, fg_color=ENTRY_FG_COLOR)
-        new_entry_frame.pack(pady=4)
+        new_entry_frame.pack(padx= 2, pady=2)
 
         newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Name'], font=('Arial', 20, 'bold'), width=30, text_color=TEXT_COLOR)
         newEntryLabel.place(relx=0.92, rely=0.5, anchor=ctk.CENTER)
@@ -373,7 +375,7 @@ class VacationsPage():
         label.grid(row= 1, column=0, pady=10)
 
 
-        self.Name_ComboBox = ctk.CTkComboBox(self.mainframe, font=("Arial", 20), width=200, justify=ctk.RIGHT, values=helpers.getNamesFromDB(), command=self.ChangePlaceHoldersWithComboBox, state='readonly', dropdown_font=("Arial", 16, 'bold'), dropdown_fg_color=DROPDOWN_FG_COLOR, dropdown_text_color=DROPDOWN_TEXT_COLOR, fg_color=DROPDOWN_FG_COLOR, dropdown_hover_color=DROPDOWN_HOVER_COLOR)
+        self.Name_ComboBox = ctk.CTkComboBox(self.mainframe, font=("Arial", 20), width=200, justify=ctk.RIGHT, values=helpers.getNamesFromDB(), command=self.ChangePlaceHoldersWithComboBox, state='readonly', dropdown_font=("Arial", 16, 'bold'), dropdown_fg_color=DROPDOWN_FG_COLOR, dropdown_text_color=DROPDOWN_TEXT_COLOR, fg_color=DROPDOWN_FG_COLOR, bg_color=FG_COLOR, text_color=DROPDOWN_TEXT_COLOR, button_color=BUTTON_COLOR, dropdown_hover_color='#51C4D3', border_width=3)
         
         self.Name_ComboBox.grid(row=2, column=4, pady=10, padx=20)
 
@@ -388,13 +390,13 @@ class VacationsPage():
         self.From_date_frame = ctk.CTkFrame(self.mainframe, width=300, height=100, fg_color=BG_COLOR)
         self.From_date_frame.grid(row=2, column=1, padx=10, pady=20)
 
-        self.From_Date_day = ctk.CTkEntry(self.From_date_frame, font=("Arial", 15), width=40, placeholder_text='اليوم', justify='right', fg_color=BG_COLOR, border_color=TEXT_COLOR, text_color=TEXT_COLOR)
+        self.From_Date_day = ctk.CTkEntry(self.From_date_frame, font=("Arial", 15), width=40, placeholder_text='اليوم', justify='right', fg_color=TEXT_BOX_FG_COLOR, border_color=TEXT_COLOR, text_color=TEXT_COLOR)
         self.From_Date_day.grid(row=0, column=2, padx=5)
 
-        self.From_Date_month = ctk.CTkEntry(self.From_date_frame, font=("Arial", 15), width=40, placeholder_text='الشهر', justify='right', fg_color=BG_COLOR, border_color=TEXT_COLOR, text_color=TEXT_COLOR)
+        self.From_Date_month = ctk.CTkEntry(self.From_date_frame, font=("Arial", 15), width=40, placeholder_text='الشهر', justify='right', fg_color=TEXT_BOX_FG_COLOR, border_color=TEXT_COLOR, text_color=TEXT_COLOR)
         self.From_Date_month.grid(row=0, column=1, padx=5)
 
-        self.From_Date_year = ctk.CTkEntry(self.From_date_frame, font=("Arial", 15), width=70, placeholder_text='السنة', justify='right', fg_color=BG_COLOR, border_color=TEXT_COLOR, text_color=TEXT_COLOR)
+        self.From_Date_year = ctk.CTkEntry(self.From_date_frame, font=("Arial", 15), width=70, placeholder_text='السنة', justify='right', fg_color=TEXT_BOX_FG_COLOR, border_color=TEXT_COLOR, text_color=TEXT_COLOR)
         self.From_Date_year.grid(row=0, column=0, padx=5)
 
         self.From_Date_Calendar_Show_Button = ctk.CTkButton(self.mainframe, text='التقويم')
@@ -405,13 +407,13 @@ class VacationsPage():
         self.To_date_frame.grid(row=2, column=0, padx=10, pady=20)
 
 
-        self.to_Date_day = ctk.CTkEntry(self.To_date_frame, font=("Arial", 15), width=40, placeholder_text='اليوم', justify='right', fg_color=BG_COLOR, border_color=TEXT_COLOR, text_color=TEXT_COLOR)
+        self.to_Date_day = ctk.CTkEntry(self.To_date_frame, font=("Arial", 15), width=40, placeholder_text='اليوم', justify='right', fg_color=TEXT_BOX_FG_COLOR, border_color=TEXT_COLOR, text_color=TEXT_COLOR)
         self.to_Date_day.grid(row=0, column=2, padx=5)
 
-        self.to_Date_month = ctk.CTkEntry(self.To_date_frame, font=("Arial", 15), width=40, placeholder_text='الشهر', justify='right', fg_color=BG_COLOR, border_color=TEXT_COLOR, text_color=TEXT_COLOR)
+        self.to_Date_month = ctk.CTkEntry(self.To_date_frame, font=("Arial", 15), width=40, placeholder_text='الشهر', justify='right', fg_color=TEXT_BOX_FG_COLOR, border_color=TEXT_COLOR, text_color=TEXT_COLOR)
         self.to_Date_month.grid(row=0, column=1, padx=5)
 
-        self.to_Date_year = ctk.CTkEntry(self.To_date_frame, font=("Arial", 15), width=70, placeholder_text='السنة', justify='right', fg_color=BG_COLOR, border_color=TEXT_COLOR, text_color=TEXT_COLOR)
+        self.to_Date_year = ctk.CTkEntry(self.To_date_frame, font=("Arial", 15), width=70, placeholder_text='السنة', justify='right', fg_color=TEXT_BOX_FG_COLOR, border_color=TEXT_COLOR, text_color=TEXT_COLOR)
         self.to_Date_year.grid(row=0, column=0, padx=5)
 
         self.To_Date_Calendar_Show_Button = ctk.CTkButton(self.mainframe, text='التقويم')

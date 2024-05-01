@@ -1,18 +1,15 @@
 import customtkinter as ctk
-import re
-from datetime import date
+
 from EntryPage import EntryPage
 from firstPage import FirstPage
 import os, math
-from multiprocessing import Pool, Process
-import threading
+from multiprocessing import Pool, Process, freeze_support
 from VacationsPage import VacationsPage
 from LoginScreen import LoginScreen
 import GenHelpers
 import helpers
 from PIL import ImageTk, Image
 from style import *
-import time
 
 which_frame_is_active = None
 
@@ -122,7 +119,7 @@ class MainMenu():
             self.main_was_active = True
 
             
-            self.first_window_root.title("تنظيم و افراد مكتب السيد/ مدير الجهاز")
+            self.first_window_root.title("تنظيم و أفراد مكتب السيد/ مدير الجهاز")
             screen_width, screen_height = self.first_window_root.winfo_screenwidth(), self.first_window_root.winfo_screenheight()
             width, height = 1500, 900
             self.first_window_root.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
@@ -162,11 +159,11 @@ class MainMenu():
             self.Movement_print_Button.grid(row=4, pady=30)
 
             #Vacations pass printing button
-            self.Vacations_print_Button = ctk.CTkButton(dummy_frame, text='طباعة تصاريح الاجازات', command=self.Print_Vac_Passes, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            self.Vacations_print_Button = ctk.CTkButton(dummy_frame, text='طباعة تصاريح الأجازات', command=self.Print_Vac_Passes, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
             self.Vacations_print_Button.grid(row=5, pady=30)
 
             #Vacations pass printing button
-            self.Entry_Button = ctk.CTkButton(dummy_frame, text='إدخال/تعديل البيانات', command=self.render_Entry_Page, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            self.Entry_Button = ctk.CTkButton(dummy_frame, text='إدخال/ تعديل البيانات', command=self.render_Entry_Page, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
             self.Entry_Button.grid(row=6, pady=30)
 
 
@@ -279,4 +276,5 @@ class MainMenu():
 
 
 if __name__ == "__main__":
+    freeze_support()
     mm = MainMenu()

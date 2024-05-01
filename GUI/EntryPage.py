@@ -134,23 +134,25 @@ class EntryPage():
 
     def Soldiers_Preview_show(self):
         #self.Soldiers_previewed_flag = True if helpers.fetchSoldiers() else False
-        entire_preview_frame = ctk.CTkScrollableFrame(self.root, label_text="Preview", width=1120, height=self.root.winfo_height()/3, fg_color=FRAME_DARK_COLOR, label_fg_color=FRAME_LIGHT_COLOR)
+        self.frame_for_scrollable_frame = ctk.CTkFrame(self.root, width=1120, height=self.root.winfo_height()/3, fg_color=FRAME_DARK_COLOR, border_color=BUTTON_COLOR, border_width=5, corner_radius=15)
+        self.frame_for_scrollable_frame.pack()
+        entire_preview_frame = ctk.CTkScrollableFrame(self.frame_for_scrollable_frame, width=1100, height=self.root.winfo_height()/3-10, label_text="", fg_color=FRAME_DARK_COLOR, label_fg_color=FRAME_DARK_COLOR, scrollbar_button_color=BUTTON_COLOR)
         self.big_Entire_Frame = entire_preview_frame
         # if(self.Soldiers_previewed_flag):
-        self.big_Entire_Frame.pack()
+        self.big_Entire_Frame.pack(pady=10, padx=10)
         another_frame = ctk.CTkFrame(self.big_Entire_Frame, width=1000, height=40, fg_color=FRAME_DARK_COLOR)
         # if(self.Soldiers_previewed_flag):
         another_frame.pack(pady=10)
-        headerLbl = ctk.CTkLabel(another_frame, text="الإسم", font=('Arial', 25, 'bold'))
+        headerLbl = ctk.CTkLabel(another_frame, text="الإسم", font=('Arial', 25, 'bold'), text_color=TEXT_COLOR)
         headerLbl.place(relx=0.83, rely=0.5, anchor=ctk.CENTER)
 
-        headerLbl = ctk.CTkLabel(another_frame, text="الرقم العسكري", font=('Arial', 25, 'bold'))
+        headerLbl = ctk.CTkLabel(another_frame, text="الرقم العسكري", font=('Arial', 25, 'bold'), text_color=TEXT_COLOR)
         headerLbl.place(relx=0.62, rely=0.5, anchor=ctk.CENTER)
 
-        headerLbl = ctk.CTkLabel(another_frame, text='الرتبة', font=('Arial', 25, 'bold'))
+        headerLbl = ctk.CTkLabel(another_frame, text='الرتبة', font=('Arial', 25, 'bold'), text_color=TEXT_COLOR)
         headerLbl.place(relx=0.4, rely=0.5, anchor=ctk.CENTER)
 
-        headerLbl = ctk.CTkLabel(another_frame, text="تاريخ الرديف", font=('Arial', 25, 'bold'))
+        headerLbl = ctk.CTkLabel(another_frame, text="تاريخ الرديف", font=('Arial', 25, 'bold'), text_color=TEXT_COLOR)
         headerLbl.place(relx=0.2, rely=0.5, anchor=ctk.CENTER)
 
 
@@ -181,7 +183,7 @@ class EntryPage():
         print(soldier_data)
 
         new_entry_frame = ctk.CTkFrame(entries_frame, width = 1000, height=35, fg_color=ENTRY_FG_COLOR)
-        new_entry_frame.pack(pady=4)
+        new_entry_frame.pack(padx = 2, pady=2)
 
         newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['Name'], font=('Arial', 21,'bold'), width=30 , fg_color=FG_COLOR, text_color=TEXT_COLOR)
         newEntryLabel.place(relx=0.83, rely=0.5, anchor=ctk.CENTER)
@@ -272,13 +274,13 @@ class EntryPage():
         self.retiring_date_frame = ctk.CTkFrame(self.mainframe, width=300, height=100, fg_color=FG_COLOR)
         self.retiring_date_frame.grid(row=2, column=0, padx=10, pady=20)
 
-        self.Retiring_Date_day = ctk.CTkEntry(self.retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='اليوم', justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        self.Retiring_Date_day = ctk.CTkEntry(self.retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='اليوم', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
         self.Retiring_Date_day.grid(row=0, column=2, padx=5)
 
-        self.Retiring_Date_month = ctk.CTkEntry(self.retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='الشهر', justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        self.Retiring_Date_month = ctk.CTkEntry(self.retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='الشهر', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
         self.Retiring_Date_month.grid(row=0, column=1, padx=5)
 
-        self.Retiring_Date_year = ctk.CTkEntry(self.retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='السنة', justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        self.Retiring_Date_year = ctk.CTkEntry(self.retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='السنة', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
         self.Retiring_Date_year.grid(row=0, column=0, padx=5)
 
         self.Retiring_Date_day.insert(0, day)
@@ -306,7 +308,7 @@ class EntryPage():
 
 
 
-        label = ctk.CTkLabel(self.root, text="أدخل بيانات العساكر", font=('Arial', 35, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        label = ctk.CTkLabel(self.root, text="أدخل بيانات الجنود", font=('Arial', 35, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
         label.pack()
 
 
@@ -340,14 +342,14 @@ class EntryPage():
         label.grid(row= 1, column=0, pady=10)
 
 
-        Name_textbox = ctk.CTkEntry(self.mainframe, font=("Arial", 20), width=200, justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR, placeholder_text='الإسم رباعي باللغة العربية')
+        Name_textbox = ctk.CTkEntry(self.mainframe, font=("Arial", 20), width=200, justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR, placeholder_text='الإسم رباعي باللغة العربية')
         Name_textbox.grid(row=2, column=3, pady=10, padx=20)
 
 
-        Soldier_ID_textbox = ctk.CTkEntry(self.mainframe, font=("Arial", 20), width=200, justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR, placeholder_text='الرقم العسكري')
+        Soldier_ID_textbox = ctk.CTkEntry(self.mainframe, font=("Arial", 20), width=200, justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR, placeholder_text='الرقم العسكري')
         Soldier_ID_textbox.grid(row=2, column=2, pady=10, padx=20)
 
-        Level_DropDown = ctk.CTkComboBox(self.mainframe, font=("Arial", 20), width=200, values=['جندي', 'رقيب', 'رقيب أول', 'مساعد', 'مساعد أول', 'ملازم', 'ملازم أول', 'نقيب', 'رائد', 'مقدم', 'عقيد', 'عميد', 'لواء', 'فريق', 'فريق أول', 'مشير'], justify='right', state='readonly', dropdown_font=("Arial", 16, 'bold'), dropdown_fg_color=DROPDOWN_FG_COLOR, dropdown_text_color=DROPDOWN_TEXT_COLOR, fg_color=DROPDOWN_FG_COLOR, dropdown_hover_color=DROPDOWN_HOVER_COLOR)
+        Level_DropDown = ctk.CTkComboBox(self.mainframe, font=("Arial", 20), width=200, values=['جندي', 'رقيب', 'رقيب أول', 'مساعد', 'مساعد أول', 'ملازم', 'ملازم أول', 'نقيب', 'رائد', 'مقدم', 'عقيد', 'عميد', 'لواء', 'فريق', 'فريق أول', 'مشير'], justify='right', state='readonly', dropdown_font=("Arial", 16, 'bold'), dropdown_fg_color=DROPDOWN_FG_COLOR, dropdown_text_color=DROPDOWN_TEXT_COLOR, fg_color=DROPDOWN_FG_COLOR, bg_color=FG_COLOR, text_color=DROPDOWN_TEXT_COLOR, button_color=BUTTON_COLOR, dropdown_hover_color='#51C4D3', border_width=3)
         Level_DropDown.set("جندي")
         Level_DropDown.grid(row=2, column=1)
 
@@ -355,13 +357,13 @@ class EntryPage():
         self.retiring_date_frame = ctk.CTkFrame(self.mainframe, width=300, height=100, fg_color=FG_COLOR)
         self.retiring_date_frame.grid(row=2, column=0, padx=10, pady=20)
 
-        self.Retiring_Date_day = ctk.CTkEntry(self.retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='اليوم', justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        self.Retiring_Date_day = ctk.CTkEntry(self.retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='اليوم', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
         self.Retiring_Date_day.grid(row=0, column=2, padx=5)
 
-        self.Retiring_Date_month = ctk.CTkEntry(self.retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='الشهر', justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        self.Retiring_Date_month = ctk.CTkEntry(self.retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='الشهر', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
         self.Retiring_Date_month.grid(row=0, column=1, padx=5)
 
-        self.Retiring_Date_year = ctk.CTkEntry(self.retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='السنة', justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        self.Retiring_Date_year = ctk.CTkEntry(self.retiring_date_frame, font=("Arial", 15), width=100, placeholder_text='السنة', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
         self.Retiring_Date_year.grid(row=0, column=0, padx=5)
 
 
