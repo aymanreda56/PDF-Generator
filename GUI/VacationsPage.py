@@ -29,7 +29,7 @@ class VacationsPage():
             raise EntryError(EntryErrorCode.RETIRING_DATE_YEAR_ERR)
         if(month not in range(1,13)):
             raise EntryError(EntryErrorCode.RETIRING_DATE_MONTH_ERR)
-        if(day not in range(1,31)):
+        if(day not in range(1,32)):
             raise EntryError(EntryErrorCode.RETIRING_DATE_DAY_ERR)
         try:
             date(year=year, month=month, day= day)
@@ -61,7 +61,7 @@ class VacationsPage():
             raise EntryError(EntryErrorCode.SOLDIER_NAME_MISSING)
         if(len(re.split(' ',text)) < 3):
             raise EntryError(EntryErrorCode.SOLDIER_NAME_TOO_SHORT_ERR)
-        if(len(text) > 40):
+        if(len(text) > 70):
             raise EntryError(EntryErrorCode.SOLDIER_NAME_TOO_LONG_ERR)
         ############################################################ TODO: this should correctly handle non-arabic characters##################
         for c in text:
@@ -122,12 +122,19 @@ class VacationsPage():
             return
         
         soldierdata = {'Name':name, 'Soldier_ID': Soldier_ID_string, 'Level': str(ArmyLevels.index(Level_comboBox.cget('text'))+1),'From_Date': From_date_string, 'To_Date': to_date_string}            
+        
+        
+        try:
+            helpers.CheckIfSoldierExists(soldier_data=soldierdata, Table_Name='Vacations')
+        except:
+            self.displayError(EntryErrorCode.VACATION_ALREADY_EXISTING.value)
+            return
+        
         try:
             helpers.AddVacation(Soldier_ID=Soldier_ID_string, FromDate=From_date_string, ToDate=to_date_string, State=1, Summoned=0)
         except EntryError as e:
             self.displayError(e)
             return
-        
 
         self.Add_Soldier_To_Preview(soldier_data=soldierdata, entries_frame=self.entries_frame, num_entries=self.number_Of_Vacations)
         
@@ -172,7 +179,7 @@ class VacationsPage():
         # if(self.Soldiers_previewed_flag):
         self.entries_frame.pack()
 
-        allSoldiers = helpers.getActiveVacations()
+        allSoldiers = helpers.getActiveVacations(with_disabled= True)
         if(allSoldiers):#) and self.Soldiers_previewed_flag):
             for i, soldier in enumerate(allSoldiers):
                 soldier_dict = {'Soldier_ID': soldier[0], 'Name': soldier[1], 'Level': helpers.getLevelFromID(soldier[0]),'From_Date': soldier[2], 'To_Date': soldier[3], 'State': soldier[4], 'Summoned': soldier[5]}
@@ -206,6 +213,17 @@ class VacationsPage():
         newEntryLabel = ctk.CTkLabel(new_entry_frame, text=soldier_data['To_Date'], font=('Arial', 20, 'bold'), width=30, text_color=TEXT_COLOR)
         newEntryLabel.place(relx=0.1, rely=0.5, anchor=ctk.CENTER)
 
+        newCheckBox = ctk.CTkCheckBox(master=new_entry_frame, text='')
+
+        if(helpers.CheckStateOfVacation(soldier_data['Soldier_ID'])[0] == 1):
+            newCheckBox.select()
+        else:
+            newCheckBox.deselect()
+
+        newCheckBox.configure(command= lambda: self.Change_Printable_State(Soldier_ID=soldier_data['Soldier_ID'], checkbox=newCheckBox))
+        
+        newCheckBox.place(relx=0.8, rely=0.5, anchor=ctk.CENTER)
+
         DelButton = ctk.CTkButton(new_entry_frame, text='إزالة', font=('Arial', 20, 'bold'), width=30, height=30,fg_color=REMOVE_BUTTON_COLOR, command=lambda frame=new_entry_frame: self.Remove_Soldier_From_Preview(soldier_data['Soldier_ID'], frame))
         DelButton.place(relx=0.02, rely=0.5, anchor='center')
         self.array_of_entry_frames.append(new_entry_frame)
@@ -220,6 +238,12 @@ class VacationsPage():
         helpers.RemoveVacation(Soldier_ID=Soldier_ID)
         frame_to_be_destroyed.destroy()
         return
+    
+
+    def Change_Printable_State(self, Soldier_ID, checkbox):
+        new_state = '1' if (checkbox.get() == 1) else '0'
+        helpers.UpdateVacationState(Soldier_ID=Soldier_ID, new_state=new_state)
+        return
 
 
 
@@ -228,7 +252,7 @@ class VacationsPage():
         
         self.root = None
         self.errors_Lbl = None
-        self.number_Of_Vacations = len(helpers.getActiveVacations()) if (helpers.getActiveVacations()) else 0
+        self.number_Of_Vacations = len(helpers.getActiveVacations(with_disabled=True)) if (helpers.getActiveVacations(with_disabled=True)) else 0
         self.preview_frame = None
         self.destroyed = False
         self.big_Entire_Frame = None
@@ -337,7 +361,7 @@ class VacationsPage():
         
 
         screen_width, screen_height = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
-        width, height = 1600, 800
+        width, height = 1600, 1000
         self.root.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
 
         self.root.iconbitmap("../data/icolog.ico")
@@ -435,7 +459,7 @@ class VacationsPage():
 
         
         self.root.bind("<Control-q>", lambda x: self.quit())
-        self.root.bind("<Configure>", lambda x: self.resizeAll())
+        # self.root.bind("<Configure>", lambda x: self.resizeAll())
 
         self.root.bind("<Control-Enter>", lambda x: self.submit_text(self.Name_ComboBox, self.Soldier_ID_textbox, self.Level_textbox, self.From_Date_year, self.From_Date_month, self.From_Date_day, self.to_Date_year, self.to_Date_month, self.to_Date_day))
 

@@ -1,20 +1,15 @@
  شيفتات
-loading screen
+
 history visualization screen
 missions
-تاريخ الرديف
-more details for each soldier
-يومية تحركات
-
-مكتب السيد مدير الجهاز
-تظبيط تصاريح الأجازة
-
-مساعد\ اسلام محمد عبدالرسول النني
-سكرتير السيد/ مدير الجهاز
-
-مكتب السيد مدير الجهاز
 
 بيانات العساكر تظهر فقط للأدمن
 اضافة login
 
 shared database
+
+
+checkbox for each soldier whether or not to put him in any printable documents
+
+
+why not put some vector art for plants as a background -as a bottom navbar to be exact- ?

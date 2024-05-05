@@ -4,7 +4,7 @@ import docx.document
 # from docx.enum.style import WD_STYLE_TYPE
 from docx.shared import Inches
 # from docx.enum.text import WD_ALIGN_PARAGRAPH
-# from docx.shared import RGBColor, Pt
+from docx.shared import RGBColor, Pt
 from docx.enum.table import WD_TABLE_DIRECTION, WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
 # from math import floor
 from datetime import date
@@ -47,6 +47,14 @@ Weekday = days_map[date.today().weekday()]
 
 
 
+def change_style_of_par(doc, parapgraph, style_name: str, size: int, bold: bool):
+    parapgraph.style = doc.styles[style_name]
+    parapgraph.style.font.size = Pt(size)
+    parapgraph.alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+    parapgraph.style.font.bold = bold
+
+
+
 
 
 def replace_placeHolders(fields_to_replace, carrier_object):
@@ -70,10 +78,14 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
                 run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
 
 
-     
+    space_paragraph = None
     for paragraph in doc.paragraphs:
         for run in paragraph.runs:
             run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+            if('$space$' in run.text):
+                space_paragraph = paragraph
+    
+            
             
 
     # Iterate over tables
@@ -85,11 +97,13 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
                 for paragraph in cell.paragraphs:
                     for run in paragraph.runs:
                         run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
-                        print(f'\n\n\n\n\n\n\n\n\n\n\n\n\n\n{run.text}')
+                        # print(f'\n\n\n\n{run.text}')
                         if("$SIGN$" in run.text):
-                            run.text = re.sub(r'\(\$SIGN\$\)', '', run.text)
+                            run.text = re.sub('\(*\)*\s*\$SIGN\$\s*\)*\(*', '', run.text)
                             run.add_picture('../data/signature.png', width=Inches(1))
                             cell.alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+                            paragraph_format = paragraph.paragraph_format
+                            paragraph_format.keep_together = True 
                         if('$LOGO$' in run.text):
                             run.text = ''
                             run.add_picture('../data/logo.png', width=Inches(1.5))
@@ -100,33 +114,66 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
     
     if(Vacations_Table and len(Iterable_Fields)):
         num_Vacations = len(Iterable_Fields)
-        for i in range(num_Vacations-1):
+        for i in range(num_Vacations - 1):
             Vacations_Table.add_row()
         
         counter = 1
+        page_broken = False
+        
         for i, row in enumerate(Vacations_Table.rows):
             
             if(i < 2):
                 continue
 
             j= i-2
+            
             row.cells[5].paragraphs[0].text = translate_all_numbers_to_arabic(Iterable_Fields[j]['To_Date'])
+            change_style_of_par(doc, row.cells[5].paragraphs[0], 'Strong Par Small', 14, True)
             row.cells[4].paragraphs[0].text = translate_all_numbers_to_arabic(Iterable_Fields[j]['From_Date'])
-            row.cells[3].paragraphs[0].text = "أجازة ميدانية"
-            row.cells[1].paragraphs[0].text = Iterable_Fields[j]['Level']
-            row.cells[2].paragraphs[0].text = Iterable_Fields[j]['Name']
-            row.cells[0].paragraphs[0].text = translate_all_numbers_to_arabic(str(Iterable_Fields[j]['Num'] + 1))
+            change_style_of_par(doc, row.cells[4].paragraphs[0], 'Strong Par Small', 14, True)
 
-        for row in Vacations_Table.rows:
-            for cell in row.cells:
-                cell.paragraphs[0].style = doc.styles['Strong Par']
-                cell.paragraphs[0].alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
-                cell.paragraphs[0].style.font.bold = True
+            row.cells[3].paragraphs[0].text = "أجازة ميدانية"
+            change_style_of_par(doc, row.cells[3].paragraphs[0], 'Strong Par Small', 14, True)
+
+            row.cells[1].paragraphs[0].text = Iterable_Fields[j]['Level']
+            change_style_of_par(doc, row.cells[1].paragraphs[0], 'Strong Par', 16, True)
+
+            row.cells[2].paragraphs[0].text = Iterable_Fields[j]['Name']
+            change_style_of_par(doc, row.cells[2].paragraphs[0], 'Strong Par', 14, True)
+
+
+            row.cells[0].paragraphs[0].text = translate_all_numbers_to_arabic(str(counter))
+            change_style_of_par(doc, row.cells[0].paragraphs[0], 'Strong Par', 14, True)
+
+            counter += 1
+            if(i > 9 and (not page_broken)):
+                par_format = row.cells[0].paragraphs[0].paragraph_format
+                par_format.page_break_before = True
+                page_broken = True
+        
+        
+        space_paragraph.text = ''
+        if counter < 8:
+            space_paragraph.style.font.size = Pt((8-counter) * 9)
+        
+
+        # for row in Vacations_Table.rows:
+        #     for cell in row.cells:
+        #         cell.paragraphs[0].style = doc.styles['Strong Par']
+        #         cell.paragraphs[0].style.font.size = Pt(16)
+        #         cell.paragraphs[0].alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+        #         cell.paragraphs[0].style.font.bold = True
     else:
-        allnewtables = []
-        for table in doc.tables:
-            if table == Vacations_Table:
-                doc.remove(table)
+        print('NO MORE VACATIONS')
+        new_merged_cell = Vacations_Table.cell(2,0).merge(Vacations_Table.cell(2,5))
+        for p in new_merged_cell.paragraphs:
+            new_merged_cell._element.remove(p._element)
+        new_merged_cell.add_paragraph(text = 'لا يــوجـد خــوارج')
+        change_style_of_par(doc, new_merged_cell.paragraphs[0], 'Strong Par', 18, True)
+        # allnewtables = []
+        # for table in doc.tables:
+        #     if table == Vacations_Table:
+        #         doc.remove(table)
 
 
 
@@ -149,10 +196,14 @@ def Replace_Placeholders_Inside_Movements(doc, fields_to_replace:dict, Iterable_
                 run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
 
 
-     
+
+    space_paragraph = None
     for paragraph in doc.paragraphs:
         for run in paragraph.runs:
             run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+            if('$space$' in run.text):
+                space_paragraph = paragraph
+
             
 
     # Iterate over tables
@@ -188,13 +239,25 @@ def Replace_Placeholders_Inside_Movements(doc, fields_to_replace:dict, Iterable_
             row.cells[3].paragraphs[0].text = translate_all_numbers_to_arabic(Iterable_Fields[j]['$FROMDATE$'])
             row.cells[1].paragraphs[0].text = Iterable_Fields[j]['$LEVEL$']
             row.cells[2].paragraphs[0].text = Iterable_Fields[j]['$NAME$']
-            row.cells[0].paragraphs[0].text = translate_all_numbers_to_arabic(str(Iterable_Fields[j]['$NUM$'] + 1))
+            row.cells[0].paragraphs[0].text = translate_all_numbers_to_arabic(str(counter))
+            counter += 1
 
         for row in Vacations_Table.rows:
             for cell in row.cells:
                 cell.paragraphs[0].style = doc.styles['Strong Par']
                 cell.paragraphs[0].alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
                 cell.paragraphs[0].style.font.bold = True
+    
+    
+        space_paragraph.text = '  '
+        sample_text = ''
+        if counter < 16:
+            loop_stop_counter = 16-counter
+            for i in range (loop_stop_counter):
+                sample_text = sample_text + '\n'
+        space_paragraph.text = space_paragraph.text + sample_text
+        
+    
     else:
         allnewtables = []
         for table in doc.tables:
@@ -212,39 +275,66 @@ def Replace_Placeholders_Inside_Vac_Passes(doc, fields_to_replace:list, Iterable
     counter = 0
     truncate_rest = False
     for table in doc.tables:
-        for row in table.rows:
-            for i, tb_cell in enumerate(row.cells):
-                if(counter < len(Iterable_Fields)):
-                    for tb in tb_cell.tables:
-                        for tb_row in tb.rows:
-                            for cell in tb_row.cells:
-                                for paragraph in cell.paragraphs:
-                                    for run in paragraph.runs:
-                                        for field in fields_to_replace:
-                                                run.text = run.text.replace(field, Iterable_Fields[counter][field])
-                                                print(Iterable_Fields[counter][field])
+        final_row_idx = 0
+        for row_index, row in enumerate(table.rows):
+            if final_row_idx == 0 and len(Iterable_Fields):
+                for i, tb_cell in enumerate(row.cells):
+                    if(counter < len(Iterable_Fields)):
+                        for tb in tb_cell.tables:
+                            for tb_row in tb.rows:
+                                for cell in tb_row.cells:
+                                    for paragraph in cell.paragraphs:
+                                        for run in paragraph.runs:
+                                            for field in fields_to_replace:
+                                                    run.text = run.text.replace(field, Iterable_Fields[counter][field])
+                                                    # print(Iterable_Fields[counter][field])
+                                                    
+
+
+                        for paragraph in tb_cell.paragraphs:
+                                        for run in paragraph.runs:
+                                            for field in fields_to_replace:
+                
+                                                    run.text = run.text.replace(field, Iterable_Fields[counter][field])
+                                                    # print(Iterable_Fields[counter][field])
+                                                    
                                                 
-
-
-                    for paragraph in tb_cell.paragraphs:
-                                    for run in paragraph.runs:
-                                        for field in fields_to_replace:
+                        counter += 1
+                    else:
+                        for tbb in tb_cell.tables:
+                            for r in tbb.rows:
+                                for tbcell in r.cells:
+                                    for paragraph in tbcell.paragraphs:
+                                        for run in paragraph.runs:
+                                            run.text = ''
+                        for paragraph in tb_cell.paragraphs:
+                            for run in paragraph.runs:
+                                run.text = ''
+                        if final_row_idx == 0 and len(Iterable_Fields):
+                            final_row_idx = row_index
+            else:
+                break
+                        
             
-                                                run.text = run.text.replace(field, Iterable_Fields[counter][field])
-                                                print(Iterable_Fields[counter][field])
-                                                
-                                            
-                    counter += 1
-                else:
-                    for tbb in tb_cell.tables:
-                        for r in tbb.rows:
-                            for tbcell in r.cells:
-                                for paragraph in tbcell.paragraphs:
-                                    for run in paragraph.runs:
-                                        run.text = ''
-                    for paragraph in tb_cell.paragraphs:
-                                    for run in paragraph.runs:
-                                        run.text = ''
+        for idx in range(len(table.rows) -1 , final_row_idx, -1):
+                table._element.remove(table.rows[idx]._tr)
+        
+
+                    # tb_cell._element.getparent().remove(tb_cell._element)
+                    # for idx in range(len(table.rows) -1 , row_index, -1):
+                    #     table._element.remove(table.rows[idx]._tr)
+                    # row._element.remove(tb_cell._element)
+                    
+                    # for tbb in tb_cell.tables:
+                    #     for r in tbb.rows:
+                    #         for tbcell in r.cells:
+                    #             # tbb._element.remove(tbcell._element)
+                    #             for paragraph in tbcell.paragraphs:
+                    #                 for run in paragraph.runs:
+                    #                     run.text = ''
+                    # for paragraph in tb_cell.paragraphs:
+                    #                 for run in paragraph.runs:
+                    #                     run.text = ''
                                         
                 
 
@@ -254,7 +344,7 @@ def Replace_Placeholders_Inside_Vac_Passes(doc, fields_to_replace:list, Iterable
 def Export_Movements_PDF():
     Date_Arabic =translate_all_numbers_to_arabic(date.today().isoformat())
     Weekday = days_map[date.today().weekday()]
-    AllVacations = helpers.getActiveVacations()
+    AllVacations = helpers.getActiveVacations(with_disabled=False)
     IterableFieldsDict = []
     for i, tup in enumerate(AllVacations):
         sampleDict = {}
@@ -279,7 +369,7 @@ def Export_Movements_PDF():
 
 
 def Export_Vacation_Passes_PDF():
-    AllVacations = helpers.getActiveVacations()
+    AllVacations = helpers.getActiveVacations(with_disabled=False)
 
     IterableFieldsDict = []
     for i, tup in enumerate(AllVacations):
@@ -319,22 +409,24 @@ def Export_Tamam_PDF():
 
     number_soldiers = int(helpers.getNumSoldiers())
     absent_soldiers = len(helpers.getAbsentSoldiers())
-    print(helpers.getAbsentSoldiers())
+    # print(helpers.getAbsentSoldiers())
     present_soldiers = number_soldiers - absent_soldiers
-    print(f'Num Soldiers = {number_soldiers}, absent soliers = {absent_soldiers}, present soldiers = {present_soldiers}')
+    # print(f'Num Soldiers = {number_soldiers}, absent soliers = {absent_soldiers}, present soldiers = {present_soldiers}')
 
 
     AllNumber = len(helpers.fetchSoldiers())
-    AllVac = len(helpers.getActiveVacations())
+    AllVacations = helpers.getActiveVacations(with_disabled=True)
+    AllVac = len(AllVacations)
     AllAbsent = AllVac
     AllPresent = AllNumber - AllAbsent
 
 
     Weekday = days_map[date.today().weekday()]
 
-    AllVacations = helpers.getActiveVacations()
-    print(AllVacations)
+    
+    # print(AllVacations)
 
+    counter = 1
     IterableFieldsDict = []
     for i, tup in enumerate(AllVacations):
         sampleDict = {}
@@ -347,8 +439,9 @@ def Export_Tamam_PDF():
         sampleDict['State'] = tup[4]
         sampleDict['Summoned'] = tup[5]
         sampleDict['Level'] = enums.ArmyLevels[int(helpers.getLevelFromID(tup[0]))-1]
-        sampleDict["Num"] = i
+        sampleDict["Num"] = counter
         IterableFieldsDict.append(sampleDict)
+        counter += 1
 
     fields_to_replace = {"$DEPT_NAME$": Department_Name,
                         "$DATE_AR$": Date_Arabic,
@@ -379,8 +472,10 @@ def ConvertAndSave(document, typeDoc:str):
     outputPath =  os.path.join(os.path.split(os.getcwd())[0],typeDoc)
     if(not os.path.isdir(outputPath)):
         os.mkdir(outputPath)
+
+    mapper = {'تمامات': 'تمام_يوم', 'تصاريح':'تصاريح_يوم', 'يوميات_تحركات':'يوميات_تحركات_يوم'}
     
-    filepath=os.path.join(outputPath, f'{typeDoc}_{date.today().isoformat()}')
+    filepath=os.path.join(outputPath, f'{mapper[typeDoc]}_{date.today().isoformat()}')
 
     filepath = re.sub(r'\\', '/', filepath)
     

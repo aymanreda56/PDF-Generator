@@ -148,6 +148,11 @@ def CheckUser(username, password):
 # password = 'soldier'
 # insert_new_user('0', username, password, 'Ayman', 'جندي')
 
+
+# username = 'user'
+# password = 'user'
+# insert_new_user('1', username, password, 'Aymoon', 'جندي')
+
 # username = 'user1'
 # password = 'user1'
 # insert_new_user('0', username, password, 'Dev', 'مطور')

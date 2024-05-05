@@ -38,8 +38,45 @@ class EntryErrorCode(Enum):
 
     VACATIONS_DATES_ARE_NEGATIVE = "خطأ في التواريخ, يجب ان يكون تاريخ النزول قبل تاريخ العودة و ليس العكس"
 
+    VACATION_ALREADY_EXISTING = 'الشخص بالفعل مسجل في الأجازات\nإذا كنت تريد تعديلها فبرجاء مسحها و إدخالها مرة أخرى'
+
 
     SOLDIER_ALREADY_EXISTING_ERR = "الشخص بالفعل مسجل, برجاء تعديل البيانات او مسح الشخص المسجل و إدخاله مرة أخرى"
+
+
+
+
+
+
+class SoldierModelErrorCode(Enum):
+    IMAGE_EMPTY = 'برجاء إدخال صورة شخصية'
+    IMAGE_NOT_PARSEABLE = 'برجاء إدخال صورة سليمة و ليست فايل غير مفهوم'
+
+    NAME_EMPTY = 'برجاء إدخال اسم الشخص'
+
+    BIRTHDATE_EMPTY = 'برجاء إدخال تاريخ ميلاد الشخص'
+
+    SOLDIER_ID_EMPTY = 'برجاء إدخال الرقم العسكري للشخص'
+
+    RETIRING_DATE_EMPTY = 'برجاء إدخال تاريخ الرديف للشخص'
+
+    MOBILE_NUMBER_EMPTY = 'برجاء إدخال رقم موبايل الشخص'
+    
+    HOME_ADDRESS_EMPTY = 'برجاء إدخال عنوان الشخص'
+
+    CITY_EMPTY = 'برجاء إدخال المدينة'
+
+    GOVERNORATE_EMPTY = 'برحاء إدخال المحافظة'
+
+    HOME_NUMBER_EMPTY = 'برجاء إدخال رقم هاتف المنزل'
+
+    MOTHERS_MOBILE_NUMBER_EMPTY = 'برجاء إدخال رقم ولي الأمر'
+
+    FUNCTION_EMPTY = 'برجاء إدخال الوظيفة داخل الإدارة'
+
+    JOIN_DATE_EMPTY = 'برجاء إدخال تاريخ الإنضمام للإدارة'
+
+
 
 
 

@@ -23,7 +23,7 @@ class EntryPage():
             raise EntryError(EntryErrorCode.RETIRING_DATE_YEAR_ERR)
         if(month not in range(1,13)):
             raise EntryError(EntryErrorCode.RETIRING_DATE_MONTH_ERR)
-        if(day not in range(1,30)):
+        if(day not in range(1,32)):
             raise EntryError(EntryErrorCode.RETIRING_DATE_DAY_ERR)
         try:
             date(year=year, month=month, day= day)
@@ -50,11 +50,11 @@ class EntryPage():
             raise EntryError(EntryErrorCode.SOLDIER_NAME_MISSING)
         if(len(re.split(' ',text)) < 2):
             raise EntryError(EntryErrorCode.SOLDIER_NAME_TOO_SHORT_ERR)
-        if(len(text) > 40):
+        if(len(text) > 70):
             raise EntryError(EntryErrorCode.SOLDIER_NAME_TOO_LONG_ERR)
         ############################################################ TODO: this should correctly handle non-arabic characters##################
         for c in text:
-            if c in list('abcdefghijklmnopqrstuvwxyz'):
+            if c in list('abcdefghijklmnopqrstuvwxyz0123456789'):
                 raise EntryError(EntryErrorCode.SOLDIER_NAME_NOT_ARABIC)
             ################################################################################################
         
@@ -300,7 +300,7 @@ class EntryPage():
 
 
         screen_width, screen_height = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
-        width, height = 1200, 800
+        width, height = 1200, 1000
         self.root.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
 
 
@@ -390,7 +390,7 @@ class EntryPage():
         self.Soldiers_Preview_show()
 
         self.root.bind("<Control-q>", lambda x: self.quit())
-        self.root.bind("<Configure>", lambda x: self.resizeAll())
+        # self.root.bind("<Configure>", lambda x: self.resizeAll())
 
         self.root.bind("<Control-Enter>", lambda x: self.submit_text(Name_textbox, Soldier_ID_textbox, Level_DropDown, self.Retiring_Date_year, self.Retiring_Date_month, self.Retiring_Date_day))
 

@@ -10,6 +10,8 @@ import GenHelpers
 import helpers
 from PIL import ImageTk, Image
 from style import *
+from DocumentEntryPage import DocumentEntryPage
+from ListDocs import ListDocs
 
 which_frame_is_active = None
 
@@ -67,6 +69,18 @@ class MainMenu():
         return
     
 
+    def EnterNewDocument(self):
+        self.dep = DocumentEntryPage()
+        self.dep.renderDocumentsEntryPage()
+        return
+    
+
+    def ShowAllDocuments(self):
+        self.ld = ListDocs()
+        self.ld.renderListDocs()
+        return
+    
+
 
     def Print_Tamam(self):
         self.Tmam_Process = Process(target=GenHelpers.Export_Tamam_PDF)
@@ -97,6 +111,8 @@ class MainMenu():
         self.vp = False
         self.fp = False
         self.ep = False
+        self.dep = False
+        self.ld = False
         self.Tmam_Process = None
         self.LoadingImageLbl = None
         self.fontindex = 0
@@ -121,12 +137,16 @@ class MainMenu():
             
             self.first_window_root.title("تنظيم و أفراد مكتب السيد/ مدير الجهاز")
             screen_width, screen_height = self.first_window_root.winfo_screenwidth(), self.first_window_root.winfo_screenheight()
-            width, height = 1500, 900
+            width, height = 1700, 900
             self.first_window_root.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
             self.first_window_root.iconbitmap("../data/icolog.ico")
             img= ctk.CTkImage(light_image=Image.open('../data/logo_dark.png'), dark_image=Image.open('../data/logo_dark.png'), size=(250,250))
             self.ImageLBL = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=img, text='')
             self.ImageLBL.place(relx=0.88, rely=0.15, anchor=ctk.CENTER)
+
+            self.bg_img= ctk.CTkImage(light_image=Image.open('../data/BG_logo.png'), dark_image=Image.open('../data/BG_logo.png'), size=(600,600))
+            bg_img_lbl = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=self.bg_img, text='')
+            bg_img_lbl.place(relx=0, rely=0.52, anchor=ctk.CENTER)
 
 
             
@@ -168,6 +188,17 @@ class MainMenu():
 
 
 
+            # # #All Documents Show Button
+            # self.AllDocs_Show_Button = ctk.CTkButton(dummy_frame, text="إظهار كل وثائق التعارف", command=self.ShowAllDocuments, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            # self.AllDocs_Show_Button.grid(row=7, pady=30)
+
+
+            # #Document Entry Button
+            # self.Doc_Entry_Button = ctk.CTkButton(dummy_frame, text='إدخال وثيقة تعارف جديدة', command=self.EnterNewDocument, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            # self.Doc_Entry_Button.grid(row=8, pady=30)
+
+
+
             self.Change_Font_Button = ctk.CTkButton(self.first_window_root, text='تغيير الفونت', command=self.ChangeAllFonts, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
             self.Change_Font_Button.place(relx=0.8, rely=0.8)
 
@@ -187,7 +218,7 @@ class MainMenu():
 
 
 
-            self.first_window_root.bind("<Configure>", lambda x: self.resizeAll())
+            # self.first_window_root.bind("<Configure>", lambda x: self.resizeAll())
             
             self.first_window_root.bind('<Control-q>', lambda x: self.quit())
 
@@ -200,9 +231,7 @@ class MainMenu():
 
 
 
-            self.bg_img= ctk.CTkImage(light_image=Image.open('../data/BG_logo.png'), dark_image=Image.open('../data/BG_logo.png'), size=(500,500))
-            bg_img_lbl = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=self.bg_img, text='')
-            bg_img_lbl.place(relx=0, rely=0.52, anchor=ctk.CENTER)
+            
             
 
             self.first_window_root.mainloop()
@@ -241,7 +270,6 @@ class MainMenu():
     def MakeWindowAtTheFront(self):
         main_is_active = True
         def helper(wind):
-            
             try:
                     if(not wind.root.children):
                         return False
@@ -252,8 +280,10 @@ class MainMenu():
                     return True
             except:
                 return False
+            
+            
     
-        if(helper(self.vp) or helper(self.ep) or helper(self.fp)):
+        if(helper(self.vp) or helper(self.ep) or helper(self.fp) or helper(self.dep) or helper(self.ld)):
             main_is_active = False
         else:
             main_is_active = True

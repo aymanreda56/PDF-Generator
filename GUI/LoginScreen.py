@@ -113,7 +113,7 @@ class LoginScreen():
 
 
         screen_width, screen_height = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
-        width, height = 1500, 600
+        width, height = 1500, 800
         self.root.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
 
 
@@ -124,7 +124,7 @@ class LoginScreen():
         ImageLBL = ctk.CTkLabel(self.root, width=self.root.winfo_width(), height=self.root.winfo_height(), image=img, text='')
         ImageLBL.place(relx=0.88, rely=0.15, anchor=ctk.CENTER)
 
-        self.bg_img= ctk.CTkImage(light_image=Image.open('../data/BG_logo.png'), dark_image=Image.open('../data/BG_logo.png'), size=(500,500))
+        self.bg_img= ctk.CTkImage(light_image=Image.open('../data/BG_logo.png'), dark_image=Image.open('../data/BG_logo.png'), size=(700,700))
         self.bg_img_lbl = ctk.CTkLabel(self.root, width=self.root.winfo_width(), height=self.root.winfo_height(), image=self.bg_img, text='')
         self.bg_img_lbl.place(relx=0, rely=0.52, anchor=ctk.CENTER)
 
@@ -150,7 +150,7 @@ class LoginScreen():
         sumbit_Button =ctk.CTkButton(self.root, text='إدخال', font=('Arial', 30, 'bold'), width=100, command=lambda: self.Login(username_box=self.username_Entry, password_box=self.password_Entry))
         sumbit_Button.place(relx=0.5, rely=0.7, anchor=ctk.CENTER)
 
-        self.root.bind("<Configure>", lambda x: self.resizeAll())
+        # self.root.bind("<Configure>", lambda x: self.resizeAll())
 
         self.root.bind('<Control-q>', lambda: self.root.quit)
         self.root.bind('<Control-e>', lambda x: self.Login(username_box=self.username_Entry, password_box=self.password_Entry))

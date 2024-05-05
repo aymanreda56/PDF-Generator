@@ -15,11 +15,11 @@
   },
   {
    "optionDest": "console",
-   "value": false
+   "value": true
   },
   {
    "optionDest": "icon_file",
-   "value": "D:/PDF_Generator/output/data/icolog.ico"
+   "value": "D:/PDF_Generator/data/icolog.ico"
   },
   {
    "optionDest": "clean_build",
@@ -72,14 +72,6 @@
   {
    "optionDest": "ascii",
    "value": false
-  },
-  {
-   "optionDest": "datas",
-   "value": "D:/PDF_Generator/data;data/"
-  },
-  {
-   "optionDest": "datas",
-   "value": "D:/PDF_Generator/pdf;pdf/"
   },
   {
    "optionDest": "hiddenimports",
@@ -528,6 +520,10 @@
   {
    "optionDest": "hiddenimports",
    "value": "numpy.core.atleast_3d"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "babel.numbers"
   }
  ],
  "nonPyinstallerOptions": {
