@@ -129,6 +129,11 @@ class LoginScreen():
         self.bg_img_lbl.place(relx=0, rely=0.52, anchor=ctk.CENTER)
 
 
+        wheatimg= ctk.CTkImage(light_image=Image.open('../data/wheat_leaves.png'), dark_image=Image.open('../data/wheat_leaves.png'), size=(630,200))
+        botNavbar = ctk.CTkLabel(self.root, width=self.root.winfo_width(), height=self.root.winfo_height(), image=wheatimg, text='')
+        botNavbar.place(relx=0.5, rely=1, anchor='s')
+
+
 
         # The titel label
         Big_Label = ctk.CTkLabel(self.root, text="تنظيم وأفراد مكتب السيد/ مدير الجهاز", font=('Arial', 50, 'bold'), text_color=BUTTON_COLOR)

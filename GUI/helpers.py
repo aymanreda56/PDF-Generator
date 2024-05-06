@@ -283,7 +283,7 @@ def RefreshVacations():
         connection = sqlite3.connect(DB_PATH)
         connection.execute("PRAGMA foreign_keys = 1")
         cursor = connection.cursor()
-        Checking_query = f'SELECT Soldier_ID, Name, From_Date, To_Date FROM Vacations WHERE State = 1'
+        Checking_query = f'SELECT Soldier_ID, Name, From_Date, To_Date FROM Vacations'
         result = cursor.execute(Checking_query).fetchall()
 
         for tup in result:
@@ -291,6 +291,7 @@ def RefreshVacations():
             if date.today() >= date.fromisoformat(tup[3]):
                 ArchiveVacation(Soldier_ID=tup[0], Soldier_Name=tup[1], From_Date=tup[2], To_Date=tup[3], state='1', summoned='0', active='0')
                 RemoveVacation(Soldier_ID=tup[0])
+                print("removed")
 
     except sqlite3.Error as e:
         print(e)

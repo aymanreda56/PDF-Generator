@@ -378,6 +378,11 @@ class VacationsPage():
         ImageLBL.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
 
+        house_img= ctk.CTkImage(light_image=Image.open('../data/house.png'), dark_image=Image.open('../data/house.png'), size=(200,200))
+        house_img_lbl = ctk.CTkLabel(self.root, width=200, height=200, image=house_img, text='')
+        house_img_lbl.place(relx=0.85, rely=0.8, anchor=ctk.CENTER)
+
+
         self.mainframe = ctk.CTkFrame(self.root, width=800, height=400, fg_color=BG_COLOR)
         self.mainframe.pack(anchor='center', pady=20)
         

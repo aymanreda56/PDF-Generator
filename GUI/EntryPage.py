@@ -320,6 +320,13 @@ class EntryPage():
         ImageLBL = ctk.CTkLabel(self.mainframe, image=bg_img, text='')
         ImageLBL.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
+
+        Person_img= ctk.CTkImage(light_image=Image.open('../data/person_image.png'), dark_image=Image.open('../data/person_image.png'), size=(220,250))
+        person_img_lbl = ctk.CTkLabel(self.root, width=220, height=250, image=Person_img, text='')
+        person_img_lbl.place(relx=0.8, rely=0.8, anchor=ctk.CENTER)
+
+
+
         # mainframe.grid_propagate(False)
 
         # some labels

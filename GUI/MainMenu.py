@@ -149,6 +149,12 @@ class MainMenu():
             bg_img_lbl.place(relx=0, rely=0.52, anchor=ctk.CENTER)
 
 
+
+            grass_img= ctk.CTkImage(light_image=Image.open('../data/grass5.png'), dark_image=Image.open('../data/grass5.png'), size=(1700,120))
+            bottom_navbar = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=60, image=grass_img, text='')
+            bottom_navbar.place(relx=0.5, rely=1, anchor='s')
+
+
             
 
 
