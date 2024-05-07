@@ -36,12 +36,13 @@ from zipfile import ZipFile
 def move_files_inside_folder_to_outside(folder_path):
     # Get a list of all files inside the folder
     files = os.listdir(folder_path)
+    parent_folder = os.path.dirname(os.path.dirname(folder_path))
     
     # Move each file to the parent directory
     for file_name in files:
         # Construct the source and destination paths
         source = os.path.join(folder_path, file_name)
-        destination = os.path.join(os.path.dirname(os.path.dirname(folder_path)), file_name)
+        destination = os.path.join(parent_folder, file_name)
         
         # Move the file
         shutil.move(source, destination)
