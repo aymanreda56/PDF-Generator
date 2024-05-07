@@ -121,7 +121,7 @@ class MainMenu():
         self.ConfirmPageRoot.iconbitmap("../data/icolog.ico")
         self.ConfirmPageRoot.title(f"تحديث؟")
 
-        confirmlbl = ctk.CTkLabel(master=self.ConfirmPageRoot, text='التحديث يستغرق تقريبا 20 دقيقة,\nهل تريد التحديث الآن؟', font=(font_text, 30, 'bold'))
+        confirmlbl = ctk.CTkLabel(master=self.ConfirmPageRoot, text='التحديث يستغرق تقريبا 20 دقيقة,\nهل تريد التحديث الآن؟', font=(font_text, 30, 'bold'), text_color='Black')
         confirmlbl.pack(pady=10)
         
         confirmbutton = ctk.CTkButton(master=self.ConfirmPageRoot, text= 'تأكيد التحديث', fg_color=WARNING_COLOR, font=(font_text, 30, 'bold'), corner_radius=15, command=self.ConfirmUpdate)
