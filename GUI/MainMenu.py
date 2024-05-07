@@ -126,6 +126,17 @@ class MainMenu():
         self.update_process = None
         self.LoadingImageLbl = None
         self.fontindex = 0
+
+
+        is_update_available, new_version, new_version_str = auto_updater.check_For_Updates(username='aymanreda56', reponame='PDF-Generator', versionfile='ver.txt')
+        if(is_update_available):
+            update_color = WARNING_COLOR
+            update_text = 'اضغط للتحديث'
+            update_text_color = "Black"
+        else:
+            update_color = ACCEPT_COLOR
+            update_text = 'هذه هي أحدث نسخة'
+            update_text_color = TEXT_COLOR
         
         
 
@@ -218,15 +229,7 @@ class MainMenu():
             self.Change_Font_Button = ctk.CTkButton(self.first_window_root, text='تغيير الفونت', command=self.ChangeAllFonts, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
             self.Change_Font_Button.place(relx=0.8, rely=0.8)
 
-            is_update_available, new_version, new_version_str = auto_updater.check_For_Updates(username='aymanreda56', reponame='PDF-Generator', versionfile='ver.txt')
-            if(is_update_available):
-                update_color = WARNING_COLOR
-                update_text = 'اضغط للتحديث'
-                update_text_color = "Black"
-            else:
-                update_color = ACCEPT_COLOR
-                update_text = 'هذه هي أحدث نسخة'
-                update_text_color = TEXT_COLOR
+            
 
             self.Update_Button = ctk.CTkButton(self.first_window_root, text=update_text, command=self.Update, font=(font_text, 25, 'bold'), fg_color=update_color, width=200, corner_radius=30, text_color=update_text_color)
             if(is_update_available):
