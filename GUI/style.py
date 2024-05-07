@@ -13,6 +13,8 @@ FONTS = ['Arial', 'Dubai', 'Dubai Light',
 
 
 BUTTON_COLOR = '#03051E'
+WARNING_COLOR = '#F1D00A'
+ACCEPT_COLOR = '#0B8457'
 BG_COLOR = '#EAE1E1'
 FM_COLOR = '#F0E3E3'
 
