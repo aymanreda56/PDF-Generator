@@ -9,10 +9,6 @@
 # Because of the partial copy, restarting the application may fail; to avoid this, make the upgrading process atomic, as we discussed in the previous section.
 
 
-
-
-
-
 import requests
 import os
 import shutil

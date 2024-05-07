@@ -33,10 +33,10 @@ class DocShow():
         self.ConfirmPageRoot.iconbitmap("../data/icolog.ico")
         self.ConfirmPageRoot.title(f'مسح وثيقة تعارف {self.name}')
 
-        confirmlbl = ctk.CTkLabel(master=self.ConfirmPageRoot, text='هل أنت متأكد من مسح وثيقة التعارف؟', font=(font_size, 30, 'bold'))
+        confirmlbl = ctk.CTkLabel(master=self.ConfirmPageRoot, text='هل أنت متأكد من مسح وثيقة التعارف؟', font=(font_style, 30, 'bold'))
         confirmlbl.pack(pady=10)
         
-        confirmbutton = ctk.CTkButton(master=self.ConfirmPageRoot, text= 'تأكيد', fg_color=REMOVE_BUTTON_COLOR, font=(font_size, 30, 'bold'), corner_radius=15, command=self.ConfirmDeletion)
+        confirmbutton = ctk.CTkButton(master=self.ConfirmPageRoot, text= 'تأكيد', fg_color=REMOVE_BUTTON_COLOR, font=(font_style, 30, 'bold'), corner_radius=15, command=self.ConfirmDeletion)
         confirmbutton.pack(pady=10)
 
         self.ConfirmPageRoot.bind('<Control-q>', lambda x: self.ConfirmPageRoot.destroy())

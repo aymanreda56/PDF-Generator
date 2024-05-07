@@ -110,6 +110,33 @@ class MainMenu():
 
 
 
+
+    def ConfirmPage(self):
+        self.ConfirmPageRoot = ctk.CTk(fg_color='#3C415E')
+        screen_width, screen_height = self.ConfirmPageRoot.winfo_screenwidth(), self.ConfirmPageRoot.winfo_screenheight()
+
+
+        width, height = 600, 150
+        self.ConfirmPageRoot.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
+        self.ConfirmPageRoot.iconbitmap("../data/icolog.ico")
+        self.ConfirmPageRoot.title(f"تحديث؟")
+
+        confirmlbl = ctk.CTkLabel(master=self.ConfirmPageRoot, text='التحديث يستغرق تقريبا 20 دقيقة,\nهل تريد التحديث الآن؟', font=(font_text, 30, 'bold'))
+        confirmlbl.pack(pady=10)
+        
+        confirmbutton = ctk.CTkButton(master=self.ConfirmPageRoot, text= 'تأكيد التحديث', fg_color=WARNING_COLOR, font=(font_text, 30, 'bold'), corner_radius=15, command=self.ConfirmUpdate)
+        confirmbutton.pack(pady=10)
+
+        self.ConfirmPageRoot.bind('<Control-q>', lambda x: self.ConfirmPageRoot.destroy())
+
+        self.ConfirmPageRoot.mainloop()
+
+    
+    def ConfirmUpdate(self):
+        self.Update()
+        self.ConfirmPageRoot.destroy()
+
+
     def Update(self):
         self.Tmam_Process = Process(target=global_updater)
         self.Tmam_Process.start()
@@ -235,7 +262,7 @@ class MainMenu():
 
             
 
-            self.Update_Button = ctk.CTkButton(self.first_window_root, text=update_text, command=self.Update, font=(font_text, 25, 'bold'), fg_color=update_color, width=200, corner_radius=30, text_color=update_text_color)
+            self.Update_Button = ctk.CTkButton(self.first_window_root, text=update_text, command=self.ConfirmPage, font=(font_text, 25, 'bold'), fg_color=update_color, width=200, corner_radius=30, text_color=update_text_color)
             if(is_update_available):
                 self.Update_Button.place(relx=0.8, rely=0.7)
 
