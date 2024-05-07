@@ -228,7 +228,7 @@ class MainMenu():
                 update_text = 'هذه هي أحدث نسخة'
                 update_text_color = TEXT_COLOR
 
-            self.Update_Button = ctk.CTkButton(self.first_window_root, text=update_text, command=self.update(), font=(font_text, 25, 'bold'), fg_color=update_color, width=200, corner_radius=30, text_color=update_text_color)
+            self.Update_Button = ctk.CTkButton(self.first_window_root, text=update_text, command=self.Update, font=(font_text, 25, 'bold'), fg_color=update_color, width=200, corner_radius=30, text_color=update_text_color)
             if(is_update_available):
                 self.Update_Button.place(relx=0.8, rely=0.7)
 
