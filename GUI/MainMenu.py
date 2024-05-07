@@ -22,7 +22,7 @@ font_text ='Arial'
 
 
 def global_updater():
-    auto_updater.download_update(username='aymanreda56', reponame='PDF-Generator', versionfile='ver.txt', url='http://github.com/aymanreda56/PDF-Generator/archive/main.zip')
+    auto_updater.download_update(username='aymanreda56', reponame='secretary-assistant', versionfile='ver.txt', url=f'http://github.com/aymanreda56/secretary-assistant/archive/main.zip')
 
 
 
