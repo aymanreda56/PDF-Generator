@@ -133,8 +133,9 @@ class MainMenu():
 
     
     def ConfirmUpdate(self):
-        self.Update()
         self.ConfirmPageRoot.destroy()
+        self.Update()
+        
 
 
     def Update(self):
