@@ -21,6 +21,13 @@ font_text ='Arial'
 
 
 
+def global_updater():
+    auto_updater.download_update(username='aymanreda56', reponame='PDF-Generator', versionfile='ver.txt', url='http://github.com/aymanreda56/PDF-Generator/archive/main.zip')
+
+
+
+
+
 class MainMenu():
 
 
@@ -102,12 +109,9 @@ class MainMenu():
         self.Tmam_Process.start()
 
 
-    def update_only(self):
-        auto_updater.download_update(username='aymanreda56', reponame='PDF-Generator', versionfile='ver.txt', url='http://github.com/aymanreda56/PDF-Generator/archive/main.zip')
-    
 
     def Update(self):
-        self.Tmam_Process = Process(target=self.update_only)
+        self.Tmam_Process = Process(target=global_updater)
         self.Tmam_Process.start()
 
 
