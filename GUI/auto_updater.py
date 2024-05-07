@@ -99,7 +99,9 @@ def download_update(username, reponame, versionfile, url):
     is_update_available, new_version, new_version_str = check_For_Updates(username=username, reponame=reponame, versionfile=versionfile)
 
     if(is_update_available):
+        print(f'downloading from {url}')
         filename = wget.download(url)
+        print('HERERERER')
         print(filename)
         new_version_zipfile_path = os.path.join(os.getcwd(), filename)
 
