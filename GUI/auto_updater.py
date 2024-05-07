@@ -41,7 +41,7 @@ def move_files_inside_folder_to_outside(folder_path):
     for file_name in files:
         # Construct the source and destination paths
         source = os.path.join(folder_path, file_name)
-        destination = os.path.join(os.path.dirname(folder_path), file_name)
+        destination = os.path.join(os.path.dirname(os.path.dirname(folder_path)), file_name)
         
         # Move the file
         shutil.move(source, destination)
@@ -85,10 +85,8 @@ def check_For_Updates(username, reponame, versionfile):
     current_version = dateutil.parser.parse(current_version_str)
 
 
-    if(current_version <= latest_version):
+    if(current_version < latest_version):
         print('New Version Available!')
-        with open(file="ver.txt", mode='w')as f:
-            f.write(entry_date)
         return True, latest_version, entry_date
     else:
         print('Up To Date')

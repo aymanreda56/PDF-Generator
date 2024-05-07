@@ -100,7 +100,15 @@ class MainMenu():
     def Print_Vac_Passes(self):
         self.Tmam_Process = Process(target=GenHelpers.Export_Vacation_Passes_PDF)
         self.Tmam_Process.start()
+
+
+    def update_only(self):
+        auto_updater.download_update(username='aymanreda56', reponame='PDF-Generator', versionfile='ver.txt', url='http://github.com/aymanreda56/PDF-Generator/archive/main.zip')
     
+
+    def Update(self):
+        self.Tmam_Process = Process(target=self.update_only)
+        self.Tmam_Process.start()
 
 
     def __init__(self):
@@ -115,6 +123,7 @@ class MainMenu():
         self.dep = False
         self.ld = False
         self.Tmam_Process = None
+        self.update_process = None
         self.LoadingImageLbl = None
         self.fontindex = 0
         
@@ -219,8 +228,9 @@ class MainMenu():
                 update_text = 'هذه هي أحدث نسخة'
                 update_text_color = TEXT_COLOR
 
-            self.Update_Button = ctk.CTkButton(self.first_window_root, text=update_text, font=(font_text, 25, 'bold'), fg_color=update_color, width=200, corner_radius=30, text_color=update_text_color)
-            self.Update_Button.place(relx=0.8, rely=0.7)
+            self.Update_Button = ctk.CTkButton(self.first_window_root, text=update_text, command=self.update(), font=(font_text, 25, 'bold'), fg_color=update_color, width=200, corner_radius=30, text_color=update_text_color)
+            if(is_update_available):
+                self.Update_Button.place(relx=0.8, rely=0.7)
 
 
 
