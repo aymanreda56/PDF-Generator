@@ -116,7 +116,7 @@ class MainMenu():
         screen_width, screen_height = self.ConfirmPageRoot.winfo_screenwidth(), self.ConfirmPageRoot.winfo_screenheight()
 
 
-        width, height = 600, 150
+        width, height = 600, 200
         self.ConfirmPageRoot.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
         self.ConfirmPageRoot.iconbitmap("../data/icolog.ico")
         self.ConfirmPageRoot.title(f"تحديث؟")
