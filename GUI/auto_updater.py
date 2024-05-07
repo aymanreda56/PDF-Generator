@@ -45,7 +45,7 @@ def move_files_inside_folder_to_outside(folder_path):
     #     destination = os.path.join(parent_folder, file_name)
         
     #     # Move the file
-    shutil.copytree(folder_path, parent_folder)
+    shutil.copytree(folder_path, parent_folder, dirs_exist_ok=True)
     
     try:
         shutil.rmtree(folder_path)
@@ -68,6 +68,8 @@ def check_For_Updates(username, reponame, versionfile):
         print(e)
         return False, None, ''
     
+
+    versionfile = os.path.join( os.path.dirname(os.path.abspath(__file__)) , versionfile)
     if(os.path.exists(versionfile)):
         with open(file=f"{versionfile}", mode='r')as f:
             current_version_str = f.read()
@@ -97,29 +99,32 @@ def check_For_Updates(username, reponame, versionfile):
 
 
 def download_update(username, reponame, versionfile, url):
+
     is_update_available, new_version, new_version_str = check_For_Updates(username=username, reponame=reponame, versionfile=versionfile)
+
+    versionfile = os.path.join( os.path.dirname(os.path.abspath(__file__)) , versionfile)
 
     if(is_update_available):
         print(f'downloading from {url}')
         
         try:
-            filename = wget.download(url)
+            filename = wget.download(url, out=os.path.dirname(os.path.abspath(__file__)))
         except Exception as e:
             print(e)
             return
         print('HERERERER')
         print(filename)
-        new_version_zipfile_path = os.path.join(os.getcwd(), filename)
+        new_version_zipfile_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
 
         # subprocess.run('git pull')
 
 
         new_version_folder, extension = os.path.splitext(new_version_zipfile_path)
         with ZipFile(filename, 'r') as zObject: 
-            temp_dir = os.path.join(os.getcwd(), 'temp')
+            temp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp')
             if(not os.path.exists(temp_dir)):
                 os.mkdir(temp_dir)
-            zObject.extractall()
+            zObject.extractall(path=os.path.dirname(os.path.abspath(__file__)))
 
             
 
@@ -141,3 +146,8 @@ def download_update(username, reponame, versionfile, url):
 
     else:
         print('Up to date :)')
+
+
+
+
+# download_update(username=username, reponame=reponame, versionfile=versionfile, url=url)
