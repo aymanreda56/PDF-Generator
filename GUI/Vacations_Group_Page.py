@@ -1,0 +1,293 @@
+import customtkinter as ctk
+from tkinter import ttk
+import re, math
+from datetime import date, timedelta
+from enums import EntryError, EntryErrorCode, ArmyLevels
+# from MainMenu import MainMenu
+import helpers
+from style import *
+from tkcalendar import Calendar
+from PIL import Image, ImageTk
+# from VacationsPage import VacationsPage
+
+FONT_STYLE = 'Dubai'
+
+
+
+
+
+
+
+
+class Vacations_Group_Page ():
+
+    def validate_date(self, year, month, day):
+        try:
+            year = int(year)
+            month = int(month)
+            day = int(day)
+        except:
+            raise EntryError(EntryErrorCode.RETIRING_DATE_INTEGER_ERR)
+        if(year < 2023):
+            raise EntryError(EntryErrorCode.RETIRING_DATE_YEAR_ERR)
+        if(month not in range(1,13)):
+            raise EntryError(EntryErrorCode.RETIRING_DATE_MONTH_ERR)
+        if(day not in range(1,32)):
+            raise EntryError(EntryErrorCode.RETIRING_DATE_DAY_ERR)
+        try:
+            date(year=year, month=month, day= day)
+        except:
+            raise EntryError(EntryErrorCode.RETIRING_DATE_GENERAL_ERR)
+
+
+
+    def Add_Row(self, master_frame, data:tuple):
+        New_Row_Frame = ctk.CTkFrame(master=master_frame, fg_color=FRAME_LIGHT_COLOR, width=900)
+        New_Row_Frame.pack(pady=5, fill=ctk.X)
+
+
+        service_days = data[2]
+        if(data[1] == 'غير محسوب بعد'):
+                service_days = 'لم يحسب بعد'
+
+
+        Last_Date_Lbl = ctk.CTkLabel(master=New_Row_Frame, text= data[1], font=(FONT_STYLE, 16, 'bold'), justify = 'right')
+        Last_Date_Lbl.grid(row=0, column=3, sticky='E', padx=80)
+
+
+        Name_Lbl = ctk.CTkLabel(master=New_Row_Frame, text= data[0], font=(FONT_STYLE, 16, 'bold'), justify = 'right')
+        Name_Lbl.grid(sticky='E', row=0, column=4, padx=80)
+
+        if(data[2] >= 0):
+            Service_Days_Lbl = ctk.CTkLabel(master=New_Row_Frame, text= service_days, font=(FONT_STYLE, 16, 'bold'), justify = 'right')
+            Service_Days_Lbl.grid(row=0, column=2, sticky='E', padx=80)
+
+            
+            Enter_Vacation_Button = ctk.CTkButton(master=New_Row_Frame, text= 'نزول', fg_color=BUTTON_COLOR, font=(FONT_STYLE, 16, 'bold'))
+            Enter_Vacation_Button.grid(row=0, column=1, sticky='E', padx=30)
+            
+        else:
+            Extension_Button = ctk.CTkButton(master=New_Row_Frame, text= 'مد', fg_color=ACCEPT_COLOR, font=(FONT_STYLE, 16, 'bold'), width=50)
+            Extension_Button.configure(command=lambda: self.show_extension_entry(New_Row_Frame, Extension_Button, Soldier_ID=data[3]))
+            Extension_Button.grid(row=0, column=2, sticky='E', padx=20)
+
+
+            Summon_Button = ctk.CTkButton(master=New_Row_Frame, text= 'إستدعاء', fg_color=REMOVE_BUTTON_COLOR, font=(FONT_STYLE, 16, 'bold'))
+            Summon_Button.grid(row=0, column=0, sticky='E', padx=20)
+
+
+
+    def show_extension_entry(self, frame, Extension_Button, Soldier_ID):
+        extension_duration_entry= ctk.CTkEntry(frame, font=(FONT_STYLE, 14), width=50, justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR, placeholder_text='المدة')
+        extension_duration_entry.grid(row=0, column=1, sticky='E', padx=20)
+
+        
+
+        Extension_Button.configure(text='تأكيد', command=lambda: self.Extend(frame= frame, Soldier_ID=Soldier_ID, Duration_Box=extension_duration_entry, Extension_Button=Extension_Button))
+
+
+    def Extend(self, frame, Soldier_ID, Duration_Box, Extension_Button):
+
+        try:
+            Duration = Duration_Box.get()
+            if(not Duration):
+                self.displayError('المدة غير صالحة')
+                return
+            Duration = int(Duration)
+        except:
+            self.displayError('المدة غير صالحة')
+            return
+        if(Duration== '' and Duration <=0):
+            self.displayError('المدة غير صالحة')
+            return
+        
+        to_date = helpers.GetToDateFromVacation(Soldier_ID=Soldier_ID)
+        new_date_string = date.fromisoformat(to_date) + timedelta(days=Duration)
+        new_date_string = new_date_string.isoformat()
+        helpers.ExtendVacation(Soldier_ID=Soldier_ID, new_to_date=new_date_string)
+        # Extension_Button.configure(text='تأكيد', command=lambda: self.destroy_extension_entry(frame= frame, extension_entry=Duration_Box, extension_button=Extension_Button))
+
+        Duration_Box.destroy()
+        Extension_Button.configure(text='مد', command= lambda: self.show_extension_entry(frame, Extension_Button, Soldier_ID=Soldier_ID))
+
+
+    
+
+
+
+
+    def add_Vacation(self, name, Soldier_ID_string, FromYearbox, FromMonthbox, FromDaybox, duration):
+        (from_year, from_month, from_day) = FromYearbox.get(), FromMonthbox.get(), FromDaybox.get()
+        try:
+            self.validate_date(year=from_year, month=from_month, day=from_day)
+        except EntryError as e:
+            self.displayError(e)
+            return
+        From_date_string = date(year=int(from_year), month=int(from_month), day= int(from_day)).isoformat()
+
+        if(duration <= 0):
+              self.displayError('برجاء إدخال مدة أجازة صالحة')
+              return
+
+
+        
+        to_date_string = date.fromisoformat(From_date_string) + timedelta(days=duration)
+        to_date_string = to_date_string.isoformat()
+      
+        
+        soldierdata = {'Name':name, 'Soldier_ID': Soldier_ID_string,'From_Date': From_date_string, 'To_Date': to_date_string}            
+        
+        
+        try:
+            helpers.CheckIfSoldierExists(soldier_data=soldierdata, Table_Name='Vacations')
+        except:
+            self.displayError(EntryErrorCode.VACATION_ALREADY_EXISTING.value)
+            return
+        
+        try:
+            helpers.AddVacation(Soldier_ID=Soldier_ID_string, FromDate=From_date_string, ToDate=to_date_string, State=1, Summoned=0)
+        except EntryError as e:
+            self.displayError(e)
+            return
+
+        #fix this line to make the row as "per vacation"
+        # self.Add_Soldier_To_Preview(soldier_data=soldierdata, entries_frame=self.entries_frame, num_entries=self.number_Of_Vacations)
+        
+
+        self.errors_Lbl.configure(text='')
+
+
+    def Soldiers_Showing_Frame(self):
+        all_present_soldiers = helpers.fetchSoldiers()
+        data_to_be_displayed = []
+        for soldier in all_present_soldiers:
+            Soldier_ID = soldier['Soldier_ID']
+            Soldier_Name = soldier['Name']
+            last_vac_date = helpers.getLastReturnFromID(Soldier_ID=Soldier_ID)
+            service_days = helpers.getServiceDays(last_vac_date)
+            
+
+            data_to_be_displayed.append((Soldier_Name, last_vac_date, service_days, Soldier_ID))
+
+
+        data_to_be_displayed.sort(key=lambda x: x[2], reverse= True) #sort according to service days
+
+
+        Master_Frame = ctk.CTkScrollableFrame(master=self.root, width=1000, height=500)
+        Master_Frame.pack()
+
+        Header_Frame = ctk.CTkFrame(master=Master_Frame, fg_color=FRAME_LIGHT_COLOR, width=900)
+        Header_Frame.pack(pady=5, fill=ctk.X)
+
+        Service_Days_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'عدد أيام الخدمة', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT)
+        Service_Days_Lbl.grid(row=0, column=0, sticky='E', padx=80)
+
+        Last_Date_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'تاريخ آخر عودة', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT)
+        Last_Date_Lbl.grid(row=0, column=1, sticky='E', padx=80)
+
+
+        Name_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'الإسم', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT)
+        Name_Lbl.grid(sticky='E', row=0, column=2, padx=80)
+
+
+        for soldier in data_to_be_displayed:
+            self.Add_Row(Master_Frame, soldier)
+
+
+    
+
+    def control_panel(self):
+        dummy_frame = ctk.CTkFrame(master=self.root, width=700)
+        dummy_frame.pack(pady=30)
+        label = ctk.CTkLabel(dummy_frame, text='المدة', font=('Arial', 20, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        label.grid(row= 0, column=3, pady=10, sticky='e')
+        Name_textbox = ctk.CTkEntry(dummy_frame, font=("Arial", 20), width=50, justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR, placeholder_text='7')
+        Name_textbox.grid(row=0, column=2, pady=10, padx=20, sticky='e')
+
+
+
+        label = ctk.CTkLabel(dummy_frame, text="تاريخ النزول", font=('Arial', 20, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        label.grid(row= 0, column=1, pady=10, padx=20, sticky='w')
+        date_frame = ctk.CTkFrame(dummy_frame, width=200, fg_color=TEXT_BOX_FG_COLOR)
+        date_frame.grid(row=0, column=0, pady=10, padx=20, sticky='w')
+        self.AddVacationDatePlaceHolder(date_frame)
+
+
+
+
+
+    def AddVacationDatePlaceHolder(self, date_frame):
+        
+        self.RetiringDate_Day_Entry = ctk.CTkEntry(date_frame, font=(FONT_STYLE, 15), width=100, placeholder_text='اليوم', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
+        self.RetiringDate_Day_Entry.grid(row=0, column=3, padx=5)
+
+        self.RetiringDate_Month_Entry = ctk.CTkEntry(date_frame, font=(FONT_STYLE, 15), width=100, placeholder_text='الشهر', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
+        self.RetiringDate_Month_Entry.grid(row=0, column=2, padx=5)
+
+        self.RetiringDate_Year_Entry = ctk.CTkEntry(date_frame, font=(FONT_STYLE, 15), width=100, placeholder_text='السنة', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
+        self.RetiringDate_Year_Entry.grid(row=0, column=1, padx=5)
+
+        # self.retiringdcalendarshowbutton = ctk.CTkButton(date_frame, text='التقويم', font=(FONT_STYLE, 15), width=30, command= lambda: self.showCalendar('retire'))
+        # self.retiringdcalendarshowbutton.grid(row=0, column=0, sticky='n')
+
+
+
+    def __init__(self, func_to_other_window):
+        self.func_to_other_window = func_to_other_window
+        self.root = ctk.CTk(fg_color=BG_COLOR)
+
+        self.root.title("تسجيل أجازات")
+        screen_width, screen_height = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
+        width, height = 1700, 900
+        self.root.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
+        self.root.iconbitmap("../data/icolog.ico")
+
+        BigLabel = ctk.CTkLabel(master=self.root, text="تسجيل أجازات", font=(FONT_STYLE, 60, 'bold'),text_color=TEXT_COLOR)
+        BigLabel.pack()
+
+        self.control_panel()
+
+
+        self.Soldiers_Showing_Frame()
+
+
+        return_Button = ctk.CTkButton(master=self.root, text='العودة للقائمة', font=(FONT_STYLE, 16, 'bold'), fg_color=BUTTON_COLOR, text_color=WHITE_TEXT_COLOR, command=self.quit)
+        return_Button.pack(side='left', padx=50, expand=True)
+
+
+        individual_Vac_Button = ctk.CTkButton(master=self.root, text='تسجيل أجازات فردية', font=(FONT_STYLE, 16, 'bold'), fg_color=BUTTON_COLOR, text_color=WHITE_TEXT_COLOR, command=self.func_to_other_window)
+        individual_Vac_Button.pack(side = 'left', padx=50, anchor='center', pady=10, expand=True)
+
+
+        self.errors_Lbl = ctk.CTkLabel(self.root, font=('Arial', 20, 'bold'), text_color='red', text='')
+        self.errors_Lbl.place(relx=0.5, rely=0.9, anchor=ctk.CENTER)
+
+
+
+
+
+
+
+
+
+    def render(self):
+        self.root.mainloop()
+
+    def quit(self):
+        self.root.destroy()
+
+    def displayError(self, ErrType):
+        self.errors_Lbl.configure(text=ErrType)
+        return
+    
+
+
+# def open_individual_vac_page(prev_root):
+#     prev_root.destroy()
+#     vp = VacationsPage()
+#     vp.renderVacationsPage()
+
+
+
+# vgp = Vacations_Group_Page()
+# vgp.render()

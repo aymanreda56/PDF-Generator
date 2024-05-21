@@ -34,8 +34,26 @@ def translate_all_numbers_to_arabic(English_text):
             arabicText[i] = '/'
         else:
             arabicText[i] = c
-    
-    return ''.join(arabicText)
+
+    #fixing the date direction:
+    arabicText = ''.join(arabicText)
+    # print(arabicText)
+    # print(English_text)
+    for i in English_text:
+        if i not in list('0123456789-/'): #test if there are any characters, ie; not a date format
+            return arabicText
+
+    # then fix the date format
+    try:
+        arabicText = re.split('/', arabicText)
+        if(len(arabicText[0]) == 2 and len(arabicText[2]) == 4):
+            arabicText.reverse()
+        arabicText = '/'.join(arabicText)
+    except:
+        arabicText = ''.join(arabicText)
+    # print(arabicText)
+    # print('\n\n\n\n\n\n')
+    return arabicText
 
 
 Department_Name = "مكتب السيد/ مدير الجهاز"
@@ -50,6 +68,7 @@ Weekday = days_map[date.today().weekday()]
 def change_style_of_par(doc, parapgraph, style_name: str, size: int, bold: bool):
     parapgraph.style = doc.styles[style_name]
     parapgraph.style.font.size = Pt(size)
+    parapgraph.style.font.ltr = True
     parapgraph.alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
     parapgraph.style.font.bold = bold
 
@@ -128,15 +147,15 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
             j= i-2
             
             row.cells[5].paragraphs[0].text = translate_all_numbers_to_arabic(Iterable_Fields[j]['To_Date'])
-            change_style_of_par(doc, row.cells[5].paragraphs[0], 'Strong Par Small', 14, True)
+            change_style_of_par(doc, row.cells[5].paragraphs[0], 'Strong Par Small', 13, False)
             row.cells[4].paragraphs[0].text = translate_all_numbers_to_arabic(Iterable_Fields[j]['From_Date'])
-            change_style_of_par(doc, row.cells[4].paragraphs[0], 'Strong Par Small', 14, True)
+            change_style_of_par(doc, row.cells[4].paragraphs[0], 'Strong Par Small', 13, False)
 
             row.cells[3].paragraphs[0].text = "أجازة ميدانية"
             change_style_of_par(doc, row.cells[3].paragraphs[0], 'Strong Par Small', 14, True)
 
             row.cells[1].paragraphs[0].text = Iterable_Fields[j]['Level']
-            change_style_of_par(doc, row.cells[1].paragraphs[0], 'Strong Par', 16, True)
+            change_style_of_par(doc, row.cells[1].paragraphs[0], 'Strong Par', 14, True)
 
             row.cells[2].paragraphs[0].text = Iterable_Fields[j]['Name']
             change_style_of_par(doc, row.cells[2].paragraphs[0], 'Strong Par', 14, True)
@@ -340,13 +359,45 @@ def Replace_Placeholders_Inside_Vac_Passes(doc, fields_to_replace:list, Iterable
 
 
 
+def Export_Movements_Aggrigator():
+    AllVacations = helpers.getActiveVacations(with_disabled=False, only_extensions=0)
+    ExtendedVacations = helpers.getActiveVacations(with_disabled=False, only_extensions=1)
+    dictionary_For_Different_Dates = {}
+    allDates = helpers.getAllDates(only_extensions=0)
+    for i in allDates:
+        dictionary_For_Different_Dates[(i,0)] = []
 
-def Export_Movements_PDF():
-    Date_Arabic =translate_all_numbers_to_arabic(date.today().isoformat())
-    Weekday = days_map[date.today().weekday()]
-    AllVacations = helpers.getActiveVacations(with_disabled=False)
+    ExtendedDates = helpers.GetAllFromDatesOfExtensions()
+    for i in ExtendedDates:
+        dictionary_For_Different_Dates[(i,1)] = []
+
+    for i in AllVacations:
+        dictionary_For_Different_Dates[(i[2], 0)].append(i)
+
+    for i in ExtendedVacations:
+        modified_entry = list(i)
+        modified_entry[2] = helpers.GetExtensionFromDate(i[0]) 
+        dictionary_For_Different_Dates[(helpers.GetExtensionFromDate(i[0]), 1)].append(modified_entry)
+    
+    keys_to_be_deleted = []
+    for k,v in dictionary_For_Different_Dates.items():
+        if(not v):
+            keys_to_be_deleted.append(k)
+    
+    for k in keys_to_be_deleted:
+        del dictionary_For_Different_Dates[k] 
+        
+    return dictionary_For_Different_Dates
+
+
+
+def Export_Movements_PDF_For_One_Date(arr_of_entries:list, date_of_vac:str, extended:int = 0):
+    Date_Arabic =translate_all_numbers_to_arabic(date_of_vac)
+    today_Date_Arabic = translate_all_numbers_to_arabic(date.today().isoformat())
+    Weekday = days_map[date.fromisoformat(date_of_vac).weekday()]
+    # AllVacations = helpers.getActiveVacations(with_disabled=False)
     IterableFieldsDict = []
-    for i, tup in enumerate(AllVacations):
+    for i, tup in enumerate(arr_of_entries):
         sampleDict = {}
         sampleDict['Soldier_ID'] = tup[0]
         sampleDict['$NAME$'] = tup[1]
@@ -361,10 +412,16 @@ def Export_Movements_PDF():
         sampleDict["$DATE_AR$"]=Date_Arabic
         IterableFieldsDict.append(sampleDict)
 
-    fields_to_replace = {"$DEPT_NAME$":Department_Name, '$DATE_AR$':Date_Arabic, '$WEEKDAY$':Weekday}
+    fields_to_replace = {"$DEPT_NAME$":Department_Name, '$DATE_AR$':Date_Arabic, '$WEEKDAY$':Weekday, "$TOD_AR$":today_Date_Arabic, '$DOC_TYP$': 'إمتداد' if extended else 'تحركات'}
     doccc = docx.Document('../pdf/templates/movements.docx')
     Replace_Placeholders_Inside_Movements(doccc, fields_to_replace, Iterable_Fields=IterableFieldsDict)
-    ConvertAndSave(document=doccc, typeDoc='يوميات_تحركات')
+    ConvertAndSave(document=doccc, typeDoc='يوميات_تحركات', date_of_doc=date_of_vac)
+
+
+def Export_Movements_PDF():
+    all_entries_dict = Export_Movements_Aggrigator()
+    for k,v in all_entries_dict.items():
+        Export_Movements_PDF_For_One_Date(v, k[0], k[1])
 
 
 
@@ -467,7 +524,7 @@ def Export_Tamam_PDF():
     ConvertAndSave(document=doccc, typeDoc='تمامات')
     return True
 
-def ConvertAndSave(document, typeDoc:str):
+def ConvertAndSave(document, typeDoc:str, date_of_doc = date.today().isoformat()):
     # filePath, extension = os.path.splitext(filePath)
     outputPath =  os.path.join(os.path.split(os.getcwd())[0],typeDoc)
     if(not os.path.isdir(outputPath)):
@@ -475,13 +532,13 @@ def ConvertAndSave(document, typeDoc:str):
 
     mapper = {'تمامات': 'تمام_يوم', 'تصاريح':'تصاريح_يوم', 'يوميات_تحركات':'يوميات_تحركات_يوم'}
     
-    filepath=os.path.join(outputPath, f'{mapper[typeDoc]}_{date.today().isoformat()}')
+    filepath=os.path.join(outputPath, f'{mapper[typeDoc]}_{date_of_doc}')
 
     filepath = re.sub(r'\\', '/', filepath)
     
 
     document.save(f'{filepath}.docx')
-    docx2pdf.convert(f'{filepath}.docx', f'{filepath}.pdf')
+    docx2pdf.convert(f'{filepath}.docx', f'{filepath}.pdf', keep_active=True)
     os.startfile(f'{filepath}.pdf')
 
 

@@ -9,7 +9,6 @@ from style import *
 from tkcalendar import Calendar
 from PIL import Image, ImageTk
 
-
 def reverse_Arabic_Words(string):
     words = re.split(' ', string)
     words.reverse()
@@ -123,15 +122,23 @@ class VacationsPage():
         
         soldierdata = {'Name':name, 'Soldier_ID': Soldier_ID_string, 'Level': str(ArmyLevels.index(Level_comboBox.cget('text'))+1),'From_Date': From_date_string, 'To_Date': to_date_string}            
         
-        
+        extended = False
         try:
             helpers.CheckIfSoldierExists(soldier_data=soldierdata, Table_Name='Vacations')
         except:
-            self.displayError(EntryErrorCode.VACATION_ALREADY_EXISTING.value)
-            return
+            to_date_of_existing_vac = helpers.GetToDateFromVacation(Soldier_ID_string)
+            if(date.fromisoformat(From_date_string) != date.fromisoformat(to_date_of_existing_vac)):
+                self.displayError(EntryErrorCode.VACATION_ALREADY_EXISTING.value)
+                return
+            else:
+                extended = True
         
+
         try:
-            helpers.AddVacation(Soldier_ID=Soldier_ID_string, FromDate=From_date_string, ToDate=to_date_string, State=1, Summoned=0)
+            if(extended):
+                helpers.ExtendVacation(Soldier_ID=Soldier_ID_string, new_to_date=to_date_string)
+            else:
+                helpers.AddVacation(Soldier_ID=Soldier_ID_string, FromDate=From_date_string, ToDate=to_date_string, State=1, Summoned=0, Extended=0)
         except EntryError as e:
             self.displayError(e)
             return
@@ -248,7 +255,9 @@ class VacationsPage():
 
 
         
-    def __init__(self):
+    def __init__(self, func_to_other_window):
+
+        self.func_to_other_window = func_to_other_window
         
         self.root = None
         self.errors_Lbl = None
@@ -454,6 +463,10 @@ class VacationsPage():
 
         Back_to_mm_button = ctk.CTkButton(self.root, text="الرجوع إلى القائمة",width = 70, corner_radius=20, font=('Arial', 20, 'bold'), command=lambda: self.BackToMainMenu(), fg_color=BUTTON_COLOR, text_color=BUTTON_TEXT_COLOR)
         Back_to_mm_button.place(relx = 0.1, rely=0.9)
+
+
+        Back_to_mm_button = ctk.CTkButton(self.root, text="شيفتات",width = 70, corner_radius=20, font=('Arial', 40, 'bold'), command=self.func_to_other_window, fg_color=BUTTON_COLOR, text_color=BUTTON_TEXT_COLOR)
+        Back_to_mm_button.place(relx = 0.5, rely=0.9)
         
 
 
@@ -485,6 +498,7 @@ class VacationsPage():
     
     def quit(self):
         self.root.destroy()
+
 
 
 

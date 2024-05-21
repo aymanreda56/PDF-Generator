@@ -289,7 +289,7 @@ def RefreshVacations():
         for tup in result:
             print(tup)
             if date.today() >= date.fromisoformat(tup[3]):
-                ArchiveVacation(Soldier_ID=tup[0], Soldier_Name=tup[1], From_Date=tup[2], To_Date=tup[3], state='1', summoned='0', active='0')
+                ArchiveVacation(Soldier_ID=tup[0], Soldier_Name=tup[1], From_Date=tup[2], To_Date=tup[3], state='0', summoned='0', active='0')
                 RemoveVacation(Soldier_ID=tup[0])
                 print("removed")
 
@@ -322,7 +322,9 @@ def getLevelFromID(ID):
 
 
 
-def getActiveVacations(with_disabled: bool = False):
+
+
+def getAllDates(with_disabled: bool = False, only_extensions=None) -> list[str]:
     RefreshVacations()
     try:
         connection = sqlite3.connect(DB_PATH)
@@ -332,7 +334,52 @@ def getActiveVacations(with_disabled: bool = False):
             Checking_query = f'SELECT * FROM Vacations'
         else:
             Checking_query = f'SELECT * FROM Vacations WHERE State = 1'
-        result = cursor.execute(Checking_query).fetchall()
+        
+        if(only_extensions):
+            if with_disabled:
+                Checking_query = f'SELECT * FROM Vacations WHERE Extended = ?'
+            else:
+                Checking_query = f'SELECT * FROM Vacations WHERE State = 1 AND Extended = ?'
+            result = cursor.execute(Checking_query, (only_extensions,)).fetchall()
+        else:
+            result = cursor.execute(Checking_query).fetchall()
+        print('\n\n\n\n')
+        print(result)
+
+        if(result == []):
+            return []
+        else:
+            all_dates = [i[2] for i in result]
+            return all_dates
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+
+
+def getActiveVacations(with_disabled: bool = False, only_extensions=None):
+    RefreshVacations()
+    try:
+        connection = sqlite3.connect(DB_PATH)
+        connection.execute("PRAGMA foreign_keys = 1")
+        cursor = connection.cursor()
+        if with_disabled:
+            Checking_query = f'SELECT * FROM Vacations'
+        else:
+            Checking_query = f'SELECT * FROM Vacations WHERE State = 1'
+
+        if(only_extensions):
+            if with_disabled:
+                Checking_query = f'SELECT * FROM Vacations WHERE Extended = ?'
+            else:
+                Checking_query = f'SELECT * FROM Vacations WHERE State = 1 AND Extended = ?'
+        
+            result = cursor.execute(Checking_query, (only_extensions,)).fetchall()
+        else:
+            result = cursor.execute(Checking_query).fetchall()
+        
+        
         print('\n\n\n\n')
         print(result)
 
@@ -345,6 +392,8 @@ def getActiveVacations(with_disabled: bool = False):
         print(e)
     finally:
         cursor.close()
+
+
 
 
 
@@ -365,6 +414,79 @@ def UpdateVacationState(Soldier_ID, new_state):
         return False
     finally:
         cursor.close()
+
+
+def GetNameFromID(Soldier_ID):
+    result=' '
+    try:
+        connection = sqlite3.connect(DB_PATH)
+        connection.execute("PRAGMA foreign_keys = 1")
+        cursor = connection.cursor()
+       
+        query = f'SELECT Name FROM Force WHERE Soldier_ID = ?'
+        result = cursor.execute(query, (Soldier_ID,)).fetchall()
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+        return result[0][0]
+
+
+def ExtendVacation(Soldier_ID, new_to_date):
+    RefreshVacations()
+    try:
+        connection = sqlite3.connect(DB_PATH)
+        connection.execute("PRAGMA foreign_keys = 1")
+        cursor = connection.cursor()
+
+        update_query = 'UPDATE Vacations SET "To_Date" = ?, "Extended" = 1 WHERE "Soldier_ID" = ?'
+        result = cursor.execute(update_query, [new_to_date, Soldier_ID])
+
+        connection.commit()
+
+
+        from_date = getLastReturnFromID(Soldier_ID=Soldier_ID)
+        Soldier_Name = GetNameFromID(Soldier_ID=Soldier_ID)
+        ArchiveVacation(Soldier_ID=Soldier_ID, Soldier_Name=Soldier_Name, From_Date=from_date, To_Date=new_to_date, state='1', summoned=0, active=1)
+        
+    except sqlite3.Error as e:
+        print(e)
+        return False
+    finally:
+        cursor.close()
+
+
+def GetToDateFromVacation(Soldier_ID):
+    RefreshVacations()
+    result = ['']
+    try:
+        connection = sqlite3.connect(DB_PATH)
+        connection.execute("PRAGMA foreign_keys = 1")
+        cursor = connection.cursor()
+
+        query = 'SELECT "To_Date" FROM Vacations WHERE "Soldier_ID" = ?'
+        result = cursor.execute(query, (Soldier_ID,)).fetchall()
+        
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+        return result[0][0]
+
+
+
+def GetAllFromDatesOfExtensions():
+    allVacations = getActiveVacations(with_disabled=True, only_extensions=1)
+    allIDS = []
+    for tup in allVacations:
+        allIDS.append(tup[0])
+    
+    allExtensionFromDates = []
+    for id in allIDS:
+        allExtensionFromDates.append(GetExtensionFromDate(id))
+
+    return allExtensionFromDates
+
 
 
 def CheckStateOfVacation(Soldier_ID):
@@ -389,7 +511,7 @@ def CheckStateOfVacation(Soldier_ID):
 
 
 
-def AddVacation(Soldier_ID, FromDate, ToDate, State, Summoned):
+def AddVacation(Soldier_ID, FromDate, ToDate, State, Summoned, Extended:int=0):
     RefreshVacations()
     try:
         connection = sqlite3.connect(DB_PATH)
@@ -408,8 +530,8 @@ def AddVacation(Soldier_ID, FromDate, ToDate, State, Summoned):
         connection.execute("PRAGMA foreign_keys = 1")
         cursor = connection.cursor()
 
-        insertion_query = '''INSERT INTO Vacations VALUES (?, ?, ?, ?, ?, ?)'''
-        cursor.execute(insertion_query, (Soldier_ID, Soldier_Name, FromDate, ToDate, State, Summoned))
+        insertion_query = '''INSERT INTO Vacations VALUES (?, ?, ?, ?, ?, ?, ?)'''
+        cursor.execute(insertion_query, (Soldier_ID, Soldier_Name, FromDate, ToDate, State, Summoned, Extended))
         connection.commit()
 
         
@@ -417,7 +539,7 @@ def AddVacation(Soldier_ID, FromDate, ToDate, State, Summoned):
             isActive = '0'
         else:
             isActive = '1'
-        ArchiveVacation(Soldier_ID=Soldier_ID, Soldier_Name=Soldier_Name, From_Date=FromDate, To_Date=ToDate, state=State, summoned=Summoned, active=isActive)
+        ArchiveVacation(Soldier_ID=Soldier_ID, Soldier_Name=Soldier_Name, From_Date=FromDate, To_Date=ToDate, state='0', summoned=Summoned, active=isActive)
 
     except sqlite3.Error as e:
         print(e)
@@ -425,6 +547,42 @@ def AddVacation(Soldier_ID, FromDate, ToDate, State, Summoned):
     finally:
         connection.close()
         RefreshVacations()
+
+
+def GetExtensionFromDate(Soldier_ID):
+    try:
+        connection = sqlite3.connect(DB_PATH)
+        connection.execute("PRAGMA foreign_keys = 1")
+        cursor = connection.cursor()
+
+        search_query = "SELECT To_Date FROM Vacations_History WHERE Soldier_ID = ? AND State = 0"
+        result = cursor.execute(search_query, (Soldier_ID,)).fetchall()
+        
+
+
+        if(result == []):
+            return 'غير محسوب بعد'
+        
+        latest_date = date.fromisoformat('2000-01-01') #dummy very old date to compare with
+        for res in result:
+            vac_final_date = date.fromisoformat(res[0])
+            
+            if (vac_final_date > latest_date):
+                latest_date = vac_final_date
+
+        
+        
+
+        cursor.close()
+        print('DEBUGGG\n')
+        print(latest_date.isoformat())
+        return latest_date.isoformat()
+
+    except sqlite3.Error as e:
+        print(e)
+    
+    finally:
+        cursor.close()
 
 
 def RemoveVacation(Soldier_ID):
@@ -466,6 +624,82 @@ def getNamesFromDB() -> list:
     return SoldierNames
 
 
+
+def getIDsFromDB() -> list:
+    allSoldiers = fetchSoldiers()
+    SoldierIDs = []
+    for soldier in allSoldiers:
+        SoldierIDs.append(soldier['Soldier_ID'])
+    return SoldierIDs
+
+
+
+
+def getLastReturnFromID(Soldier_ID:str) -> str:
+    try:
+        connection = sqlite3.connect(DB_PATH)
+        connection.execute("PRAGMA foreign_keys = 1")
+        cursor = connection.cursor()
+
+        search_query = "SELECT To_Date FROM Vacations_History WHERE Soldier_ID = ?"
+        result = cursor.execute(search_query, (Soldier_ID,)).fetchall()
+        
+
+
+        if(result == []):
+            return 'غير محسوب بعد'
+        
+        latest_date = date.fromisoformat('2000-01-01') #dummy very old date to compare with
+        for res in result:
+            vac_final_date = date.fromisoformat(res[0])
+            
+            if (vac_final_date > latest_date):
+                latest_date = vac_final_date
+
+        
+        
+
+        cursor.close()
+        return latest_date.isoformat()
+
+    except sqlite3.Error as e:
+        print(e)
+    
+    finally:
+        cursor.close()
+        # return 'لم يحسب بعد'
+    
+
+
+def getServiceDays(last_vac_date:str)->int:
+    try:
+        delta_date = date.today() - date.fromisoformat(last_vac_date)
+        return delta_date.days
+    except:
+        return 0
+
+
+def getPresentSoldiers():
+    result = []
+    try:
+        connection = sqlite3.connect(DB_PATH)
+        connection.execute("PRAGMA foreign_keys = 1")
+        cursor = connection.cursor()
+
+        query = 'SELECT * FROM Force WHERE NOT EXISTS ( SELECT Soldier_ID FROM Vacations WHERE Force.Soldier_ID = Vacations.Soldier_ID);'
+        result = cursor.execute(query).fetchall()
+        
+    except sqlite3.Error as e:
+        print(e)
+    
+    finally:
+        cursor.close()
+        return result
+    
+
+
+
+
 def CreateDB():
     try:
         # create connection to database 
@@ -489,6 +723,7 @@ def CreateDB():
             "To_Date"	TEXT NOT NULL,
             "State"     INTEGER NOT NULL,
             "Summoned"  INTEGER NOT NULL,
+            "Extended"  INTEGER,
             FOREIGN KEY("Soldier_ID")  REFERENCES Force ("Soldier_ID")  ON DELETE CASCADE
         );''')
 

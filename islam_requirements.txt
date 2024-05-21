@@ -15,3 +15,6 @@ checkbox for each soldier whether or not to put him in any printable documents
 why not put some vector art for plants as a background -as a bottom navbar to be exact- ?
 
 auto patcher, something to automate auto-update
+
+make sure to delete all Vacations_History or just update all the State column to be 0
+make sure to add a new column "Extended" to the Vacations table

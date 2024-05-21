@@ -30,9 +30,11 @@ from zipfile import ZipFile
 
 
 def move_files_inside_folder_to_outside(folder_path):
+
+    move_db_folder()
     # Get a list of all files inside the folder
     files = os.listdir(folder_path)
-    parent_folder = os.path.dirname(os.path.dirname(folder_path))
+    parent_folder = os.path.dirname(os.path.dirname(os.path.dirname(folder_path)))
     
     # # Move each file to the parent directory
     # for file_name in files:
@@ -48,6 +50,22 @@ def move_files_inside_folder_to_outside(folder_path):
     except Exception as e:
         print(e)
 
+    return_db_folder()
+
+
+
+def move_db_folder():
+    db_folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db')
+
+    dst_folder = os.path.dirname(db_folder_path)
+    shutil.copyfile(db_folder_path, dst_folder)
+
+
+def return_db_folder():
+    db_folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db')
+    dst_folder = os.path.dirname(db_folder_path)
+    shutil.copyfile(dst_folder, db_folder_path)
+    shutil.rmtree(dst_folder)
 
 
 
@@ -56,12 +74,25 @@ def check_For_Updates(username, reponame, versionfile):
 
     try:
         r = requests.get(f"https://api.github.com/repos/{username}/{reponame}/commits")
+        r = r.json()
+        
+        print(r)
 
-        entry_date = r.json()[0]['commit']['author']['date']
+        if(type(r) == dict):
+        
+            if(('commit' not in r.keys())):
+                return False, None, ''
+            
+        elif(type(r) == list):
+            print(r[0].keys())
+            if ('commit' not in r[0].keys()):
+                return False, None, ''
+        entry_date = r[0]['commit']['author']['date']
         latest_version = dateutil.parser.parse(entry_date)
 
     except Exception as e:
         print(e)
+        print("Can't connect to remote server, either due to internet issues or the repo is private")
         return False, None, ''
     
 
@@ -110,7 +141,14 @@ def download_update(username, reponame, versionfile, url):
             return
         print('HERERERER')
         print(filename)
-        new_version_zipfile_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
+
+        try:
+            new_version_zipfile_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
+        except Exception as e:
+            print(e)
+            print('error during extracting the zip file')
+            return
+        
 
         # subprocess.run('git pull')
 

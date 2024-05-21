@@ -524,6 +524,10 @@
   {
    "optionDest": "hiddenimports",
    "value": "babel.numbers"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/PDF_Generator/GUI/ver.txt;."
   }
  ],
  "nonPyinstallerOptions": {

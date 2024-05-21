@@ -5,6 +5,7 @@ from firstPage import FirstPage
 import os, math
 from multiprocessing import Pool, Process, freeze_support
 from VacationsPage import VacationsPage
+from Vacations_Group_Page import Vacations_Group_Page
 from LoginScreen import LoginScreen
 import GenHelpers
 import helpers
@@ -72,8 +73,21 @@ class MainMenu():
         return
     
     def render_Vacations_Page(self):
-        self.vp = VacationsPage()
+        try:
+            self.vp.quit()
+        except:
+            pass
+        self.vp = VacationsPage(self.render_Group_Vacations_Page)
         self.vp.renderVacationsPage()
+        return
+    
+    def render_Group_Vacations_Page(self):
+        try:
+            self.vp.quit()
+        except:
+            pass
+        self.vp = Vacations_Group_Page(self.render_Vacations_Page)
+        self.vp.render()
         return
     
 
@@ -163,7 +177,7 @@ class MainMenu():
         self.fontindex = 0
 
 
-        is_update_available, new_version, new_version_str = auto_updater.check_For_Updates(username='aymanreda56', reponame='PDF-Generator', versionfile='ver.txt')
+        is_update_available, new_version, new_version_str = auto_updater.check_For_Updates(username='aymanreda56', reponame='secretary-assistant', versionfile='ver.txt')
         if(is_update_available):
             update_color = WARNING_COLOR
             update_text = 'اضغط للتحديث'
