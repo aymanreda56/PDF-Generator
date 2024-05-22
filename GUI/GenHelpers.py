@@ -15,6 +15,7 @@ from datetime import date
 import helpers
 import enums
 import docx2pdf
+import PyPDF2
 import os, re
 
 
@@ -386,7 +387,7 @@ def Export_Movements_Aggrigator():
     
     for k in keys_to_be_deleted:
         del dictionary_For_Different_Dates[k] 
-        
+
     return dictionary_For_Different_Dates
 
 
@@ -415,7 +416,7 @@ def Export_Movements_PDF_For_One_Date(arr_of_entries:list, date_of_vac:str, exte
     fields_to_replace = {"$DEPT_NAME$":Department_Name, '$DATE_AR$':Date_Arabic, '$WEEKDAY$':Weekday, "$TOD_AR$":today_Date_Arabic, '$DOC_TYP$': 'إمتداد' if extended else 'تحركات'}
     doccc = docx.Document('../pdf/templates/movements.docx')
     Replace_Placeholders_Inside_Movements(doccc, fields_to_replace, Iterable_Fields=IterableFieldsDict)
-    ConvertAndSave(document=doccc, typeDoc='يوميات_تحركات', date_of_doc=date_of_vac)
+    ConvertAndSave(document=doccc, typeDoc='يوميات_تحركات', date_of_doc=date_of_vac, put_watermark=True)
 
 
 def Export_Movements_PDF():
@@ -446,7 +447,7 @@ def Export_Vacation_Passes_PDF():
 
     doccc = docx.Document('../pdf/templates/vacation_passes.docx')
     Replace_Placeholders_Inside_Vac_Passes(doccc, fields_to_replace=fields_to_replace, Iterable_Fields = IterableFieldsDict)
-    ConvertAndSave(document=doccc, typeDoc='تصاريح')
+    ConvertAndSave(document=doccc, typeDoc='تصاريح', put_watermark=False)
 
 
 
@@ -521,10 +522,59 @@ def Export_Tamam_PDF():
 
     doccc = docx.Document('../pdf/templates/tamam.docx')
     Replace_Placeholders_Inside_Document(doccc, fields_to_replace=fields_to_replace, Iterable_Fields = IterableFieldsDict)
-    ConvertAndSave(document=doccc, typeDoc='تمامات')
+    ConvertAndSave(document=doccc, typeDoc='تمامات', put_watermark=True)
     return True
 
-def ConvertAndSave(document, typeDoc:str, date_of_doc = date.today().isoformat()):
+
+
+
+def WaterMarkPDF(path_to_watermark:str, path_to_pdf:str):
+    pdfFile = open(path_to_pdf, 'rb')
+    pdfReader = PyPDF2.PdfReader(pdfFile)
+    # minutesFirstPage = pdfReader.getPage(0)
+    pdfWatermarkReader = PyPDF2.PdfReader(open(path_to_watermark, 'rb'))
+    # minutesFirstPage.mergePage(pdfWatermarkReader.getPage(0))
+    pdfWriter = PyPDF2.PdfWriter()
+    # pdfWriter.addPage(minutesFirstPage)
+
+    for pageNum in range(0, len(pdfReader.pages)):
+            pageObj = pdfReader.pages[pageNum]
+            pageObj.merge_page(pdfWatermarkReader.pages[0])
+            pdfWriter.add_page(pageObj)
+    
+    pdfFile.close()
+    resultPdfFile = open(path_to_pdf, 'wb')
+    pdfWriter.write(resultPdfFile)
+    resultPdfFile.close()
+
+def add_watermark(input_pdf, watermark_pdf):
+    # Read the watermark PDF
+    with open(watermark_pdf, "rb") as watermark_file:
+        watermark = PyPDF2.PdfReader(watermark_file)
+        watermark_page = watermark.pages[0]
+
+        # Read the input PDF
+        with open(input_pdf, "rb+") as input_file:
+            input_pdf_reader = PyPDF2.PdfReader(input_file)
+            output_pdf_writer = PyPDF2.PdfWriter()
+
+            # Iterate through all the pages in the input PDF
+            for page_num in range(len(input_pdf_reader.pages)):
+                page = input_pdf_reader.pages[page_num]
+                # Merge the watermark with the page
+                page.merge_page(watermark_page)
+                # Add the merged page to the output PDF
+                output_pdf_writer.add_page(page)
+
+            # Write the output PDF to a file            
+            output_pdf_writer.write(input_pdf)
+
+
+
+
+
+
+def ConvertAndSave(document, typeDoc:str, date_of_doc = date.today().isoformat(), put_watermark:bool=False):
     # filePath, extension = os.path.splitext(filePath)
     outputPath =  os.path.join(os.path.split(os.getcwd())[0],typeDoc)
     if(not os.path.isdir(outputPath)):
@@ -539,6 +589,11 @@ def ConvertAndSave(document, typeDoc:str, date_of_doc = date.today().isoformat()
 
     document.save(f'{filepath}.docx')
     docx2pdf.convert(f'{filepath}.docx', f'{filepath}.pdf', keep_active=True)
+
+    if(put_watermark):
+        add_watermark(watermark_pdf='../pdf/templates/watermark.pdf', input_pdf=f'{filepath}.pdf')
+
+
     os.startfile(f'{filepath}.pdf')
 
 

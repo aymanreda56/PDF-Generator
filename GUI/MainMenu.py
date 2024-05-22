@@ -264,14 +264,14 @@ class MainMenu():
 
 
 
-            # # #All Documents Show Button
-            # self.AllDocs_Show_Button = ctk.CTkButton(dummy_frame, text="إظهار كل وثائق التعارف", command=self.ShowAllDocuments, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            # self.AllDocs_Show_Button.grid(row=7, pady=30)
+            # #All Documents Show Button
+            self.AllDocs_Show_Button = ctk.CTkButton(dummy_frame, text="إظهار كل وثائق التعارف", command=self.ShowAllDocuments, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            self.AllDocs_Show_Button.grid(row=7, pady=30)
 
 
-            # #Document Entry Button
-            # self.Doc_Entry_Button = ctk.CTkButton(dummy_frame, text='إدخال وثيقة تعارف جديدة', command=self.EnterNewDocument, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            # self.Doc_Entry_Button.grid(row=8, pady=30)
+            #Document Entry Button
+            self.Doc_Entry_Button = ctk.CTkButton(dummy_frame, text='إدخال وثيقة تعارف جديدة', command=self.EnterNewDocument, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            self.Doc_Entry_Button.grid(row=8, pady=30)
 
 
 

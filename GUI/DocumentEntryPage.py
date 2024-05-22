@@ -7,8 +7,10 @@ import SoldierModel
 from tkcalendar import Calendar
 from datetime import date
 import re
+from time import sleep
 import helpers
 from enums import EntryError, SoldierModelErrorCode, EntryErrorCode
+import cropper
 
 
 font_style = 'Dubai'
@@ -321,10 +323,23 @@ class DocumentEntryPage():
     def addImage(self):
         try:
             self.image_path = ctk.filedialog.askopenfilename(defaultextension='.png', filetypes=[('images, *.png'), ('images, *.jpg'), ('images, *.jpeg')])
-
-            img= ctk.CTkImage(light_image=Image.open(self.image_path), dark_image=Image.open(self.image_path), size=(225,225))
-            self.ImageLBL = ctk.CTkLabel(self.Image_Frame, width=225, height=226, image=img, text='')
-            self.ImageLBL.pack()
+            if(self.image_path):
+                
+                temp_img_path = '../db/Soldier_Photos/temp.png'
+                try:
+                    ic = cropper.ImageCropper(image_path=self.image_path, output_path=temp_img_path)
+                    self.root.wait_window(ic.root)
+                except Exception as e:
+                    print(f'something occured here {e}')
+                    raise(EntryError(SoldierModelErrorCode.IMAGE_NOT_PARSEABLE))
+                self.image_path = os.path.abspath(temp_img_path)
+           
+            self.img= ctk.CTkImage(light_image=Image.open(self.image_path), dark_image=Image.open(self.image_path), size=(225,225))
+            try:
+                self.ImageLBL = ctk.CTkLabel(self.Image_Frame, width=225, height=226, image=self.img, text='')
+                self.ImageLBL.pack()
+            except Exception as e:
+                print(f'here is the error {e}')
         except:
             self.displayError(SoldierModelErrorCode.IMAGE_NOT_PARSEABLE)
             return

@@ -64,6 +64,7 @@ class Vacations_Group_Page ():
 
             
             Enter_Vacation_Button = ctk.CTkButton(master=New_Row_Frame, text= 'نزول', fg_color=BUTTON_COLOR, font=(FONT_STYLE, 16, 'bold'))
+            Enter_Vacation_Button.configure(command=lambda: self.add_Vacation(name=data[0], Soldier_ID_string=data[3], FromYearbox=self.Date_Year_Entry, FromMonthbox=self.Date_Month_Entry, FromDaybox=self.Date_Day_Entry, duration=self.Duration_Textbox, frame_to_be_destroyed=New_Row_Frame, master_frame=master_frame))
             Enter_Vacation_Button.grid(row=0, column=1, sticky='E', padx=30)
             
         else:
@@ -111,12 +112,11 @@ class Vacations_Group_Page ():
         Extension_Button.configure(text='مد', command= lambda: self.show_extension_entry(frame, Extension_Button, Soldier_ID=Soldier_ID))
 
 
-    
 
 
+    def add_Vacation(self, name, Soldier_ID_string, FromYearbox, FromMonthbox, FromDaybox, duration, frame_to_be_destroyed, master_frame):
 
-
-    def add_Vacation(self, name, Soldier_ID_string, FromYearbox, FromMonthbox, FromDaybox, duration):
+        
         (from_year, from_month, from_day) = FromYearbox.get(), FromMonthbox.get(), FromDaybox.get()
         try:
             self.validate_date(year=from_year, month=from_month, day=from_day)
@@ -125,9 +125,16 @@ class Vacations_Group_Page ():
             return
         From_date_string = date(year=int(from_year), month=int(from_month), day= int(from_day)).isoformat()
 
-        if(duration <= 0):
-              self.displayError('برجاء إدخال مدة أجازة صالحة')
-              return
+
+        try:
+            duration = duration.get()
+            duration = int(duration)
+            if(duration and duration <= 0):
+                self.displayError('برجاء إدخال مدة أجازة صالحة')
+                return
+        except:
+            self.displayError('برجاء إدخال مدة أجازة صالحة')
+            return
 
 
         
@@ -150,11 +157,15 @@ class Vacations_Group_Page ():
             self.displayError(e)
             return
 
-        #fix this line to make the row as "per vacation"
-        # self.Add_Soldier_To_Preview(soldier_data=soldierdata, entries_frame=self.entries_frame, num_entries=self.number_Of_Vacations)
-        
-
         self.errors_Lbl.configure(text='')
+        frame_to_be_destroyed.pack_forget()
+
+
+        
+        last_vac_date = helpers.getLastReturnFromID(Soldier_ID=Soldier_ID_string)
+        service_days = helpers.getServiceDays(last_vac_date)
+        data = (name, last_vac_date, service_days, Soldier_ID_string)
+        self.Add_Row(master_frame=master_frame, data=data)
 
 
     def Soldiers_Showing_Frame(self):
@@ -201,8 +212,8 @@ class Vacations_Group_Page ():
         dummy_frame.pack(pady=30)
         label = ctk.CTkLabel(dummy_frame, text='المدة', font=('Arial', 20, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
         label.grid(row= 0, column=3, pady=10, sticky='e')
-        Name_textbox = ctk.CTkEntry(dummy_frame, font=("Arial", 20), width=50, justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR, placeholder_text='7')
-        Name_textbox.grid(row=0, column=2, pady=10, padx=20, sticky='e')
+        self.Duration_Textbox = ctk.CTkEntry(dummy_frame, font=("Arial", 20), width=50, justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR, placeholder_text='7')
+        self.Duration_Textbox.grid(row=0, column=2, pady=10, padx=20, sticky='e')
 
 
 
@@ -218,14 +229,14 @@ class Vacations_Group_Page ():
 
     def AddVacationDatePlaceHolder(self, date_frame):
         
-        self.RetiringDate_Day_Entry = ctk.CTkEntry(date_frame, font=(FONT_STYLE, 15), width=100, placeholder_text='اليوم', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
-        self.RetiringDate_Day_Entry.grid(row=0, column=3, padx=5)
+        self.Date_Day_Entry = ctk.CTkEntry(date_frame, font=(FONT_STYLE, 15), width=100, placeholder_text='اليوم', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
+        self.Date_Day_Entry.grid(row=0, column=3, padx=5)
 
-        self.RetiringDate_Month_Entry = ctk.CTkEntry(date_frame, font=(FONT_STYLE, 15), width=100, placeholder_text='الشهر', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
-        self.RetiringDate_Month_Entry.grid(row=0, column=2, padx=5)
+        self.Date_Month_Entry = ctk.CTkEntry(date_frame, font=(FONT_STYLE, 15), width=100, placeholder_text='الشهر', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
+        self.Date_Month_Entry.grid(row=0, column=2, padx=5)
 
-        self.RetiringDate_Year_Entry = ctk.CTkEntry(date_frame, font=(FONT_STYLE, 15), width=100, placeholder_text='السنة', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
-        self.RetiringDate_Year_Entry.grid(row=0, column=1, padx=5)
+        self.Date_Year_Entry = ctk.CTkEntry(date_frame, font=(FONT_STYLE, 15), width=100, placeholder_text='السنة', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
+        self.Date_Year_Entry.grid(row=0, column=1, padx=5)
 
         # self.retiringdcalendarshowbutton = ctk.CTkButton(date_frame, text='التقويم', font=(FONT_STYLE, 15), width=30, command= lambda: self.showCalendar('retire'))
         # self.retiringdcalendarshowbutton.grid(row=0, column=0, sticky='n')

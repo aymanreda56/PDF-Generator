@@ -1,14 +1,22 @@
-import tkinter as tk
-from tkinter import filedialog, messagebox
+import customtkinter as ctk
+from customtkinter import CTkInputDialog
 from PIL import Image, ImageTk
+import os
+
+FONT_STYLE = 'Dubai'
 
 class ImageCropper:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Image Cropper")
+    def __init__(self, image_path, output_path):
 
-        self.canvas = tk.Canvas(root, cursor="cross")
-        self.canvas.pack(fill=tk.BOTH, expand=True)
+        
+        self.root = ctk.CTkToplevel()
+        # self.root = ctk.CTk(self.toplevel)
+        self.root.title("Image Cropper")
+        self.root.geometry("1000x800")
+        self.output_path = output_path
+
+        self.canvas = ctk.CTkCanvas(self.root, cursor="cross")
+        self.canvas.pack(fill=ctk.BOTH, expand=True)
 
         self.crop_rect = None
         self.rect_id = None
@@ -25,18 +33,18 @@ class ImageCropper:
         self.canvas.bind("<MouseWheel>", self.on_mouse_scroll)
         self.canvas.bind("<Configure>", self.on_canvas_resize)
 
-        self.menu = tk.Menu(root)
-        root.config(menu=self.menu)
+        self.save_button = ctk.CTkButton(master=self.canvas, text='حفظ', font=(FONT_STYLE, 16, 'bold'), command=self.save_image)
+        self.save_button.place(relx=0.5, rely=0.9, anchor='center')
 
-        file_menu = tk.Menu(self.menu, tearoff=0)
-        self.menu.add_cascade(label="File", menu=file_menu)
-        file_menu.add_command(label="Open", command=self.open_image)
-        file_menu.add_command(label="Save", command=self.save_image)
-        file_menu.add_separator()
-        file_menu.add_command(label="Exit", command=root.quit)
+        self.image_path = image_path
+        self.open_image()
+        
+        
+
 
     def open_image(self):
-        file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg;*.bmp")])
+        # file_path = ctk.filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg;*.bmp")])
+        file_path = self.image_path
         if file_path:
             self.image_path = file_path
             self.img = Image.open(file_path)
@@ -45,14 +53,14 @@ class ImageCropper:
     def display_image(self):
         self.canvas.delete("all")
         self.tk_img = ImageTk.PhotoImage(self.img)
-        self.canvas.create_image(0, 0, anchor=tk.NW, image=self.tk_img)
-        self.canvas.config(scrollregion=self.canvas.bbox(tk.ALL))
+        self.canvas.create_image(0, 0, anchor=ctk.NW, image=self.tk_img)
+        self.canvas.config(scrollregion=self.canvas.bbox(ctk.ALL))
         self.create_fixed_aspect_crop_rect()
 
     def create_fixed_aspect_crop_rect(self):
         self.canvas.delete(self.rect_id)
         self.crop_rect = [50, 50, 50 + self.rect_width, 50 + self.rect_height]
-        self.rect_id = self.canvas.create_rectangle(*self.crop_rect, outline="red")
+        self.rect_id = self.canvas.create_rectangle(*self.crop_rect, outline="red", width=3)
 
     def on_button_press(self, event):
         self.start_x = event.x
@@ -80,24 +88,32 @@ class ImageCropper:
             self.display_image()
 
     def save_image(self):
+        try:
+            os.remove(self.output_path)
+        except:
+            pass
         if self.crop_rect and self.img is not None:
             x1, y1, x2, y2 = self.crop_rect
             x1, y1 = max(x1, 0), max(y1, 0)
             x2, y2 = min(x2, self.img.width), min(y2, self.img.height)
             if x2 > x1 and y2 > y1:
                 cropped_img = self.img.crop((x1, y1, x2, y2))
-                save_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG Files", "*.png")])
+                save_path = self.output_path #ctk.filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG Files", "*.png")])
                 if save_path:
                     cropped_img.save(save_path)
-                    messagebox.showinfo("Image Cropper", "Image saved successfully!")
+
+                    # self.root.nametowidget(self.root.winfo_parent()).destroy()
+                    self.root.destroy()
+
+    
+                    
 
     def update_guideline(self, new_width, new_height):
         self.rect_width = new_width
         self.rect_height = new_height
         self.create_fixed_aspect_crop_rect()
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = ImageCropper(root)
-    root.geometry("800x600")
-    root.mainloop()
+
+
+# ic = ImageCropper(image_path='D:\PDF_Generator\db\Soldier_Photos\scarlet.jpg', output_path='../db/Soldier_Photos/temp.png')
+# ic.render()
