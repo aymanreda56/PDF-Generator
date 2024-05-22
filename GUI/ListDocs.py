@@ -1,7 +1,7 @@
 import customtkinter as ctk
 import re, math
 from datetime import date
-# import os
+import os
 # import GenHelpers
 import helpers
 from PIL import ImageTk, Image
@@ -12,6 +12,9 @@ from DocShow import DocShow
 
 from soldData import SoldierData
 
+
+DB_FOLDER = os.path.abspath('../db')
+DB_PHOTOS = os.path.join(DB_FOLDER, 'Soldier_Photos')
 
 
 font_style = 'Dubai'

@@ -135,7 +135,7 @@ def download_update(username, reponame, versionfile, url):
         print(f'downloading from {url}')
         
         try:
-            filename = wget.download(url, out=os.path.dirname(os.path.abspath(__file__)))
+            filename = wget.download(url, out=os.path.dirname(os.path.dirname(os.path.abspath(__file__))), bar=None)
         except Exception as e:
             print(e)
             return
@@ -143,7 +143,8 @@ def download_update(username, reponame, versionfile, url):
         print(filename)
 
         try:
-            new_version_zipfile_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
+            pass
+            # new_version_zipfile_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
         except Exception as e:
             print(e)
             print('error during extracting the zip file')
@@ -153,33 +154,50 @@ def download_update(username, reponame, versionfile, url):
         # subprocess.run('git pull')
 
 
-        new_version_folder, extension = os.path.splitext(new_version_zipfile_path)
+        # new_version_folder, extension = os.path.splitext(new_version_zipfile_path)
         with ZipFile(filename, 'r') as zObject: 
-            temp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp')
-            if(not os.path.exists(temp_dir)):
-                os.mkdir(temp_dir)
-            zObject.extractall(path=os.path.dirname(os.path.abspath(__file__)))
+            # temp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp')
+            # if(not os.path.exists(temp_dir)):
+            #     os.mkdir(temp_dir)
+            zObject.extractall(path=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
             
 
-        move_files_inside_folder_to_outside(new_version_folder)
+        # move_files_inside_folder_to_outside(new_version_folder)
         
 
-        try:
-            shutil.rmtree(temp_dir)
-            os.remove(new_version_zipfile_path)
-        except Exception as e:
-            print(e)
+        # try:
+        #     shutil.rmtree(temp_dir)
+        os.remove(filename)
+        # except Exception as e:
+        #     print(e)
         
+
+        _, onlynewFoldername = os.path.split(filename)
 
 
 
         with open(file="ver.txt", mode='w')as f:
             f.write(new_version_str)
 
+        workpath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        cleanup(workpath=workpath, new_workpath=os.path.join( workpath, onlynewFoldername))
+
 
     else:
         print('Up to date :)')
+
+
+
+def cleanup(workpath:str, new_workpath:str):
+    shutil.copytree(os.path.join(workpath, 'db'), os.path.join(new_workpath, 'db'))
+
+    allFolders = os.listdir(workpath)
+    for folder in allFolders:
+        if(os.path.abspath(os.path.abspath(os.path.join(workpath, folder))) == os.path.abspath(new_workpath)):
+            continue
+        shutil.rmtree(os.path.abspath(os.path.abspath(os.path.join(workpath, folder))))
+    
 
 
 

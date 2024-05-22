@@ -1,10 +1,12 @@
 import sqlite3
 from enums import EntryError, EntryErrorCode, ArmyLevels
 from datetime import date
+import os
 
 
 DB_PATH = '../db/Soldiers.db'
-
+DB_FOLDER_PATH, DB_FILE_NAME = os.path.split(DB_PATH)
+DB_PHOTOS = os.path.join(DB_FOLDER_PATH, 'Soldier_Photos')
 
 
 
@@ -817,7 +819,7 @@ def retreive_Document(soldier_ID):
         result = cursor.execute(Checking_query, (str(soldier_ID),)).fetchall()
         
         returned_result = {}
-        returned_result['Image_Path'] = result[0][0]
+        returned_result['Image_Path'] = os.path.join(DB_PHOTOS,result[0][0])
         returned_result['Name'] = result[0][1]
         returned_result['BirthDate'] = result[0][2]
         returned_result['Soldier_ID'] = result[0][3]
@@ -853,7 +855,7 @@ def retreive_All_Documents():
         final_result = []
         for result in allresults:
             entry_result = {}
-            entry_result['Image_Path'] = result[0]
+            entry_result['Image_Path'] = os.path.abspath(os.path.join(DB_PHOTOS, result[0]))
             entry_result['Name'] = result[1]
             entry_result['BirthDate'] = result[2]
             entry_result['Soldier_ID'] = result[3]

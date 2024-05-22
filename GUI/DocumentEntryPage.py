@@ -13,6 +13,10 @@ from enums import EntryError, SoldierModelErrorCode, EntryErrorCode
 import cropper
 
 
+DB_FOLDER = os.path.abspath('../db')
+DB_PHOTOS = os.path.join(os.path.abspath(DB_FOLDER),'Soldier_Photos')
+
+
 font_style = 'Dubai'
 guide_font_size = 20
 
@@ -204,11 +208,11 @@ class DocumentEntryPage():
 
         # image_file_name, image_file_path = os.path.split(Image_Path)
         fullpath, extension = os.path.splitext(self.image_path)
-        dstImage = os.path.join(os.path.abspath('../db/Soldier_Photos'), Soldier_ID+extension)
+        dstImage = os.path.join(os.path.abspath(DB_PHOTOS), Soldier_ID+extension)
         shutil.copy2(self.image_path, dstImage)
 
 
-        helpers.insert_Document(image_path=dstImage, name=Name, birth_date=bdate_string, soldier_id=Soldier_ID, retiring_date=retiring_date_string
+        helpers.insert_Document(image_path=Soldier_ID+extension, name=Name, birth_date=bdate_string, soldier_id=Soldier_ID, retiring_date=retiring_date_string
                                 , mobile_number=Mobile_Number, home_number=Home_Num, home_address=Home_Address, city=City, governorate=Governorate,
                                 mothers_mob_number=MothersMobileNum, function_inside_department=Function_dept, date_of_join=Date_Of_Join)
         
@@ -325,7 +329,7 @@ class DocumentEntryPage():
             self.image_path = ctk.filedialog.askopenfilename(defaultextension='.png', filetypes=[('images, *.png'), ('images, *.jpg'), ('images, *.jpeg')])
             if(self.image_path):
                 
-                temp_img_path = '../db/Soldier_Photos/temp.png'
+                temp_img_path = os.path.join(DB_PHOTOS,'temp.png')
                 try:
                     ic = cropper.ImageCropper(image_path=self.image_path, output_path=temp_img_path)
                     self.root.wait_window(ic.root)
