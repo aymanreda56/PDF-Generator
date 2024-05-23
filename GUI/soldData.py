@@ -1,3 +1,10 @@
+import os
+
+with open('db_path.txt', 'r') as f:
+    DB_FOLDER = os.path.abspath(f.read())
+    DB_PHOTOS = os.path.join(DB_FOLDER, 'Soldier_Photos')
+    
+
 
 
 
@@ -8,7 +15,7 @@ SoldierData = [ \
         'Soldier_ID': '012153133',\
         'Mobile_Num': '01225838009',\
         'Retiring_Date': '01-03-2025',\
-        'Image_Path': r'D:\PDF_Generator\db\Soldier_Photos\ayman.png',\
+        'Image_Path': os.path.join(DB_PHOTOS,'ayman.png'),\
     },\
 
     {\
@@ -17,7 +24,7 @@ SoldierData = [ \
         'Soldier_ID': '123513213',\
         'Mobile_Num': '01225838009',\
         'Retiring_Date': '01-03-2025',\
-        'Image_Path': r'D:\PDF_Generator\db\Soldier_Photos\khaled.png',\
+        'Image_Path': os.path.join(DB_PHOTOS,'khaled.png'),\
     },\
     
     {
@@ -26,7 +33,7 @@ SoldierData = [ \
         'Soldier_ID': '542312351',\
         'Mobile_Num': '01225838009',\
         'Retiring_Date': '01-03-2025',\
-        'Image_Path': r'D:\PDF_Generator\db\Soldier_Photos\sabry.png',\
+        'Image_Path': os.path.join(DB_PHOTOS,'sabry.png'),\
     },
 
 
@@ -36,7 +43,7 @@ SoldierData = [ \
         'Soldier_ID': '753442341',\
         'Mobile_Num': '01225838009',\
         'Retiring_Date': '01-03-2025',\
-        'Image_Path': r'D:\PDF_Generator\db\Soldier_Photos\halim.png',\
+        'Image_Path': os.path.join(DB_PHOTOS,'halim.png'),\
     },\
     
 
@@ -46,7 +53,7 @@ SoldierData = [ \
         'Soldier_ID': '123215124',\
         'Mobile_Num': '01225838009',\
         'Retiring_Date': '01-03-2025',\
-        'Image_Path': r'D:\PDF_Generator\db\Soldier_Photos\amgad.png',\
+        'Image_Path': os.path.join(DB_PHOTOS,'amgad.png'),\
     },\
     
     ]

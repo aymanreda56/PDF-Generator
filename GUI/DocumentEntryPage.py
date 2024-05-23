@@ -12,9 +12,12 @@ import helpers
 from enums import EntryError, SoldierModelErrorCode, EntryErrorCode
 import cropper
 
+with open('db_path.txt', 'r') as f:
+    DB_FOLDER = os.path.abspath(f.read())
+    DB_PATH = os.path.abspath(os.path.join(DB_FOLDER, 'Soldiers.db'))
+    DB_PHOTOS = os.path.join(os.path.abspath(DB_FOLDER),'Soldier_Photos')
 
-DB_FOLDER = os.path.abspath('../db')
-DB_PHOTOS = os.path.join(os.path.abspath(DB_FOLDER),'Soldier_Photos')
+
 
 
 font_style = 'Dubai'

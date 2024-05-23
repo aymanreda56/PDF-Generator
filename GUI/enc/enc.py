@@ -1,7 +1,9 @@
 import hashlib #line:1
 import sqlite3 #line:2
-
-DB_PATH = '../db/Soldiers.db'
+import os
+with open('db_path.txt', 'r') as f:
+    string = f.read()
+    DB_PATH = os.path.abspath(os.path.join(string, 'Soldiers.db'))
 
 # def encryptor (O000OO0OOO0000O00 ,OOOOO00OOO0OO00OO ):#line:5
 #     OO000000O0O0000O0 ='1a9b00c2478ab95f2184c8'#line:6

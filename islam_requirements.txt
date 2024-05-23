@@ -18,3 +18,5 @@ auto patcher, something to automate auto-update
 
 make sure to delete all Vacations_History or just update all the State column to be 0
 make sure to add a new column "Extended" to the Vacations table
+make sure to fix the Table "Documents" --> Column "Image_Path"
+maybe make a dummy photo to appear for any error that happens for the image

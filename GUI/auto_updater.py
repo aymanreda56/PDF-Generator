@@ -20,6 +20,13 @@ import subprocess
 from zipfile import ZipFile
 
 
+
+with open('db_path.txt', 'r') as f:
+    DB_FOLDER = os.path.abspath(f.read())
+    DB_PATH = os.path.abspath(os.path.join(DB_FOLDER, 'Soldiers.db'))
+
+
+
 # username = 'aymanreda56'
 # reponame= 'test'
 # versionfile='ver.txt'
@@ -31,7 +38,6 @@ from zipfile import ZipFile
 
 def move_files_inside_folder_to_outside(folder_path):
 
-    move_db_folder()
     # Get a list of all files inside the folder
     files = os.listdir(folder_path)
     parent_folder = os.path.dirname(os.path.dirname(os.path.dirname(folder_path)))
@@ -50,22 +56,21 @@ def move_files_inside_folder_to_outside(folder_path):
     except Exception as e:
         print(e)
 
-    return_db_folder()
 
 
 
-def move_db_folder():
-    db_folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db')
+def move_db_folder(destination_folder):
+    db_folder_path = DB_FOLDER#os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db')
 
-    dst_folder = os.path.dirname(db_folder_path)
-    shutil.copyfile(db_folder_path, dst_folder)
+    #dst_folder = os.path.dirname(db_folder_path)
+    shutil.copyfile(db_folder_path, destination_folder)
 
 
-def return_db_folder():
-    db_folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db')
-    dst_folder = os.path.dirname(db_folder_path)
-    shutil.copyfile(dst_folder, db_folder_path)
-    shutil.rmtree(dst_folder)
+# def return_db_folder():
+#     db_folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db')
+#     dst_folder = os.path.dirname(db_folder_path)
+#     shutil.copyfile(dst_folder, db_folder_path)
+#     shutil.rmtree(dst_folder)
 
 
 
@@ -175,7 +180,7 @@ def download_update(username, reponame, versionfile, url):
 
         _, onlynewFoldername = os.path.split(filename)
 
-
+        
 
         with open(file="ver.txt", mode='w')as f:
             f.write(new_version_str)
@@ -190,7 +195,7 @@ def download_update(username, reponame, versionfile, url):
 
 
 def cleanup(workpath:str, new_workpath:str):
-    shutil.copytree(os.path.join(workpath, 'db'), os.path.join(new_workpath, 'db'))
+    shutil.copytree(DB_FOLDER, new_workpath)
 
     allFolders = os.listdir(workpath)
     for folder in allFolders:

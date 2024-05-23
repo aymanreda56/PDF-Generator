@@ -166,16 +166,22 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
             change_style_of_par(doc, row.cells[0].paragraphs[0], 'Strong Par', 14, True)
 
             counter += 1
-            if(i > 9 and (not page_broken)):
+            if(i > 12 and (not page_broken)):
                 par_format = row.cells[0].paragraphs[0].paragraph_format
                 par_format.page_break_before = True
                 page_broken = True
         
         
-        space_paragraph.text = ''
-        if counter < 8:
-            space_paragraph.style.font.size = Pt((8-counter) * 9)
         
+
+        if counter == 12 or counter == 11:
+            delete_paragraph(space_paragraph)
+        elif counter >12:
+            space_paragraph.style.font.size = Pt(100)
+        elif counter < 11:
+            space_paragraph.style.font.size = Pt((11-counter) * 9)
+        
+        space_paragraph.text = '   ⠀   '
 
         # for row in Vacations_Table.rows:
         #     for cell in row.cells:
@@ -198,7 +204,10 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
 
 
 
-
+def delete_paragraph(paragraph):
+    p = paragraph._element
+    p.getparent().remove(p)
+    paragraph._p = paragraph._element = None
 
 
 def Replace_Placeholders_Inside_Movements(doc, fields_to_replace:dict, Iterable_Fields):

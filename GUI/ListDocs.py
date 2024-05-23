@@ -12,9 +12,10 @@ from DocShow import DocShow
 
 from soldData import SoldierData
 
-
-DB_FOLDER = os.path.abspath('../db')
-DB_PHOTOS = os.path.join(DB_FOLDER, 'Soldier_Photos')
+with open('db_path.txt', 'r') as f:
+    DB_FOLDER = os.path.abspath(f.read())
+    DB_PHOTOS = os.path.join(DB_FOLDER, 'Soldier_Photos')
+    
 
 
 font_style = 'Dubai'

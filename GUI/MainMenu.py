@@ -238,40 +238,40 @@ class MainMenu():
 
             # The titel label
             self.Big_Label = ctk.CTkLabel(dummy_frame, text="تنظيم و افراد مكتب السيد/ مدير الجهاز", font=(font_text, 50, 'bold'), text_color=BUTTON_COLOR)
-            self.Big_Label.grid(row=1, pady=30, padx=20)
+            self.Big_Label.grid(row=1, columnspan=2,pady=30, padx=20)
 
             #Tammam printing Button
             self.Tammam_Button = ctk.CTkButton(dummy_frame, text='طباعة تمام اليوم', command=self.Print_Tamam, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Tammam_Button.grid(row=2, pady=30)
+            self.Tammam_Button.grid(row=2, columnspan=2, pady=30)
 
             #Vacations Entry Button
             self.Vacations_Entry_Button = ctk.CTkButton(dummy_frame, text='تسجيل أجازات', command=self.render_Vacations_Page, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Vacations_Entry_Button.grid(row=3, pady=30)
+            self.Vacations_Entry_Button.grid(row=3, columnspan=2, pady=30)
             if(self.is_admin != '1'):
                 self.Vacations_Entry_Button.grid_forget()
 
             #Movement printing button
             self.Movement_print_Button = ctk.CTkButton(dummy_frame, text='طباعة يومية تحركات', command=self.Print_Movements, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Movement_print_Button.grid(row=4, pady=30)
+            self.Movement_print_Button.grid(row=4, columnspan=2, pady=30)
 
             #Vacations pass printing button
             self.Vacations_print_Button = ctk.CTkButton(dummy_frame, text='طباعة تصاريح الأجازات', command=self.Print_Vac_Passes, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Vacations_print_Button.grid(row=5, pady=30)
+            self.Vacations_print_Button.grid(row=5, columnspan=2, pady=30)
 
             #Vacations pass printing button
             self.Entry_Button = ctk.CTkButton(dummy_frame, text='إدخال/ تعديل البيانات', command=self.render_Entry_Page, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Entry_Button.grid(row=6, pady=30)
+            self.Entry_Button.grid(row=6, columnspan=2, pady=30)
 
 
 
             # #All Documents Show Button
             self.AllDocs_Show_Button = ctk.CTkButton(dummy_frame, text="إظهار كل وثائق التعارف", command=self.ShowAllDocuments, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.AllDocs_Show_Button.grid(row=7, pady=30)
+            self.AllDocs_Show_Button.grid(row=7, column=0, pady=30)
 
 
             #Document Entry Button
             self.Doc_Entry_Button = ctk.CTkButton(dummy_frame, text='إدخال وثيقة تعارف جديدة', command=self.EnterNewDocument, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Doc_Entry_Button.grid(row=8, pady=30)
+            self.Doc_Entry_Button.grid(row=7, column=1, pady=30)
 
 
 

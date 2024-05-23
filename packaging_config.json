@@ -528,6 +528,10 @@
   {
    "optionDest": "datas",
    "value": "D:/PDF_Generator/GUI/ver.txt;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/PDF_Generator/GUI/db_path.txt;."
   }
  ],
  "nonPyinstallerOptions": {

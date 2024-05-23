@@ -4,9 +4,17 @@ from datetime import date
 import os
 
 
-DB_PATH = '../db/Soldiers.db'
-DB_FOLDER_PATH, DB_FILE_NAME = os.path.split(DB_PATH)
-DB_PHOTOS = os.path.join(DB_FOLDER_PATH, 'Soldier_Photos')
+
+
+
+with open('db_path.txt', 'r') as f:
+    DB_FOLDER_PATH = os.path.abspath(f.read())
+    DB_FILE_NAME = 'Soldiers.db'
+    DB_PATH = os.path.join(DB_FOLDER_PATH, DB_FILE_NAME)
+    DB_PHOTOS = os.path.join(DB_FOLDER_PATH, 'Soldier_Photos')
+   
+
+   
 
 
 

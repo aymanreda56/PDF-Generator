@@ -42,8 +42,8 @@ class Vacations_Group_Page ():
 
 
     def Add_Row(self, master_frame, data:tuple):
-        New_Row_Frame = ctk.CTkFrame(master=master_frame, fg_color=FRAME_LIGHT_COLOR, width=900)
-        New_Row_Frame.pack(pady=5, fill=ctk.X)
+        New_Row_Frame = ctk.CTkFrame(master=master_frame, width = 1380, height=35, fg_color=ENTRY_FG_COLOR)
+        New_Row_Frame.pack(pady=3, fill=ctk.X)
 
 
         service_days = data[2]
@@ -51,21 +51,21 @@ class Vacations_Group_Page ():
                 service_days = 'لم يحسب بعد'
 
 
-        Last_Date_Lbl = ctk.CTkLabel(master=New_Row_Frame, text= data[1], font=(FONT_STYLE, 16, 'bold'), justify = 'right')
-        Last_Date_Lbl.grid(row=0, column=3, sticky='E', padx=80)
+        Last_Date_Lbl = ctk.CTkLabel(master=New_Row_Frame, text= data[1], font=(FONT_STYLE, 16, 'bold'), justify = 'right', width=30, text_color=TEXT_COLOR)
+        Last_Date_Lbl.place(relx=0.6, rely=0.5, anchor='center')
 
 
-        Name_Lbl = ctk.CTkLabel(master=New_Row_Frame, text= data[0], font=(FONT_STYLE, 16, 'bold'), justify = 'right')
-        Name_Lbl.grid(sticky='E', row=0, column=4, padx=80)
+        Name_Lbl = ctk.CTkLabel(master=New_Row_Frame, text= data[0], font=(FONT_STYLE, 16, 'bold'), justify = 'right', width=30, text_color=TEXT_COLOR)
+        Name_Lbl.place(relx=0.88, rely=0.5, anchor='center')
 
         if(data[2] >= 0):
-            Service_Days_Lbl = ctk.CTkLabel(master=New_Row_Frame, text= service_days, font=(FONT_STYLE, 16, 'bold'), justify = 'right')
-            Service_Days_Lbl.grid(row=0, column=2, sticky='E', padx=80)
+            Service_Days_Lbl = ctk.CTkLabel(master=New_Row_Frame, text= service_days, font=(FONT_STYLE, 16, 'bold'), justify = 'right', width=30, text_color=TEXT_COLOR)
+            Service_Days_Lbl.place(relx=0.3, rely=0.5, anchor='center')
 
             
-            Enter_Vacation_Button = ctk.CTkButton(master=New_Row_Frame, text= 'نزول', fg_color=BUTTON_COLOR, font=(FONT_STYLE, 16, 'bold'))
+            Enter_Vacation_Button = ctk.CTkButton(master=New_Row_Frame, text= 'نزول', fg_color=BUTTON_LIGHT_COLOR, font=(FONT_STYLE, 16, 'bold'))
             Enter_Vacation_Button.configure(command=lambda: self.add_Vacation(name=data[0], Soldier_ID_string=data[3], FromYearbox=self.Date_Year_Entry, FromMonthbox=self.Date_Month_Entry, FromDaybox=self.Date_Day_Entry, duration=self.Duration_Textbox, frame_to_be_destroyed=New_Row_Frame, master_frame=master_frame))
-            Enter_Vacation_Button.grid(row=0, column=1, sticky='E', padx=30)
+            Enter_Vacation_Button.place(relx=0.1, rely=0.5, anchor='center')
             
         else:
             Extension_Button = ctk.CTkButton(master=New_Row_Frame, text= 'مد', fg_color=ACCEPT_COLOR, font=(FONT_STYLE, 16, 'bold'), width=50)
@@ -184,21 +184,30 @@ class Vacations_Group_Page ():
         data_to_be_displayed.sort(key=lambda x: x[2], reverse= True) #sort according to service days
 
 
-        Master_Frame = ctk.CTkScrollableFrame(master=self.root, width=1000, height=500)
-        Master_Frame.pack()
+        frame_for_scrollable_frame = ctk.CTkFrame(self.root, width=1460,fg_color=FRAME_DARK_COLOR, border_color=BUTTON_COLOR, border_width=5, corner_radius=15)
+        frame_for_scrollable_frame.pack()
+        
+        Header_Frame = ctk.CTkFrame(master=frame_for_scrollable_frame, fg_color=FRAME_LIGHT_COLOR, width=1460, height=30, corner_radius=5)
+        Header_Frame.pack(pady=8, padx=8)
+        
+        
+        Master_Frame = ctk.CTkScrollableFrame(frame_for_scrollable_frame, label_text="", width=1430, height=500,fg_color=FRAME_DARK_COLOR, label_fg_color=FRAME_DARK_COLOR, scrollbar_button_color=BUTTON_COLOR)
+        # self.big_Entire_Frame = entire_preview_frame
 
-        Header_Frame = ctk.CTkFrame(master=Master_Frame, fg_color=FRAME_LIGHT_COLOR, width=900)
-        Header_Frame.pack(pady=5, fill=ctk.X)
+        # Master_Frame = ctk.CTkScrollableFrame(master=self.root, width=1000, height=500)
+        Master_Frame.pack(padx=10)
+
+        
 
         Service_Days_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'عدد أيام الخدمة', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT)
-        Service_Days_Lbl.grid(row=0, column=0, sticky='E', padx=80)
+        Service_Days_Lbl.place(relx=0.3, rely=0.5, anchor='center')
 
         Last_Date_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'تاريخ آخر عودة', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT)
-        Last_Date_Lbl.grid(row=0, column=1, sticky='E', padx=80)
+        Last_Date_Lbl.place(relx=0.6, rely=0.5, anchor='center')
 
 
         Name_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'الإسم', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT)
-        Name_Lbl.grid(sticky='E', row=0, column=2, padx=80)
+        Name_Lbl.place(relx=0.88, rely=0.5, anchor='center')
 
 
         for soldier in data_to_be_displayed:
@@ -208,22 +217,24 @@ class Vacations_Group_Page ():
     
 
     def control_panel(self):
-        dummy_frame = ctk.CTkFrame(master=self.root, width=700)
-        dummy_frame.pack(pady=30)
+        dummy_frame = ctk.CTkFrame(master=self.root, width=700, height=50,fg_color=BG_COLOR)
+        dummy_frame.pack(pady=30, padx=10)
+        dummy_frame.pack_propagate(False)
+
         label = ctk.CTkLabel(dummy_frame, text='المدة', font=('Arial', 20, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
-        label.grid(row= 0, column=3, pady=10, sticky='e')
+        label.pack(side=ctk.RIGHT)
         self.Duration_Textbox = ctk.CTkEntry(dummy_frame, font=("Arial", 20), width=50, justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR, placeholder_text='7')
-        self.Duration_Textbox.grid(row=0, column=2, pady=10, padx=20, sticky='e')
+        self.Duration_Textbox.pack(side=ctk.RIGHT, padx=10)
 
 
 
-        label = ctk.CTkLabel(dummy_frame, text="تاريخ النزول", font=('Arial', 20, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
-        label.grid(row= 0, column=1, pady=10, padx=20, sticky='w')
+        
         date_frame = ctk.CTkFrame(dummy_frame, width=200, fg_color=TEXT_BOX_FG_COLOR)
-        date_frame.grid(row=0, column=0, pady=10, padx=20, sticky='w')
+        date_frame.pack(side=ctk.LEFT)
         self.AddVacationDatePlaceHolder(date_frame)
 
-
+        label = ctk.CTkLabel(dummy_frame, text="تاريخ النزول", font=('Arial', 20, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        label.pack(side=ctk.LEFT, padx=10)
 
 
 
