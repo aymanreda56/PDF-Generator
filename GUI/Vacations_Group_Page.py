@@ -123,6 +123,8 @@ class Vacations_Group_Page ():
         except EntryError as e:
             self.displayError(e)
             return
+        
+        
         From_date_string = date(year=int(from_year), month=int(from_month), day= int(from_day)).isoformat()
 
 
@@ -136,7 +138,7 @@ class Vacations_Group_Page ():
             self.displayError('برجاء إدخال مدة أجازة صالحة')
             return
 
-
+        
         
         to_date_string = date.fromisoformat(From_date_string) + timedelta(days=duration)
         to_date_string = to_date_string.isoformat()
@@ -160,7 +162,6 @@ class Vacations_Group_Page ():
         self.errors_Lbl.configure(text='')
         frame_to_be_destroyed.pack_forget()
 
-
         
         last_vac_date = helpers.getLastReturnFromID(Soldier_ID=Soldier_ID_string)
         service_days = helpers.getServiceDays(last_vac_date)
@@ -179,6 +180,14 @@ class Vacations_Group_Page ():
             
 
             data_to_be_displayed.append((Soldier_Name, last_vac_date, service_days, Soldier_ID))
+        
+        # all_absent_soldiers = helpers.getActiveVacations(with_disabled=True)
+        # for soldier in all_absent_soldiers:
+        #     Soldier_ID = soldier[0]
+        #     Soldier_Name = soldier[1]
+        #     last_vac_date = helpers.getLastReturnFromID(Soldier_ID=Soldier_ID)
+        #     service_days = helpers.getServiceDays(last_vac_date)
+        #     data_to_be_displayed.append((Soldier_Name, last_vac_date, service_days, Soldier_ID))
 
 
         data_to_be_displayed.sort(key=lambda x: x[2], reverse= True) #sort according to service days
@@ -199,14 +208,14 @@ class Vacations_Group_Page ():
 
         
 
-        Service_Days_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'عدد أيام الخدمة', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT)
+        Service_Days_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'عدد أيام الخدمة', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT, text_color=FG_COLOR)
         Service_Days_Lbl.place(relx=0.3, rely=0.5, anchor='center')
 
-        Last_Date_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'تاريخ آخر عودة', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT)
+        Last_Date_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'تاريخ آخر عودة', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT, text_color=FG_COLOR)
         Last_Date_Lbl.place(relx=0.6, rely=0.5, anchor='center')
 
 
-        Name_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'الإسم', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT)
+        Name_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'الإسم', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT, text_color=FG_COLOR)
         Name_Lbl.place(relx=0.88, rely=0.5, anchor='center')
 
 
@@ -214,12 +223,61 @@ class Vacations_Group_Page ():
             self.Add_Row(Master_Frame, soldier)
 
 
+
+
+
+
+
+
+
+    def showCalendar(self):
+        self.calenndar = Calendar(self.date_frame, font=('Comic Sans MS', 12), borderwidth=10, background = CALENDAR_BG, foreground=CALENDAR_FG, 
+                             bordercolor = '#F5F5F5', normalbackground='#FFFFFF', disabledbackground = '#F5F5F5', disabledforeground = '#F5F5F5', selectforeground = '#F5F5F5',
+                             selectbackground = '#0047FF',
+                             headerforeground='#749BC2',
+                             cursor='heart', showweeknumbers = False
+                             ,weekendbackground='#F5F5F5')
+        
+
+        for child in self.date_frame.winfo_children():
+            child_widget = self.date_frame.nametowidget(child)
+            child_widget.grid_forget()
+        self.calenndar.grid(row=0, column=0, columnspan=3, padx=10, pady=20)
+
+        self.calendar_button.configure(text='اختيار', command=self.hideCalendar)
+
+
+    def hideCalendar(self ):
+
+        chosen_date = self.calenndar.get_date() #returned as 4/25/24 for 2024/March/25th
+        month, day, year = re.split('/',chosen_date)
+        year = "20"+year
+
+        self.calenndar.destroy()
+
+
+        self.Date_Day_Entry = ctk.CTkEntry(self.date_frame, font=("Arial", 15), width=100, placeholder_text='اليوم', justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        self.Date_Day_Entry.grid(row=0, column=2, padx=5)
+
+        self.Date_Month_Entry = ctk.CTkEntry(self.date_frame, font=("Arial", 15), width=100, placeholder_text='الشهر', justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        self.Date_Month_Entry.grid(row=0, column=1, padx=5)
+
+        self.Date_Year_Entry = ctk.CTkEntry(self.date_frame, font=("Arial", 15), width=100, placeholder_text='السنة', justify='right', fg_color=FG_COLOR, text_color=TEXT_COLOR)
+        self.Date_Year_Entry.grid(row=0, column=0, padx=5)
+
+        self.Date_Day_Entry.insert(0, day)
+        self.Date_Month_Entry.insert(0, month)
+        self.Date_Year_Entry.insert (0, year)
+
+
+        self.calendar_button.configure(text='التقويم', command= self.showCalendar)
     
 
     def control_panel(self):
-        dummy_frame = ctk.CTkFrame(master=self.root, width=700, height=50,fg_color=BG_COLOR)
+        dummy_frame = ctk.CTkFrame(master=self.root, width=700, height=50, fg_color=BG_COLOR)
         dummy_frame.pack(pady=30, padx=10)
-        dummy_frame.pack_propagate(False)
+        # dummy_frame2 = ctk.CTkFrame(master=dummy_frame, width=700, height=50, fg_color=BG_COLOR)
+        # dummy_frame2.place(relx=0.5, rely=0.5, anchor='center')
 
         label = ctk.CTkLabel(dummy_frame, text='المدة', font=('Arial', 20, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
         label.pack(side=ctk.RIGHT)
@@ -227,11 +285,12 @@ class Vacations_Group_Page ():
         self.Duration_Textbox.pack(side=ctk.RIGHT, padx=10)
 
 
+        self.calendar_button = ctk.CTkButton(master=dummy_frame, text='التقويم', font=(FONT_STYLE, 16, 'bold'), fg_color=BUTTON_COLOR, text_color=WHITE_TEXT_COLOR, command=self.showCalendar)
+        self.calendar_button.pack(side=ctk.LEFT)
 
-        
-        date_frame = ctk.CTkFrame(dummy_frame, width=200, fg_color=TEXT_BOX_FG_COLOR)
-        date_frame.pack(side=ctk.LEFT)
-        self.AddVacationDatePlaceHolder(date_frame)
+        self.date_frame = ctk.CTkFrame(dummy_frame, width=200, fg_color=TEXT_BOX_FG_COLOR)
+        self.date_frame.pack(side=ctk.LEFT)
+        self.AddVacationDatePlaceHolder(self.date_frame)
 
         label = ctk.CTkLabel(dummy_frame, text="تاريخ النزول", font=('Arial', 20, 'bold'), fg_color=FG_COLOR, text_color=TEXT_COLOR)
         label.pack(side=ctk.LEFT, padx=10)
@@ -241,13 +300,13 @@ class Vacations_Group_Page ():
     def AddVacationDatePlaceHolder(self, date_frame):
         
         self.Date_Day_Entry = ctk.CTkEntry(date_frame, font=(FONT_STYLE, 15), width=100, placeholder_text='اليوم', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
-        self.Date_Day_Entry.grid(row=0, column=3, padx=5)
+        self.Date_Day_Entry.grid(row=0, column=2, padx=5)
 
         self.Date_Month_Entry = ctk.CTkEntry(date_frame, font=(FONT_STYLE, 15), width=100, placeholder_text='الشهر', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
-        self.Date_Month_Entry.grid(row=0, column=2, padx=5)
+        self.Date_Month_Entry.grid(row=0, column=1, padx=5)
 
         self.Date_Year_Entry = ctk.CTkEntry(date_frame, font=(FONT_STYLE, 15), width=100, placeholder_text='السنة', justify='right', fg_color=TEXT_BOX_FG_COLOR, text_color=TEXT_COLOR)
-        self.Date_Year_Entry.grid(row=0, column=1, padx=5)
+        self.Date_Year_Entry.grid(row=0, column=0, padx=5)
 
         # self.retiringdcalendarshowbutton = ctk.CTkButton(date_frame, text='التقويم', font=(FONT_STYLE, 15), width=30, command= lambda: self.showCalendar('retire'))
         # self.retiringdcalendarshowbutton.grid(row=0, column=0, sticky='n')

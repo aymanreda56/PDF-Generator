@@ -242,7 +242,7 @@ class VacationsPage():
 
 
     def Remove_Soldier_From_Preview(self, Soldier_ID, frame_to_be_destroyed):
-        helpers.RemoveVacation(Soldier_ID=Soldier_ID)
+        helpers.RemoveVacation(Soldier_ID=Soldier_ID, delete_from_history=True)
         frame_to_be_destroyed.destroy()
         return
     

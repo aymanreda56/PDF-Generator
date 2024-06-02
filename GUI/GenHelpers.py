@@ -47,8 +47,8 @@ def translate_all_numbers_to_arabic(English_text):
     # then fix the date format
     try:
         arabicText = re.split('/', arabicText)
-        if(len(arabicText[0]) == 2 and len(arabicText[2]) == 4):
-            arabicText.reverse()
+        # if(len(arabicText[0]) == 2 and len(arabicText[2]) == 4):
+        arabicText.reverse()
         arabicText = '/'.join(arabicText)
     except:
         arabicText = ''.join(arabicText)
@@ -69,9 +69,10 @@ Weekday = days_map[date.today().weekday()]
 def change_style_of_par(doc, parapgraph, style_name: str, size: int, bold: bool):
     parapgraph.style = doc.styles[style_name]
     parapgraph.style.font.size = Pt(size)
-    parapgraph.style.font.ltr = True
+    parapgraph.style.font.rtl = True
     parapgraph.alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
     parapgraph.style.font.bold = bold
+    
 
 
 
@@ -90,18 +91,21 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
         for p in section.header.paragraphs:
             for run in p.runs:
                 run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+                run.font.rtl = True
                 
                 
 
         for p in section.footer.paragraphs:
             for run in p.runs:
                 run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+                run.font.rtl = True
 
 
     space_paragraph = None
     for paragraph in doc.paragraphs:
         for run in paragraph.runs:
             run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+            run.font.rtl = True
             if('$space$' in run.text):
                 space_paragraph = paragraph
     
@@ -117,10 +121,11 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
                 for paragraph in cell.paragraphs:
                     for run in paragraph.runs:
                         run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+                        run.font.rtl = True
                         # print(f'\n\n\n\n{run.text}')
                         if("$SIGN$" in run.text):
                             run.text = re.sub('\(*\)*\s*\$SIGN\$\s*\)*\(*', '', run.text)
-                            run.add_picture('../data/signature.png', width=Inches(1))
+                            run.add_picture('../data/signature.jpg', width=Inches(1))
                             cell.alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
                             paragraph_format = paragraph.paragraph_format
                             paragraph_format.keep_together = True 
@@ -217,12 +222,14 @@ def Replace_Placeholders_Inside_Movements(doc, fields_to_replace:dict, Iterable_
         for p in section.header.paragraphs:
             for run in p.runs:
                 run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+                run.font.rtl = True
                 
                 
 
         for p in section.footer.paragraphs:
             for run in p.runs:
                 run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+                run.font.rtl = True
 
 
 
@@ -230,6 +237,7 @@ def Replace_Placeholders_Inside_Movements(doc, fields_to_replace:dict, Iterable_
     for paragraph in doc.paragraphs:
         for run in paragraph.runs:
             run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+            run.font.rtl = True
             if('$space$' in run.text):
                 space_paragraph = paragraph
 
@@ -244,6 +252,7 @@ def Replace_Placeholders_Inside_Movements(doc, fields_to_replace:dict, Iterable_
                 for paragraph in cell.paragraphs:
                     for run in paragraph.runs:
                         run.text = replace_placeHolders(fields_to_replace=fields_to_replace, carrier_object=run.text)
+                        run.font.rtl = True
                         if('$LOGO$' in run.text):
                             run.text = ''
                             run.add_picture('../data/logo.png', width=Inches(2.5))
@@ -276,6 +285,7 @@ def Replace_Placeholders_Inside_Movements(doc, fields_to_replace:dict, Iterable_
                 cell.paragraphs[0].style = doc.styles['Strong Par']
                 cell.paragraphs[0].alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
                 cell.paragraphs[0].style.font.bold = True
+                cell.paragraphs[0].style.font.rtl = True
     
     
         space_paragraph.text = '  '
@@ -316,6 +326,7 @@ def Replace_Placeholders_Inside_Vac_Passes(doc, fields_to_replace:list, Iterable
                                         for run in paragraph.runs:
                                             for field in fields_to_replace:
                                                     run.text = run.text.replace(field, Iterable_Fields[counter][field])
+                                                    run.font.rtl = True
                                                     # print(Iterable_Fields[counter][field])
                                                     
 
@@ -325,6 +336,7 @@ def Replace_Placeholders_Inside_Vac_Passes(doc, fields_to_replace:list, Iterable
                                             for field in fields_to_replace:
                 
                                                     run.text = run.text.replace(field, Iterable_Fields[counter][field])
+                                                    run.font.rtl = True
                                                     # print(Iterable_Fields[counter][field])
                                                     
                                                 

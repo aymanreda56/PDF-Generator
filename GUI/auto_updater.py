@@ -34,6 +34,46 @@ with open('db_path.txt', 'r') as f:
 
 
 
+def merge_directories(src:str, dst:str) -> None:
+    """
+    Recursively merges two directories. Files in the destination directory
+    will be replaced by files with the same name from the source directory.
+
+    :param src: The source directory path
+    :param dst: The destination directory path
+    """
+
+    for src_dir, dirs, files in os.walk(src):
+        # Calculate the relative path from the source directory
+        relative_path = os.path.relpath(src_dir, src)
+        # Determine the corresponding destination directory
+        dst_dir = os.path.join(dst, relative_path)
+
+        # Ensure the destination directory exists
+        if not os.path.exists(dst_dir):
+            os.makedirs(dst_dir)
+
+        # Copy files from the source to the destination
+        for file_ in files:
+            src_file = os.path.join(src_dir, file_)
+            dst_file = os.path.join(dst_dir, file_)
+            shutil.copy2(src_file, dst_file)
+
+    # Walk the directories again to ensure all subdirectories are created
+    for src_dir, dirs, files in os.walk(src):
+        for dir_ in dirs:
+            src_subdir = os.path.join(src_dir, dir_)
+            dst_subdir = os.path.join(dst, os.path.relpath(src_subdir, src))
+            if not os.path.exists(dst_subdir):
+                os.makedirs(dst_subdir)
+
+# if __name__ == "__main__":
+#     src_folder = "path/to/source_folder"
+#     dst_folder = "path/to/destination_folder"
+#     merge_directories(src_folder, dst_folder)
+
+
+
 
 
 def move_files_inside_folder_to_outside(folder_path):
@@ -140,7 +180,10 @@ def download_update(username, reponame, versionfile, url):
         print(f'downloading from {url}')
         
         try:
-            filename = wget.download(url, out=os.path.dirname(os.path.dirname(os.path.abspath(__file__))), bar=None)
+            project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            outside_project_folder = os.path.dirname(project_folder)
+            filename = wget.download(url, out = outside_project_folder, bar=None)
+            filename = os.path.abspath(filename)
         except Exception as e:
             print(e)
             return
@@ -161,11 +204,16 @@ def download_update(username, reponame, versionfile, url):
 
         # new_version_folder, extension = os.path.splitext(new_version_zipfile_path)
         with ZipFile(filename, 'r') as zObject: 
-            # temp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp')
-            # if(not os.path.exists(temp_dir)):
-            #     os.mkdir(temp_dir)
-            zObject.extractall(path=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            temp_dir = os.path.join(outside_project_folder, 'temp')
+            if(not os.path.exists(temp_dir)):
+                os.mkdir(temp_dir)
+            zObject.extractall(path = temp_dir)
 
+            assert(len(os.listdir(temp_dir)) > 0)
+            new_version_folder = os.path.join(temp_dir, os.listdir(temp_dir)[0])
+
+
+        merge_directories(src = new_version_folder, dst = project_folder)
             
 
         # move_files_inside_folder_to_outside(new_version_folder)
@@ -178,15 +226,15 @@ def download_update(username, reponame, versionfile, url):
         #     print(e)
         
 
-        _, onlynewFoldername = os.path.split(filename)
+        # _, onlynewFoldername = os.path.split(filename)
 
         
 
         with open(file="ver.txt", mode='w')as f:
             f.write(new_version_str)
 
-        workpath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        cleanup(workpath=workpath, new_workpath=os.path.join( workpath, onlynewFoldername))
+        # workpath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        # cleanup(workpath=workpath, new_workpath=os.path.join( workpath, onlynewFoldername))
 
 
     else:

@@ -368,7 +368,7 @@ def getAllDates(with_disabled: bool = False, only_extensions=None) -> list[str]:
         cursor.close()
 
 
-def getActiveVacations(with_disabled: bool = False, only_extensions=None):
+def getActiveVacations(with_disabled: bool = False, only_extensions=None) -> list:
     RefreshVacations()
     try:
         connection = sqlite3.connect(DB_PATH)
@@ -595,14 +595,20 @@ def GetExtensionFromDate(Soldier_ID):
         cursor.close()
 
 
-def RemoveVacation(Soldier_ID):
+def RemoveVacation(Soldier_ID, delete_from_history:bool = False):
     try:
         connection = sqlite3.connect(DB_PATH)
         connection.execute("PRAGMA foreign_keys = 1")
         cursor = connection.cursor()
 
         search_query = "DELETE FROM Vacations WHERE Soldier_ID = ?"
+        
         result = cursor.execute(search_query, (Soldier_ID,))
+
+        if(delete_from_history):
+            history_deletion_query = 'DELETE FROM Vacations_History WHERE Soldier_ID = ? AND To_Date = ?'
+            result = cursor.execute(history_deletion_query, (Soldier_ID, getLastReturnFromID(Soldier_ID=Soldier_ID)))
+            
         connection.commit()
     except sqlite3.Error as e:
         print(e)
