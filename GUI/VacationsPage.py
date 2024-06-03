@@ -378,9 +378,9 @@ class VacationsPage():
         label = ctk.CTkLabel(self.root, text="أدخل بيانات العساكر",  font=('Arial', 35, 'bold'), text_color=TEXT_COLOR)
         label.pack(pady=20)
 
-        img= ctk.CTkImage(light_image=Image.open('../data/logo_dark.png'), dark_image=Image.open('../data/logo_dark.png'), size=(250,250))
+        img= ctk.CTkImage(light_image=Image.open('../data/logo_dark.png'), dark_image=Image.open('../data/logo_dark.png'), size=(250,312.5))
         ImageLBL = ctk.CTkLabel(self.root, width=self.root.winfo_width(), height=self.root.winfo_height(), image=img, text='')
-        ImageLBL.place(relx=0.93, rely=0.15, anchor=ctk.CENTER)
+        ImageLBL.place(relx=0.93, rely=0.2, anchor=ctk.CENTER)
 
         bg_img= ctk.CTkImage(light_image=Image.open('../data/bg_logo_semi_transparent.png'), dark_image=Image.open('../data/bg_logo_semi_transparent.png'), size=(1000,1000))
         ImageLBL = ctk.CTkLabel(self.root, image=bg_img, text='')

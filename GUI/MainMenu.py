@@ -17,7 +17,7 @@ import auto_updater
 
 which_frame_is_active = None
 
-font_text ='Arial'
+font_text ='Dubai'
 
 
 
@@ -207,20 +207,20 @@ class MainMenu():
             
             self.first_window_root.title("تنظيم و أفراد مكتب السيد/ مدير الجهاز")
             screen_width, screen_height = self.first_window_root.winfo_screenwidth(), self.first_window_root.winfo_screenheight()
-            width, height = 1700, 900
+            width, height = 1800, 900
             self.first_window_root.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2))}")  # Set window size
             self.first_window_root.iconbitmap("../data/icolog.ico")
-            img= ctk.CTkImage(light_image=Image.open('../data/logo_dark.png'), dark_image=Image.open('../data/logo_dark.png'), size=(250,250))
+            img= ctk.CTkImage(light_image=Image.open(PROJ_LOGO), dark_image=Image.open(PROJ_LOGO), size=(250, 312.5 if CHOSEN_PRESET else 250))
             self.ImageLBL = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=img, text='')
-            self.ImageLBL.place(relx=0.88, rely=0.15, anchor=ctk.CENTER)
+            self.ImageLBL.place(relx=0.88, rely=0.2, anchor=ctk.CENTER)
 
-            self.bg_img= ctk.CTkImage(light_image=Image.open('../data/BG_logo.png'), dark_image=Image.open('../data/BG_logo.png'), size=(600,600))
+            self.bg_img= ctk.CTkImage(light_image=Image.open(BG_LOGO), dark_image=Image.open(BG_LOGO), size=(600,600))
             bg_img_lbl = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=self.first_window_root.winfo_height(), image=self.bg_img, text='')
             bg_img_lbl.place(relx=0, rely=0.52, anchor=ctk.CENTER)
 
 
 
-            grass_img= ctk.CTkImage(light_image=Image.open('../data/grass5.png'), dark_image=Image.open('../data/grass5.png'), size=(1700,120))
+            grass_img= ctk.CTkImage(light_image=Image.open(GRASS), dark_image=Image.open(GRASS), size=(1700,120))
             bottom_navbar = ctk.CTkLabel(self.first_window_root, width=self.first_window_root.winfo_width(), height=60, image=grass_img, text='')
             bottom_navbar.place(relx=0.5, rely=1, anchor='s')
 
@@ -237,42 +237,43 @@ class MainMenu():
             dummy_frame.place(relx=0.5, rely=0.1, anchor=ctk.N)
 
             # The titel label
-            self.Big_Label = ctk.CTkLabel(dummy_frame, text="تنظيم و افراد مكتب السيد/ مدير الجهاز", font=(font_text, 50, 'bold'), text_color=BUTTON_COLOR)
-            self.Big_Label.grid(row=1, columnspan=2,pady=30, padx=20)
+            self.Big_Label = ctk.CTkLabel(dummy_frame, text="تنظيم و أفراد مكتب السيد/ مدير الجهاز", font=(font_text, 70, 'bold'), text_color=BUTTON_COLOR)
+            self.Big_Label.grid(row=1, columnspan=8,pady=70, padx=20)
 
             #Tammam printing Button
             self.Tammam_Button = ctk.CTkButton(dummy_frame, text='طباعة تمام اليوم', command=self.Print_Tamam, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Tammam_Button.grid(row=2, columnspan=2, pady=30)
+            self.Tammam_Button.grid(row=2, column=4, pady=30)
 
-            #Vacations Entry Button
-            self.Vacations_Entry_Button = ctk.CTkButton(dummy_frame, text='تسجيل أجازات', command=self.render_Vacations_Page, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Vacations_Entry_Button.grid(row=3, columnspan=2, pady=30)
-            if(self.is_admin != '1'):
-                self.Vacations_Entry_Button.grid_forget()
 
             #Movement printing button
             self.Movement_print_Button = ctk.CTkButton(dummy_frame, text='طباعة يومية تحركات', command=self.Print_Movements, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Movement_print_Button.grid(row=4, columnspan=2, pady=30)
+            self.Movement_print_Button.grid(row=2, column=3, pady=30)
 
             #Vacations pass printing button
             self.Vacations_print_Button = ctk.CTkButton(dummy_frame, text='طباعة تصاريح الأجازات', command=self.Print_Vac_Passes, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Vacations_print_Button.grid(row=5, columnspan=2, pady=30)
+            self.Vacations_print_Button.grid(row=3, column=4, pady=30)
+
+
+    
+            #Vacations Entry Button
+            self.Vacations_Entry_Button = ctk.CTkButton(dummy_frame, text='تسجيل أجازات', command=self.render_Vacations_Page, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            self.Vacations_Entry_Button.grid(row=3, column=3, pady=30)
+            
+
 
             #Vacations pass printing button
             self.Entry_Button = ctk.CTkButton(dummy_frame, text='إدخال/ تعديل البيانات', command=self.render_Entry_Page, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Entry_Button.grid(row=6, columnspan=2, pady=30)
-
+            self.Entry_Button.grid(row=5, column =2, columnspan=4, pady=30)
 
 
             # #All Documents Show Button
             self.AllDocs_Show_Button = ctk.CTkButton(dummy_frame, text="إظهار كل وثائق التعارف", command=self.ShowAllDocuments, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.AllDocs_Show_Button.grid(row=7, column=0, pady=30)
+            self.AllDocs_Show_Button.grid(row=4, column=3, pady=30)
 
 
             #Document Entry Button
             self.Doc_Entry_Button = ctk.CTkButton(dummy_frame, text='إدخال وثيقة تعارف جديدة', command=self.EnterNewDocument, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Doc_Entry_Button.grid(row=7, column=1, pady=30)
-
+            self.Doc_Entry_Button.grid(row=4, column=4, pady=30)
 
 
             self.Change_Font_Button = ctk.CTkButton(self.first_window_root, text='تغيير الفونت', command=self.ChangeAllFonts, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
@@ -310,6 +311,15 @@ class MainMenu():
 
             self.first_window_root.after(20000, self.RefreshVacations)
             self.first_window_root.after(1, self.CheckRunningThreadsForLoadingWindow)
+
+
+
+
+            if(self.is_admin != '1'):
+                # self.Vacations_Entry_Button.grid_forget()
+                self.Doc_Entry_Button.grid_forget()
+                self.AllDocs_Show_Button.grid_forget()
+                self.Entry_Button.grid_forget()
 
 
 

@@ -7,6 +7,8 @@ import GenHelpers, helpers
 from PIL import ImageTk, Image
 from style import *
 from soldData import SoldierData
+from DocumentEntryPage import DocumentEntryPage
+from SoldierModel import SoldierModel
 # from enc import enc
 
 
@@ -124,10 +126,24 @@ class DocShow():
 
     def __init__(self, image_path, name, birth_date, soldier_id, retiring_date, mobile_number, home_number, home_address, city=None, governorate=None, mothers_mob_number=None, function_inside_department=None, date_of_join=None):
         
-        
-        self.root = ctk.CTkToplevel(fg_color=BG_COLOR)
+        self.image_path = image_path
         self.soldier_id = soldier_id
         self.name = name
+        self.birth_date = birth_date
+        self.retiring_date = retiring_date
+        self.mobile_number = mobile_number
+        self.home_number = home_number
+        self.home_address = home_address
+        self.city = city
+        self.governorate = governorate
+        self.mothers_mob_number = mothers_mob_number
+        self.function_inside_department = function_inside_department
+        self.date_of_join = date_of_join
+
+
+        
+        self.root = ctk.CTkToplevel(fg_color=BG_COLOR)
+
 
         
         screen_width, screen_height = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
@@ -153,6 +169,9 @@ class DocShow():
 
         self.DeleteButton = ctk.CTkButton(master=self.frame_for_grid, width=150, corner_radius=15, fg_color=REMOVE_BUTTON_COLOR, text='مسح الوثيقة', font=(font_style, 20, 'bold'), text_color=FG_COLOR, command=self.ConfirmPage)
         self.DeleteButton.place(relx=0.18, rely=0.84, anchor=ctk.CENTER)
+
+        self.EditButton = ctk.CTkButton(master=self.frame_for_grid, width=150, corner_radius=15, fg_color=ACCEPT_COLOR, text='تعديل الوثيقة', font=(font_style, 20, 'bold'), text_color=FG_COLOR, command=self.edit_document)
+        self.EditButton.place(relx=0.18, rely=0.78, anchor=ctk.CENTER)
         # self.Frame_For_Buttons = ctk.CTkFrame(self.root)
         # self.Frame_For_Buttons.pack()
 
@@ -161,6 +180,66 @@ class DocShow():
         self.root.bind('<Control-q>', lambda x: self.quit())
 
         self.root.mainloop()
+
+
+
+    
+    def edit_document(self):
+        self.root.destroy()
+
+        SoldModel = SoldierModel(image_path= self.image_path,
+            name = self.name,
+            birth_date= self.birth_date,
+            soldier_id= self.soldier_id,
+            retiring_date= self.retiring_date,
+            mobile_number= self.mobile_number,
+            home_number= self.home_number,
+            home_address= self.home_address,
+            city= self.city,
+            governorate= self.governorate,
+            mothers_mob_number= self.mothers_mob_number,
+            function_inside_department= self.function_inside_department,
+            date_of_join= self.date_of_join)
+        
+        dep = DocumentEntryPage(edit_mode=True, Sold_Model=SoldModel)
+
+
+        dep.renderDocumentsEntryPage()
+
+        
+        
+
+        # self.ds = DocShow(
+        #     image_path= self.image_path,
+        #     name = self.name,
+        #     birth_date= self.birth_date,
+        #     soldier_id= self.soldier_id,
+        #     retiring_date= self.retiring_date,
+        #     mobile_number= self.mobile_number,
+        #     home_number= self.home_number,
+        #     home_address= self.home_address,
+        #     city= self.city,
+        #     governorate= self.governorate,
+        #     mothers_mob_number= self.mothers_mob_number,
+        #     function_inside_department= self.function_inside_department,
+        #     date_of_join= self.date_of_join
+        # )
+
+        # self.ds.render(
+        #     image_path= self.image_path,
+        #     name = self.name,
+        #     birth_date= self.birth_date,
+        #     soldier_id= self.soldier_id,
+        #     retiring_date= self.retiring_date,
+        #     mobile_number= self.mobile_number,
+        #     home_number= self.home_number,
+        #     home_address= self.home_address,
+        #     city= self.city,
+        #     governorate= self.governorate,
+        #     mothers_mob_number= self.mothers_mob_number,
+        #     function_inside_department= self.function_inside_department,
+        #     date_of_join= self.date_of_join
+        # )
 
 
 

@@ -120,16 +120,16 @@ class LoginScreen():
         self.root.iconbitmap("../data/icolog.ico")
 
 
-        img= ctk.CTkImage(light_image=Image.open('../data/logo_dark.png'), dark_image=Image.open('../data/logo_dark.png'), size=(250,250))
+        img= ctk.CTkImage(light_image=Image.open(PROJ_LOGO), dark_image=Image.open(PROJ_LOGO), size=(250,312.5 if CHOSEN_PRESET else 250))
         ImageLBL = ctk.CTkLabel(self.root, width=self.root.winfo_width(), height=self.root.winfo_height(), image=img, text='')
-        ImageLBL.place(relx=0.88, rely=0.15, anchor=ctk.CENTER)
+        ImageLBL.place(relx=0.88, rely=0.2, anchor=ctk.CENTER)
 
-        self.bg_img= ctk.CTkImage(light_image=Image.open('../data/BG_logo.png'), dark_image=Image.open('../data/BG_logo.png'), size=(700,700))
+        self.bg_img= ctk.CTkImage(light_image=Image.open(BG_LOGO), dark_image=Image.open(BG_LOGO), size=(700,700))
         self.bg_img_lbl = ctk.CTkLabel(self.root, width=self.root.winfo_width(), height=self.root.winfo_height(), image=self.bg_img, text='')
         self.bg_img_lbl.place(relx=0, rely=0.52, anchor=ctk.CENTER)
 
 
-        wheatimg= ctk.CTkImage(light_image=Image.open('../data/wheat_leaves.png'), dark_image=Image.open('../data/wheat_leaves.png'), size=(630,200))
+        wheatimg= ctk.CTkImage(light_image=Image.open(WHEAT_LEAVES), dark_image=Image.open(WHEAT_LEAVES), size=(630,200))
         botNavbar = ctk.CTkLabel(self.root, width=self.root.winfo_width(), height=self.root.winfo_height(), image=wheatimg, text='')
         botNavbar.place(relx=0.5, rely=1, anchor='s')
 
@@ -140,11 +140,11 @@ class LoginScreen():
         Big_Label.place(relx = 0.5, rely= 0.1, anchor = ctk.CENTER)
 
 
-        self.username_Entry = ctk.CTkEntry(self.root, placeholder_text='اسم المستخدم', font=('Arial', 30, 'bold'), justify='right', width=300)
+        self.username_Entry = ctk.CTkEntry(self.root, placeholder_text='اسم المستخدم', font=('Dubai', 30, 'bold'), justify='right', width=300)
         self.username_Entry.place(relx = 0.5, rely=0.35, anchor=ctk.CENTER)
         self.username_Entry.bind("<Key>", lambda x:self.autoJustify(1))
 
-        self.password_Entry = ctk.CTkEntry(self.root, placeholder_text='كلمة السر', font=('Arial', 30, 'bold'), justify='right', width=300)
+        self.password_Entry = ctk.CTkEntry(self.root, placeholder_text='كلمة السر', font=('Dubai', 30, 'bold'), justify='right', width=300)
         self.password_Entry.place(relx = 0.5, rely=0.45, anchor=ctk.CENTER)
         self.password_Entry.bind("<Key>", lambda x:self.autoJustify(0))
 
@@ -152,7 +152,7 @@ class LoginScreen():
         self.Error_Label = ctk.CTkLabel(self.root, font=('Arial', 30, 'bold'), justify='right', fg_color=FG_COLOR, text_color=REMOVE_BUTTON_COLOR, text='')
         self.Error_Label.place(relx= 0.5, rely=0.8, anchor=ctk.CENTER)
 
-        sumbit_Button =ctk.CTkButton(self.root, text='إدخال', font=('Arial', 30, 'bold'), width=100, command=lambda: self.Login(username_box=self.username_Entry, password_box=self.password_Entry))
+        sumbit_Button =ctk.CTkButton(self.root, text='إدخال', font=('Dubai', 30, 'bold'), width=100, command=lambda: self.Login(username_box=self.username_Entry, password_box=self.password_Entry))
         sumbit_Button.place(relx=0.5, rely=0.7, anchor=ctk.CENTER)
 
         # self.root.bind("<Configure>", lambda x: self.resizeAll())

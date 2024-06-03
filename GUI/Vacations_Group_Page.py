@@ -73,8 +73,8 @@ class Vacations_Group_Page ():
             Extension_Button.grid(row=0, column=2, sticky='E', padx=20)
 
 
-            Summon_Button = ctk.CTkButton(master=New_Row_Frame, text= 'إستدعاء', fg_color=REMOVE_BUTTON_COLOR, font=(FONT_STYLE, 16, 'bold'))
-            Summon_Button.grid(row=0, column=0, sticky='E', padx=20)
+            # Summon_Button = ctk.CTkButton(master=New_Row_Frame, text= 'إستدعاء', fg_color=REMOVE_BUTTON_COLOR, font=(FONT_STYLE, 16, 'bold'))
+            # Summon_Button.grid(row=0, column=0, sticky='E', padx=20)
 
 
 

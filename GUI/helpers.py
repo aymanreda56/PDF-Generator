@@ -819,6 +819,21 @@ def insert_Document(image_path, name, birth_date, soldier_id, retiring_date, mob
         return False
     
 
+def Edit_Document(image_path, name, birth_date, soldier_id, retiring_date, mobile_number, home_number, home_address, city, governorate, mothers_mob_number, function_inside_department, date_of_join):
+    try:
+        connection = sqlite3.connect(DB_PATH)
+        connection.execute("PRAGMA foreign_keys = 1")
+        cursor = connection.cursor()
+
+        insertion_query = '''UPDATE Documents SET Image_Path = ?, Name = ?, BirthDate = ?, Soldier_ID = ?, Mobile_Num = ?, Home_Address = ?, City = ?, Governorate = ?, Home_Number = ?, Retiring_Date = ?, Mothers_Mobile_Num = ?, Function_Inside_Dept = ?, Date_Of_Join = ? WHERE Soldier_ID = ?'''
+        cursor.execute(insertion_query, (image_path, name, birth_date, soldier_id, mobile_number, home_address, city, governorate, home_number, retiring_date, mothers_mob_number, function_inside_department, date_of_join, soldier_id))
+        connection.commit()
+
+    except sqlite3.Error as e:
+        print(e)
+        return False
+    
+
 
 
 

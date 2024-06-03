@@ -212,10 +212,16 @@ class DocumentEntryPage():
         # image_file_name, image_file_path = os.path.split(Image_Path)
         fullpath, extension = os.path.splitext(self.image_path)
         dstImage = os.path.join(os.path.abspath(DB_PHOTOS), Soldier_ID+extension)
-        shutil.copy2(self.image_path, dstImage)
+        
+        if(self.image_path != dstImage):
+            shutil.copy2(self.image_path, dstImage)
 
-
-        helpers.insert_Document(image_path=Soldier_ID+extension, name=Name, birth_date=bdate_string, soldier_id=Soldier_ID, retiring_date=retiring_date_string
+        if(self.edit_mode):
+            helpers.Edit_Document(image_path=Soldier_ID+extension, name=Name, birth_date=bdate_string, soldier_id=Soldier_ID, retiring_date=retiring_date_string
+                        , mobile_number=Mobile_Number, home_number=Home_Num, home_address=Home_Address, city=City, governorate=Governorate,
+                        mothers_mob_number=MothersMobileNum, function_inside_department=Function_dept, date_of_join=Date_Of_Join)
+        else:
+            helpers.insert_Document(image_path=Soldier_ID+extension, name=Name, birth_date=bdate_string, soldier_id=Soldier_ID, retiring_date=retiring_date_string
                                 , mobile_number=Mobile_Number, home_number=Home_Num, home_address=Home_Address, city=City, governorate=Governorate,
                                 mothers_mob_number=MothersMobileNum, function_inside_department=Function_dept, date_of_join=Date_Of_Join)
         
@@ -327,19 +333,20 @@ class DocumentEntryPage():
 
 
 
-    def addImage(self):
+    def addImage(self, image_path=''):
         try:
-            self.image_path = ctk.filedialog.askopenfilename(defaultextension='.png', filetypes=[('images, *.png'), ('images, *.jpg'), ('images, *.jpeg')])
-            if(self.image_path):
-                
-                temp_img_path = os.path.join(DB_PHOTOS,'temp.png')
-                try:
-                    ic = cropper.ImageCropper(image_path=self.image_path, output_path=temp_img_path)
-                    self.root.wait_window(ic.root)
-                except Exception as e:
-                    print(f'something occured here {e}')
-                    raise(EntryError(SoldierModelErrorCode.IMAGE_NOT_PARSEABLE))
-                self.image_path = os.path.abspath(temp_img_path)
+            if(not image_path):
+                self.image_path = ctk.filedialog.askopenfilename(defaultextension='.png', filetypes=[('images, *.png'), ('images, *.jpg'), ('images, *.jpeg')])
+                if(self.image_path):
+                    
+                    temp_img_path = os.path.join(DB_PHOTOS,'temp.png')
+                    try:
+                        ic = cropper.ImageCropper(image_path=self.image_path, output_path=temp_img_path)
+                        self.root.wait_window(ic.root)
+                    except Exception as e:
+                        print(f'something occured here {e}')
+                        raise(EntryError(SoldierModelErrorCode.IMAGE_NOT_PARSEABLE))
+                    self.image_path = os.path.abspath(temp_img_path)
            
             self.img= ctk.CTkImage(light_image=Image.open(self.image_path), dark_image=Image.open(self.image_path), size=(225,225))
             try:
@@ -356,12 +363,15 @@ class DocumentEntryPage():
         self.Delete_Image_Button.place(relx=0.5, rely=0.85, anchor=ctk.CENTER)
 
 
-    def AddImagePlaceHolder(self):
+    def AddImagePlaceHolder(self, image_path = ''):
         self.Image_Frame = ctk.CTkFrame(master=self.big_scrollable_frame, width=225, height=225, fg_color=EMPTY_IMAGE_PLACEHOLDER, border_color=BUTTON_COLOR, border_width=5)
         self.Image_Frame.grid(pady=20, columnspan = 2, row=0, column=0, padx=20)
 
         self.Image_Entry_Button = ctk.CTkButton(master=self.Image_Frame, text='إدخال صورة', fg_color=BUTTON_COLOR, font=(font_style, 16, 'bold'), command=self.addImage)
         self.Image_Entry_Button.place(relx=0.5, rely=0.8, anchor=ctk.CENTER)
+
+        if(image_path):
+            self.addImage(image_path=image_path)
 
 
 
@@ -409,9 +419,32 @@ class DocumentEntryPage():
         self.ErrorLabel.configure(text=ErrType)
         return
 
-    def __init__(self):
 
-        self.Soldier_Model = SoldierModel.SoldierModel()
+
+    def __init__(self, edit_mode = False, Sold_Model = None):
+
+        self.Soldier_Model = Sold_Model
+        if not Sold_Model:
+            self.Soldier_Model = SoldierModel.SoldierModel()
+
+        if(self.Soldier_Model):
+            self.image_path = self.Soldier_Model.image_path
+            self.soldier_id = self.Soldier_Model.soldier_id
+            self.name = self.Soldier_Model.name
+            self.birth_date = self.Soldier_Model.birth_date
+            self.retiring_date = self.Soldier_Model.retiring_date
+            self.mobile_number = self.Soldier_Model.mobile_number
+            self.home_number = self.Soldier_Model.home_number
+            self.home_address = self.Soldier_Model.home_address
+            self.city = self.Soldier_Model.city
+            self.governorate = self.Soldier_Model.governorate
+            self.mothers_mob_number = self.Soldier_Model.mothers_mob_number
+            self.function_inside_department = self.Soldier_Model.function_inside_department
+            self.date_of_join = self.Soldier_Model.date_of_join
+
+
+        self.edit_mode = edit_mode
+        
 
 
 
@@ -425,7 +458,7 @@ class DocumentEntryPage():
         self.root.geometry(f"{width}x{height}+{str(math.floor(screen_width/2 - width/2))}+{str(math.floor(screen_height/2 - height/2)-20)}")  # Set window size
         self.root.iconbitmap("../data/icolog.ico")
         self.root.title('إدخال وثيقة تعارف')
-        self.image_path = ''
+        
 
 
 
@@ -543,12 +576,47 @@ class DocumentEntryPage():
 
         self.root.bind('<Control-q>', lambda x: self.quit())
 
+        if (self.edit_mode):
+            self.edit_doc(image_path= self.image_path, name = self.name, birth_date= self.birth_date, soldier_id= self.soldier_id, retiring_date= self.retiring_date, mobile_number= self.mobile_number, home_number= self.home_number, home_address= self.home_address, city= self.city, governorate= self.governorate, mothers_mob_number= self.mothers_mob_number, function_inside_department= self.function_inside_department, date_of_join= self.date_of_join)
+
+
 
 
 
 
         self.root.mainloop()
 
+
+
+
+    def edit_doc(self, image_path= '../data/unknown_image.png', name =  'لا يوجد', birth_date= date(1970, 1, 1).isoformat(), soldier_id= 'لا يوجد', retiring_date= date(1970, 1, 1).isoformat(), mobile_number= 'لا يوجد', home_number= 'لا يوجد', home_address= 'لا يوجد', city= 'لا يوجد', governorate= 'لا يوجد', mothers_mob_number= 'لا يوجد', function_inside_department= 'لا يوجد', date_of_join= 'لا يوجد'):
+        if(self.edit_mode):
+            if(not image_path): image_path = '../data/unknown_image.png'
+            # self.img= ctk.CTkImage(light_image=Image.open(os.path.abspath(image_path)), dark_image=Image.open(os.path.abspath(image_path)), size=(225,225))
+            # self.ImageLBL = ctk.CTkLabel(self.Image_Frame, width=225, height=226, image=self.img, text='')
+            # self.ImageLBL.pack()
+            self.AddImagePlaceHolder(image_path=image_path)
+            self.Name_Entry.insert(0, name)
+            self.Soldier_ID_Entry.insert(0, soldier_id)
+            self.MobileNumber_Entry.insert(0, mobile_number)
+            self.HomeAddress_Entry.insert(0, home_address)
+            self.City_Entry.insert(0, city)
+            self.Governorate_Entry.insert(0, governorate)
+            self.HomeNumber_Entry.insert(0, home_number)
+            self.MothersMobileNum_Entry.insert(0, mothers_mob_number)
+            self.Function_Entry.insert(0, function_inside_department)
+            self.DateOfJoin_Entry.insert(0, date_of_join)
+
+
+            self.RetiringDate_Day_Entry.insert(0, str(date.fromisoformat(retiring_date).day))
+            self.RetiringDate_Month_Entry.insert(0, str(date.fromisoformat(retiring_date).month))
+            self.RetiringDate_Year_Entry.insert(0, str(date.fromisoformat(retiring_date).year))
+
+
+            self.BirthDate_Day_Entry.insert(0, str(date.fromisoformat(birth_date).day))
+            self.BirthDate_Month_Entry.insert(0, str(date.fromisoformat(birth_date).month))
+            self.BirthDate_Year_Entry.insert(0, str(date.fromisoformat(birth_date).year))
+    
 
 
     def quit(self):

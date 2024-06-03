@@ -10,7 +10,7 @@ from DocShow import DocShow
 # from enc import enc
 
 
-from soldData import SoldierData
+# from soldData import SoldierData
 
 with open('db_path.txt', 'r') as f:
     DB_FOLDER = os.path.abspath(f.read())

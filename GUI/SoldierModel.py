@@ -1,15 +1,14 @@
 from enums import SoldierModelErrorCode, EntryError
+from datetime import date
 
 class SoldierModel():
-    def __init__(self, name = None, birthdate= None, soldier_id = None ,
-                 mobile_number = None, home_address = None, function_inside_department = None,
-                 date_of_join=None, city = None, governorate=None,
-                 mothers_mobile_number = None,
-                 retiring_date = None, home_number = None, image_path = None):
+    def __init__(self
+        , image_path= '', name =  'لا يوجد', birth_date= date(1970, 1, 1).isoformat(), soldier_id= 'لا يوجد', retiring_date= date(1970, 1, 1).isoformat(), mobile_number= 'لا يوجد', home_number= 'لا يوجد', home_address= 'لا يوجد', city= 'لا يوجد', governorate= 'لا يوجد', mothers_mob_number= 'لا يوجد', function_inside_department= 'لا يوجد', date_of_join= 'لا يوجد'):
+
         
         
         self.name = name
-        self.birthdate = birthdate
+        self.birth_date = birth_date
         self.soldier_id = soldier_id
         self.retiring_date = retiring_date
         self.image_path = image_path
@@ -18,7 +17,7 @@ class SoldierModel():
         self.home_number = home_number
         self.city = city
         self.governorate = governorate
-        self.mothers_mobile_number = mothers_mobile_number
+        self.mothers_mob_number = mothers_mob_number
         self.function_inside_department = function_inside_department
         self.date_of_join = date_of_join
 

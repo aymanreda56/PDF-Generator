@@ -183,10 +183,10 @@ def Replace_Placeholders_Inside_Document(doc, fields_to_replace:dict, Iterable_F
             delete_paragraph(space_paragraph)
         elif counter >12:
             space_paragraph.style.font.size = Pt(100)
+            space_paragraph.text = '      '
         elif counter < 11:
             space_paragraph.style.font.size = Pt((11-counter) * 9)
-        
-        space_paragraph.text = '   ⠀   '
+            space_paragraph.text = '      '
 
         # for row in Vacations_Table.rows:
         #     for cell in row.cells:
