@@ -466,6 +466,40 @@ def ExtendVacation(Soldier_ID, new_to_date):
         cursor.close()
 
 
+def convertToBinaryData(filepath:str):
+    if(os.path.exists(filepath)):
+        with open(filepath, 'rb') as f:
+            returnedBinary = f.read()
+        return returnedBinary
+    else:
+        print("FILE TO BE CONVERTED TO BINARY NOT FOUND")
+        return None
+
+
+
+
+
+def InsertImageToDocument(image_path, soldier_id):
+    BinaryImage = convertToBinaryData(image_path)
+
+    try:
+        connection = sqlite3.connect(DB_PATH)
+        connection.execute("PRAGMA foreign_keys = 1")
+        cursor = connection.cursor()
+       
+        query = f'UPDATE Documents SET Image = ? WHERE Soldier_ID = ?'
+        result = cursor.execute(query, (BinaryImage, soldier_id))
+
+        connection.commit()
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        cursor.close()
+        
+    
+
+
+
 def GetToDateFromVacation(Soldier_ID):
     RefreshVacations()
     result = ['']
