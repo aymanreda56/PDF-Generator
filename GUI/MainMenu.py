@@ -276,8 +276,8 @@ class MainMenu():
             self.Doc_Entry_Button.grid(row=4, column=4, pady=30)
 
 
-            self.Change_Font_Button = ctk.CTkButton(self.first_window_root, text='تغيير الفونت', command=self.ChangeAllFonts, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Change_Font_Button.place(relx=0.8, rely=0.8)
+            # self.Change_Font_Button = ctk.CTkButton(self.first_window_root, text='تغيير الفونت', command=self.ChangeAllFonts, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            # self.Change_Font_Button.place(relx=0.8, rely=0.8)
 
             
 
