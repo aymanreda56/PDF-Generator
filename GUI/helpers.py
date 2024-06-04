@@ -593,6 +593,72 @@ def AddVacation(Soldier_ID, FromDate, ToDate, State, Summoned, Extended:int=0):
         RefreshVacations()
 
 
+def Get_All_Vacations_History():
+    try:
+        connection = sqlite3.connect(DB_PATH)
+        connection.execute("PRAGMA foreign_keys = 1")
+        cursor = connection.cursor()
+
+        search_query = "SELECT * FROM Vacations_History"
+        results = cursor.execute(search_query).fetchall()
+        
+        all_results = []
+        for res in results:
+            Returned_Dict = {}
+            Returned_Dict['NUM'] = res[0]
+            Returned_Dict['Soldier_ID'] = res[1]
+            Returned_Dict['Name'] = res[2]
+            Returned_Dict['From_Date'] = res[3]
+            Returned_Dict['To_Date'] = res[4]
+            Returned_Dict['State'] = res[5]
+            Returned_Dict['Summoned'] = res[6]
+            Returned_Dict['Active'] = res[7]
+            all_results.append(Returned_Dict)
+
+        cursor.close()
+       
+        return all_results
+
+    except sqlite3.Error as e:
+        print(e)
+    
+    finally:
+        cursor.close()
+
+
+def TestIfVacation(Soldier_ID:str, date_of_test:str)->int:
+    #takes soldier_ID, date of the test and all history of vacations instead of fetching the history for each entry day
+    #returns 0 if present, 1 if normal vacation, 2 if extended
+    try:
+        connection = sqlite3.connect(DB_PATH)
+        connection.execute("PRAGMA foreign_keys = 1")
+        cursor = connection.cursor()
+        search_query = "SELECT * FROM Vacations_History WHERE Soldier_ID = ?"
+        results = cursor.execute(search_query, (Soldier_ID, )).fetchall()
+        
+        if not results:
+            cursor.close()
+            return 0
+
+        
+        for res in results:
+            From_Date = date.fromisoformat(res[3])
+            To_Date = date.fromisoformat(res[4])
+            Extended = res[5]
+            if(date.fromisoformat(date_of_test) < To_Date and date.fromisoformat(date_of_test) >= From_Date):
+                result_if_vacation = 2 if Extended else 1
+                cursor.close()
+                return result_if_vacation
+
+        cursor.close()
+        return 0
+
+    except sqlite3.Error as e:
+        print(e)
+    
+    finally:
+        cursor.close()
+
 def GetExtensionFromDate(Soldier_ID):
     try:
         connection = sqlite3.connect(DB_PATH)
@@ -650,12 +716,15 @@ def RemoveVacation(Soldier_ID, delete_from_history:bool = False):
     
 
 
-def getSoldierIDFromName(Name_ComboBox)->str:
-    allSoldiers = fetchSoldiers()
+def getSoldierIDFromName(Name_ComboBox:str, all_soldiers_pre_fetched:list=None)->str:
+    allSoldiers = all_soldiers_pre_fetched
+    if not all_soldiers_pre_fetched:
+        allSoldiers = fetchSoldiers()
     for soldier in allSoldiers:
         if soldier['Name'] == Name_ComboBox:
             return soldier['Soldier_ID']
     return False
+
 
 
 def getSoldierLevelFromID(Soldier_ID)->str:

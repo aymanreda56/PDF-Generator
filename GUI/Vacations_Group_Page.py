@@ -208,7 +208,7 @@ class Vacations_Group_Page ():
 
         
 
-        Service_Days_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'عدد أيام الخدمة', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT, text_color=FG_COLOR)
+        Service_Days_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'عدد أيام العمل', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT, text_color=FG_COLOR)
         Service_Days_Lbl.place(relx=0.3, rely=0.5, anchor='center')
 
         Last_Date_Lbl = ctk.CTkLabel(master=Header_Frame, text= 'تاريخ آخر عودة', font=(FONT_STYLE, 16, 'bold'), justify = ctk.RIGHT, text_color=FG_COLOR)

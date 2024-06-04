@@ -83,7 +83,7 @@ def insert_new_user(is_admin, username, password, name, Level):
     encrypted_string = encryptor(username=username, password=password)
 
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
 
         query = 'INSERT INTO Accounts VALUES (?, ?, ?, ?)'
@@ -117,7 +117,7 @@ def fetchUsers():
 def DeleteUser(name, username, password):
     encrypted_string = encryptor(username=username, password=password)
     try:
-        connection = sqlite3.connect('../db/Soldiers.db')
+        connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         query = "DELETE FROM Accounts WHERE name = ? AND hash = ?"
         cursor.execute(query, (name, encrypted_string))
@@ -151,9 +151,14 @@ def CheckUser(username, password):
 # insert_new_user('0', username, password, 'Ayman', 'جندي')
 
 
+# username = 'Eslam'
+# password = '6116'
+# insert_new_user('1', username, password, 'Eslam', 'صانع ماهر')
+
+
 # username = 'user'
 # password = 'user'
-# insert_new_user('1', username, password, 'Aymoon', 'جندي')
+# insert_new_user('0', username, password, 'Amr Tarek', 'عسكري')
 
 # username = 'user1'
 # password = 'user1'
