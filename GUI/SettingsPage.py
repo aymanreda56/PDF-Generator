@@ -158,7 +158,7 @@ class SettingsPage():
 
 
         # The titel label
-        Big_Label = ctk.CTkLabel(self.root, text="تنظيم وأفراد مكتب السيد/ مدير الجهاز", font=('Arial', 50, 'bold'), text_color=BUTTON_COLOR)
+        Big_Label = ctk.CTkLabel(self.root, text='الإعدادات', font=('Arial', 50, 'bold'), text_color=BUTTON_COLOR)
         Big_Label.pack()
 
 
@@ -167,27 +167,39 @@ class SettingsPage():
         self.BigFrame.pack(pady=100)
 
 
-
-        self.Change_Output_Folder_Button = ctk.CTkButton(self.BigFrame, text='تغيير مكان الصحف المنتجة', font=('Dubai', 30, 'bold'), width=100, command=self.ChangeOutputFolder)
-        self.Change_Output_Folder_Button.grid(row = 0, column=1)
-
+        output_folder_lbl = ctk.CTkLabel(self.BigFrame, text='مكان الصحف المنتجة', font=('Dubai', 30, 'bold'), text_color=BUTTON_COLOR, fg_color=FG_COLOR)
+        output_folder_lbl.grid(row=0, column=2, padx=20, sticky=ctk.E)
+        
         self.output_folder_lbl = ctk.CTkLabel(self.BigFrame, text=self.output_folder, font=('Dubai', 30, 'bold'), width=100, text_color=TEXT_COLOR)
-        self.output_folder_lbl.grid(row = 0, column = 0)
+        self.output_folder_lbl.grid(row = 0, column = 1, padx=20)
+
+        self.Change_Output_Folder_Button = ctk.CTkButton(self.BigFrame, text='تغيير', font=('Dubai', 20, 'bold'), width=100, command=self.ChangeOutputFolder)
+        self.Change_Output_Folder_Button.grid(row = 0, column=0, padx=20)
 
 
-        self.Change_Theme_Button = ctk.CTkButton(self.BigFrame, text='تغيير ألوان البرنامج', font=('Dubai', 30, 'bold'), width=100, command=self.ChangeTheme)
-        self.Change_Theme_Button.grid(row = 1, column=1)
-
+        theme_lbl = ctk.CTkLabel(self.BigFrame, text='ألوان البرنامج', font=('Dubai', 30, 'bold'), text_color=BUTTON_COLOR, fg_color=FG_COLOR)
+        theme_lbl.grid(row=1, column=2, padx=20, sticky=ctk.E)
+        
         self.theme_name_lbl = ctk.CTkLabel(self.BigFrame, text=self.theme_name, font=('Dubai', 30, 'bold'), width=100, text_color=TEXT_COLOR)
-        self.theme_name_lbl.grid(row = 1, column = 0)
+        self.theme_name_lbl.grid(row = 1, column = 1, padx=20)
+
+        self.Change_Theme_Button = ctk.CTkButton(self.BigFrame, text='تغيير', font=('Dubai', 20, 'bold'), width=100, command=self.ChangeTheme)
+        self.Change_Theme_Button.grid(row = 1, column=0, padx=20)
 
 
-        self.Change_DB_Path_Button = ctk.CTkButton(self.BigFrame, text='تغيير مكان قاعدة البيانات', font=('Dubai', 30, 'bold'), width=100, command=self.ChangeDBFolder)
-        self.Change_DB_Path_Button.grid(row = 2, column=1)
+
+        
+        theme_lbl = ctk.CTkLabel(self.BigFrame, text='مكان قاعدة البيانات', font=('Dubai', 30, 'bold'), text_color=BUTTON_COLOR, fg_color=FG_COLOR)
+        theme_lbl.grid(row=2, column=2, padx=20, sticky=ctk.E)
+        
+        
+        self.db_path_lbl = ctk.CTkLabel(self.BigFrame, text=self.db_path, font=('Dubai', 30, 'bold'), width=100, text_color=BUTTON_COLOR, fg_color=FG_COLOR)
+        self.db_path_lbl.grid(row = 2, column = 1, padx=20)
+
+        self.Change_DB_Path_Button = ctk.CTkButton(self.BigFrame, text='تغيير', font=('Dubai', 20, 'bold'), width=100, command=self.ChangeDBFolder)
+        self.Change_DB_Path_Button.grid(row = 2, column=0, padx=20)
 
 
-        self.db_path_lbl = ctk.CTkLabel(self.BigFrame, text=self.db_path, font=('Dubai', 30, 'bold'), width=100, text_color=TEXT_COLOR)
-        self.db_path_lbl.grid(row = 2, column = 0)
 
 
         # self.username_Entry = ctk.CTkEntry(self.root, placeholder_text='اسم المستخدم', font=('Dubai', 30, 'bold'), justify='right', width=300)
@@ -206,6 +218,12 @@ class SettingsPage():
         # sumbit_Button.place(relx=0.5, rely=0.7, anchor=ctk.CENTER)
 
         # self.root.bind("<Configure>", lambda x: self.resizeAll())
+
+        
+
+        return_Button = ctk.CTkButton(master=self.root, text='العودة للقائمة', font=('Dubai', 24, 'bold'), fg_color=BUTTON_COLOR, text_color=WHITE_TEXT_COLOR, command=self.root.destroy)
+        return_Button.place(relx=0.2, rely=0.8, anchor=ctk.CENTER)
+
 
         self.root.bind('<Control-q>', lambda: self.root.quit)
         self.root.bind('<Control-e>', lambda x: self.Login(username_box=self.username_Entry, password_box=self.password_Entry))

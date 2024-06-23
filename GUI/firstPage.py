@@ -34,7 +34,7 @@ class FirstPage():
         self.Errors_Lbl.place(relx=0.5, rely=0.8, anchor='center')
 
 
-        First_Time_question_Label = ctk.CTkLabel(self.first_window_root, text='إذا كانت هذه أول مرة لاستعمالك هذا البرنامج, فنرجو إختيار مكان قاعدة البيانات.', font=('cooper black gothic', 30, 'bold'), text_color=BUTTON_COLOR, fg_color=BG_COLOR)
+        First_Time_question_Label = ctk.CTkLabel(self.first_window_root, text='إذا كانت هذه أول مرة لاستعمالك هذا البرنامج, فنرجو إختيار مكان قاعدة البيانات.' + 'و إعادة فتح البرنامج', font=('cooper black gothic', 30, 'bold'), text_color=BUTTON_COLOR, fg_color=BG_COLOR)
         First_Time_question_Label.place(relx=0.5, rely=0.4, anchor='center')
 
         Proceed_Button = ctk.CTkButton(self.first_window_root, text='إدخال', command=self.SetDBPath, fg_color=BUTTON_COLOR, font=('Arial', 30, 'bold'), width=150, corner_radius=30)
@@ -55,7 +55,7 @@ class FirstPage():
 
 
     def SetDBPath(self):
-        db_path = ctk.filedialog.askopenfilename(defaultextension='db')
+        db_path = ctk.filedialog.askopenfilename(defaultextension='db', filetypes=[('sqlite.db','*.db'),])
         if(os.path.isfile(db_path) and os.path.splitext(db_path)[1] == '.db'):
             with open('db_path.txt', 'w') as f:
                 f.write(os.path.dirname(db_path))
