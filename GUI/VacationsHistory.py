@@ -6,6 +6,7 @@ import openpyxl.styles
 from enums import EntryError, EntryErrorCode, ArmyLevels
 # from MainMenu import MainMenu
 import helpers
+import os
 import pandas as pd
 import numpy as np
 from style import *
@@ -13,8 +14,6 @@ import openpyxl
 
 FONT_STYLE = 'Dubai'
 
-
-days_map = {0: 'الإثنين', 1: "الثلاثاء", 2: "الأربعاء", 3: "الخميس", 4: "الجمعة", 5: "السبت", 6:"الأحد"}
 
 
 
@@ -102,66 +101,86 @@ days_map = {0: 'الإثنين', 1: "الثلاثاء", 2: "الأربعاء", 3
         
 
 
-
-all_soldiers = helpers.fetchSoldiers()
-all_vacations_history = helpers.Get_All_Vacations_History()
-
-
-names = ['الإسم/التاريخ']
-names.append('اليوم')
-the_very_first_date = date(year=2100, month=1, day=1)
-
-#filling the list of names and getting the very first date of vacation
-for i, vacation in enumerate(all_vacations_history):
-    names.append(vacation['Name'])
-    if(date.fromisoformat(vacation['From_Date']) < the_very_first_date):
-        the_very_first_date = date.fromisoformat(vacation['From_Date'])
-
-#getting the number of days from the very first date till today
-d0 = the_very_first_date
-d1 = date.today()
-delta = d1 - d0
-num_of_days = delta.days
+def preprocessing():
+    all_soldiers = helpers.fetchSoldiers()
+    all_vacations_history = helpers.Get_All_Vacations_History()
 
 
-all_history_np = np.ndarray(shape=(num_of_days + 1, len(names)), dtype=str)
+    names = ['الإسم/التاريخ']
+    names.append('اليوم')
+    the_very_first_date = date(year=2100, month=1, day=1)
+
+    #filling the list of names and getting the very first date of vacation
+    for sold in all_soldiers:
+        names.append(sold['Name'])
+    for i, vacation in enumerate(all_vacations_history):
+        if(date.fromisoformat(vacation['From_Date']) < the_very_first_date):
+            the_very_first_date = date.fromisoformat(vacation['From_Date'])
+
+    #getting the number of days from the very first date till today
+    d0 = the_very_first_date
+    d1 = date.today()
+    delta = d1 - d0
+    num_of_days = delta.days
+
+    all_history_np = np.ndarray(shape=(num_of_days + 1, len(names)), dtype=str) #the +3 and +1 to compensate for extra columns like date and weekday
 
 
-df = pd.DataFrame(all_history_np, index=None)
+    df = pd.DataFrame(all_history_np, index=None)
+
+    return all_soldiers, df, names, the_very_first_date
 
 
 
 #prepopulating the headers
-for col in range(df.shape[1]):
-    df.iloc[0, col] = names[col]
+def prepopulate_headers(df:pd.DataFrame, names_list:list, the_very_first_date:date):
+    
+    days_map = {0: 'الإثنين', 1: "الثلاثاء", 2: "الأربعاء", 3: "الخميس", 4: "الجمعة", 5: "السبت", 6:"الأحد"}
 
-for row in range(df.shape[0] - 1):
-    date_of_row = the_very_first_date + timedelta(days=row)
-    df.iloc[row + 1, 0] = date_of_row.isoformat()
-    df.iloc[row + 1, 1] = days_map[date_of_row.weekday()]
+    i = 0
+    for col in range(0, df.shape[1]):
+        df.iloc[0, col] = names_list[i] #the +2 and -2 to compensate for the first two columns corresponding to date and weekday
+        i+=1
 
-#fix the headers
-# new_header = df.iloc[0] #grab the first row for the header
-# df = df[1:] #take the data less the header row
-# df.columns = new_header #set the header row as the df header
+    for row in range(df.shape[0] - 1):
+        date_of_row = the_very_first_date + timedelta(days=row)
+        df.iloc[row + 1, 0] = date_of_row.isoformat()
+        df.iloc[row + 1, 1] = days_map[date_of_row.weekday()]
+    
+    #fix the headers
+    new_header = df.iloc[0] #grab the first row for the header
+    df = df[1:] #take the data less the header row
+    df.columns = new_header #set the header row as the df header
+
+    return df
+
+
 
 # df.set_index(df.columns[0], inplace=True)
 # df.drop(df.columns[0], axis=1, inplace=True)
 
-
-for row in range(1, df.shape[0]):
-    for col in range(2, df.shape[1]):
-        vac_code = helpers.TestIfVacation(Soldier_ID=helpers.getSoldierIDFromName(names[col], all_soldiers), date_of_test=df.iloc[row, 0])
+def populate_sheet(df:pd.DataFrame, names_list:list, all_soldiers_data:list):
+    for row in range(0, df.shape[0]):
+        if(pd.isna(df.iloc[row, 0])):
+            continue
         
-        # entry = 'موجود'
-        if vac_code == 0:
-            entry = 'موجود'
-        elif vac_code == 1:
-            entry = 'أجازة'
-        elif vac_code == 2:
-            entry = 'إمتداد'
-
-        df.iloc[row, col] = entry
+        
+        for i, name in enumerate(names_list):
+            if(i<2): continue
+            # print(df.iloc[row, 0])
+            vac_code = helpers.TestIfVacation(Soldier_ID=helpers.getSoldierIDFromName(name, all_soldiers_data), date_of_test=df.iloc[row, 0])
+            
+            # entry = 'موجود'
+            if vac_code == 0:
+                entry = 'موجود'
+            elif vac_code == 1:
+                entry = 'أجازة'
+            elif vac_code == 2:
+                entry = 'إمتداد'
+            
+            df.iloc[row, list(df.columns).index(name)] = entry
+            
+    return df
 
 
 
@@ -197,7 +216,7 @@ def change_colors_in_excel_sheet(sheet_path:str, num_rows:int, num_cols:int)->No
         for col in range(1, num_cols+2):
             
             cell = worksheet.cell(row=row,column=col)
-            if(row == 2 or col == 2):
+            if(row == 1 or col == 2):
                 cell.font = bigfontStyle
 
 
@@ -222,8 +241,11 @@ def change_colors_in_excel_sheet(sheet_path:str, num_rows:int, num_cols:int)->No
         
         column_widths.append(max_col_size)
         
-    for i, column_width in enumerate(column_widths,1):  # ,1 to start at 1
+    for i, column_width in enumerate(column_widths, 1):  # ,1 to start at 1
         worksheet.column_dimensions[openpyxl.utils.get_column_letter(i)].width = column_width
+
+
+    worksheet.sheet_view.rightToLeft = True
     
     workBook.save(sheet_path)  # save the workbook
     workBook.close()  # close the workbook
@@ -231,10 +253,19 @@ def change_colors_in_excel_sheet(sheet_path:str, num_rows:int, num_cols:int)->No
    
 
 
-df.to_excel('test_vacations.xlsx')
+def ExportVacationsHistory():
+    all_soldiers, df, names, the_very_first_date = preprocessing()
+    df = prepopulate_headers(df=df, names_list=names, the_very_first_date=the_very_first_date)
+    df = populate_sheet(df=df, names_list=names, all_soldiers_data=all_soldiers)
+
+    df.to_excel('Vacations_History.xlsx')
 
 
-change_colors_in_excel_sheet('test_vacations.xlsx', num_rows=df.shape[0], num_cols=df.shape[1])
+    change_colors_in_excel_sheet('Vacations_History.xlsx', num_rows=df.shape[0], num_cols=df.shape[1])
+
+
+    os.startfile('Vacations_History.xlsx')
+
 
 
 

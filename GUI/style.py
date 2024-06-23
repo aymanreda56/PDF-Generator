@@ -1,11 +1,13 @@
 
 
 with open('config.txt', 'r') as f:
-    config_text = f.read()
+    config_text = f.readlines()
 
-if(config_text[0] == '1'):
+
+#the first line in config.txt is the style number (0 or 1 where 0 is the default and 1 is Islam's special request)
+if(config_text[0][0] == '1'):
     CHOSEN_PRESET = 1
-elif(config_text[0] == '0'):
+elif(config_text[0][0] == '0'):
     CHOSEN_PRESET = 0
 else:
     CHOSEN_PRESET = 0

@@ -1,1 +1,1 @@
-D:\db_backup\db
+D:/db_backup/db

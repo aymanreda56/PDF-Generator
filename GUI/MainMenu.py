@@ -14,6 +14,8 @@ from style import *
 from DocumentEntryPage import DocumentEntryPage
 from ListDocs import ListDocs
 import auto_updater
+import VacationsHistory
+from SettingsPage import SettingsPage
 
 which_frame_is_active = None
 
@@ -63,6 +65,7 @@ class MainMenu():
     def render_First_Page(self):
         self.fp = FirstPage()
         self.fp.render()
+        self.initial_visit = False
         # self.first_window_root.focus_force()
         return
 
@@ -70,6 +73,11 @@ class MainMenu():
     def render_Entry_Page(self):
         self.ep = EntryPage()
         self.ep.renderEntryPage()
+        return
+    
+    def render_Settings_Page(self):
+        self.sp = SettingsPage()
+        self.sp.renderSettingsPage()
         return
     
     def render_Vacations_Page(self):
@@ -106,6 +114,11 @@ class MainMenu():
 
     def Print_Tamam(self):
         self.Tmam_Process = Process(target=GenHelpers.Export_Tamam_PDF)
+        self.Tmam_Process.start()
+
+    
+    def Print_Vacations_History(self):
+        self.Tmam_Process = Process(target=VacationsHistory.ExportVacationsHistory)
         self.Tmam_Process.start()
 
 
@@ -162,7 +175,7 @@ class MainMenu():
 
     def __init__(self):
 
-        if(not os.path.isfile(helpers.DB_PATH) or (not helpers.fetchSoldiers())):
+        if(not os.path.isfile(helpers.DB_PATH)):
                 self.initial_visit = True
         else: self.initial_visit = False
         self.logged_in_flag = False
@@ -171,6 +184,7 @@ class MainMenu():
         self.ep = False
         self.dep = False
         self.ld = False
+        self.sp = False
         self.Tmam_Process = None
         self.update_process = None
         self.LoadingImageLbl = None
@@ -263,7 +277,12 @@ class MainMenu():
 
             #Vacations pass printing button
             self.Entry_Button = ctk.CTkButton(dummy_frame, text='إدخال/ تعديل البيانات', command=self.render_Entry_Page, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
-            self.Entry_Button.grid(row=5, column =2, columnspan=4, pady=30)
+            self.Entry_Button.grid(row=5, column =4, columnspan=1, pady=30)
+
+
+            #Vacations History printing button
+            self.Vac_History_Button = ctk.CTkButton(dummy_frame, text='تاريخ الأجازات', command=self.Print_Vacations_History, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            self.Vac_History_Button.grid(row=5, column =3, columnspan=1, pady=30)
 
 
             # #All Documents Show Button
@@ -279,6 +298,10 @@ class MainMenu():
             # self.Change_Font_Button = ctk.CTkButton(self.first_window_root, text='تغيير الفونت', command=self.ChangeAllFonts, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
             # self.Change_Font_Button.place(relx=0.8, rely=0.8)
 
+
+            self.Settings_Button = ctk.CTkButton(self.first_window_root, text='إعدادات', command=self.render_Settings_Page, font=(font_text, 25, 'bold'), fg_color=BUTTON_COLOR, width=200, corner_radius=30)
+            self.Settings_Button.place(relx=0.8, rely=0.8)
+
             
 
             self.Update_Button = ctk.CTkButton(self.first_window_root, text=update_text, command=self.ConfirmPage, font=(font_text, 25, 'bold'), fg_color=update_color, width=200, corner_radius=30, text_color=update_text_color)
@@ -287,13 +310,11 @@ class MainMenu():
 
 
 
-            if(self.is_admin != '1'):
-                print('IAMMM')
-                self.Entry_Button.grid_forget()
 
 
-            if(not os.path.isfile(helpers.DB_PATH) or (not helpers.fetchSoldiers())):
-                self.first_window_root.after(1, self.render_First_Page)
+
+            if(not os.path.isfile(helpers.DB_PATH)):
+                self.render_First_Page()
 
 
 
@@ -320,6 +341,7 @@ class MainMenu():
                 self.Doc_Entry_Button.grid_forget()
                 self.AllDocs_Show_Button.grid_forget()
                 self.Entry_Button.grid_forget()
+                self.Vac_History_Button.grid_forget()
 
 
 
@@ -375,7 +397,7 @@ class MainMenu():
             
             
     
-        if(helper(self.vp) or helper(self.ep) or helper(self.fp) or helper(self.dep) or helper(self.ld)):
+        if(helper(self.vp) or helper(self.ep) or helper(self.fp) or helper(self.dep) or helper(self.ld) or helper(self.sp)):
             main_is_active = False
         else:
             main_is_active = True

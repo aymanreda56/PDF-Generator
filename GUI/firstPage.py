@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import math
-
+import os
 from helpers import CreateDB
 # from MainMenu import MainMenu
 from EntryPage import EntryPage
@@ -30,13 +30,17 @@ class FirstPage():
         Big_Label.place(relx = 0.5, rely = 0.2, anchor=ctk.CENTER)
 
 
-        First_Time_question_Label = ctk.CTkLabel(self.first_window_root, text=": اذا كنت أول مرة لإستعمالك هذا البرنامج, فنرجو إدخال بيانات الإدارة من هنا", font=('cooper black gothic', 30, 'bold'), text_color=BUTTON_COLOR, fg_color=BG_COLOR)
+        self.Errors_Lbl = ctk.CTkLabel(self.first_window_root, text= '', text_color=REMOVE_BUTTON_COLOR, fg_color=BG_COLOR, font=('Dubai', 16, 'bold'))
+        self.Errors_Lbl.place(relx=0.5, rely=0.8, anchor='center')
+
+
+        First_Time_question_Label = ctk.CTkLabel(self.first_window_root, text='إذا كانت هذه أول مرة لاستعمالك هذا البرنامج, فنرجو إختيار مكان قاعدة البيانات.', font=('cooper black gothic', 30, 'bold'), text_color=BUTTON_COLOR, fg_color=BG_COLOR)
         First_Time_question_Label.place(relx=0.5, rely=0.4, anchor='center')
 
-        Proceed_Button = ctk.CTkButton(self.first_window_root, text='Proceed', command=self.render_Entry_Page, fg_color=BUTTON_COLOR, font=('Arial', 30, 'bold'), width=150, corner_radius=30)
+        Proceed_Button = ctk.CTkButton(self.first_window_root, text='إدخال', command=self.SetDBPath, fg_color=BUTTON_COLOR, font=('Arial', 30, 'bold'), width=150, corner_radius=30)
         Proceed_Button.place(relx=0.5, rely= 0.7, anchor='center')
 
-        self.first_window_root.bind("<Configure>", lambda x: self.resizeAll())
+        # self.first_window_root.bind("<Configure>", lambda x: self.resizeAll())
 
 
     def render(self):
@@ -47,6 +51,20 @@ class FirstPage():
         self.width = self.first_window_root.winfo_width()
         self.height = self.first_window_root.winfo_height()
         self.bg_img.configure(size=(self.width / 2, self.width / 2))
+
+
+
+    def SetDBPath(self):
+        db_path = ctk.filedialog.askopenfilename(defaultextension='db')
+        if(os.path.isfile(db_path) and os.path.splitext(db_path)[1] == '.db'):
+            with open('db_path.txt', 'w') as f:
+                f.write(os.path.dirname(db_path))
+            
+            self.first_window_root.destroy()
+        
+        else:
+            self.Errors_Lbl.configure(text='هذا الملف ليس قاعدة البيانات, إذا كنت لا تعرف كيف تستعمل هذا البرنامج, نرجو التواصل مع المهندس أيمن محمد')
+            
 
     
     def render_Entry_Page(self):

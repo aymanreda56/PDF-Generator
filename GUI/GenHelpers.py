@@ -597,7 +597,14 @@ def add_watermark(input_pdf, watermark_pdf):
 
 def ConvertAndSave(document, typeDoc:str, date_of_doc = date.today().isoformat(), put_watermark:bool=False):
     # filePath, extension = os.path.splitext(filePath)
-    outputPath =  os.path.join(os.path.split(os.getcwd())[0],typeDoc)
+
+    with open('config.txt', 'r') as f:
+        config_text = f.readlines()
+        #output path for document artifacts is specified in the second line in config.txt
+        outputPath = re.sub('[\n]', '', config_text[1])
+
+
+    outputPath =  os.path.join(os.path.abspath(outputPath),typeDoc)
     if(not os.path.isdir(outputPath)):
         os.mkdir(outputPath)
 
